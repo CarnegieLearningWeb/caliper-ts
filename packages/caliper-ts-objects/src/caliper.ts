@@ -4,13 +4,13 @@ import { v4 } from 'uuid';
 import { EntityType } from './Entities/EntityType';
 import { ISoftwareApplication } from './Entities/SoftwareApplication';
 
-interface CaliperSettings {
+export interface CaliperSettings {
 	applicationUri: string | null;
 	isValidationEnabled: boolean;
 }
 
-type CaliperTimestamp = string;
-type CaliperDuration = string;
+export type CaliperTimestamp = string;
+export type CaliperDuration = string;
 
 /**
  * Global settings for Caliper
@@ -37,13 +37,13 @@ function uuid(uuid?: string) {
 /**
  * Create a Caliper event.edApp instance using the applicationUri in the global settings
  */
-function edApp(): ISoftwareApplication {
-	if (!settings.applicationUri) {
-		return null as any;
+function edApp({ applicationUri } = settings ?? {}) {
+	if (!applicationUri) {
+		return null;
 	}
 
 	return {
-		id: settings.applicationUri,
+		id: applicationUri,
 		type: EntityType.SoftwareApplication,
 	} as ISoftwareApplication;
 }
