@@ -1,20 +1,17 @@
-import Caliper from './Caliper';
-import {
-	IEvent,
-	Instructor,
-	Organization,
-	OrganizationActivatedEvent,
-	Status,
-	SystemIdentifier,
-	SystemIdentifierType,
-	User,
-	UserCreatedEvent,
-	UserEvent_Student,
-	validate
-} from './';
-import { CaliperAction } from './Events/CaliperAction';
+import Caliper from './caliper';
+import { Instructor } from './Entities/Instructor';
+import { Organization } from './Entities/Organization';
+import { Status } from './Entities/Status';
+import { User } from './Entities/User';
+import { IEvent } from './Events/Event';
+import { UserEvent_Student } from './Events/Internals/UserEvent';
+import { OrganizationActivatedEvent } from './Events/OrganizationActivatedEvent';
+import { UserCreatedEvent } from './Events/UserCreatedEvent';
+import { SystemIdentifier } from './SystemIdentifier';
+import { SystemIdentifierType } from './SystemIdentifierType';
+import { validate } from './validate';
 
-describe('validate', () => {
+describe('Caliper.validate', () => {
 	Caliper.settings.applicationUri = 'https://unit.test';
 
 	const getValidationErrors = (event: IEvent) => {
@@ -45,30 +42,30 @@ describe('validate', () => {
 					SystemIdentifier({
 						sourceUrl: 'https://nwea.org',
 						identifier: 'https://nwea.org/fake-user/8c9a5212-c91c-4904-a3e6-ba98aa7d640f',
-						identifierType: SystemIdentifierType.SystemId
+						identifierType: SystemIdentifierType.SystemId,
 					}),
 					SystemIdentifier({
 						sourceUrl: 'https://whatever.com/external',
 						identifier: '8ece0ac2-b4cd-4e66-ae26-a59cec4edad7',
-						identifierType: SystemIdentifierType.SystemId
+						identifierType: SystemIdentifierType.SystemId,
 					}),
 					SystemIdentifier({
 						sourceUrl: 'https://renaissance.com',
 						identifier: 'ABC0005',
-						identifierType: SystemIdentifierType.SystemId
+						identifierType: SystemIdentifierType.SystemId,
 					}),
 					SystemIdentifier({
 						sourceUrl: 'https://the-lmsadmin-url.com',
 						identifier: '12345',
-						identifierType: SystemIdentifierType.SystemId
-					})
+						identifierType: SystemIdentifierType.SystemId,
+					}),
 				],
 				settings: {
 					spanishLanguage: ['math'],
 					languageTranslationTools: ['math', 'reading'],
-					textToSpeech: ['math', 'reading']
-				}
-			})
+					textToSpeech: ['math', 'reading'],
+				},
+			}),
 		});
 		validate(event);
 	});
