@@ -8,7 +8,7 @@ _caliper-ts_ is a reference implementation of the Sensor API&trade; written in T
 ## Installation and usage
 
 The _caliper-ts_ package is available on [GitHub Package Registry](https://github.com/ImagineLearning/caliper-ts/packages).
-For more information on installing and using the package, please refer to the [_caliper-ts_ README file](packages/caliper-ts/REAMDE.md).
+For more information on installing and using the package, please refer to the [_caliper-ts_ README file](packages/caliper-ts/README.md).
 
 ## Development
 

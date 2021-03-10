@@ -115,14 +115,13 @@ Optionally takes a `CaliperSettings` object and a `Record` of objects that imple
 ```ts
 const sensor1 = new Sensor('http://example.org/sensors/1');
 
-// Or with CaliperSettings
+// With CaliperSettings
 const sensor2 = new Sensor('http://example.org/sensors/2', {
 	applicationUrl: 'https://example.org',
 	isValidationEnabled: true,
 });
 
-// Or with HttpClients
-
+// With HttpClients
 const client = httpClient(
 	'http://example.org/sensors/1/clients/2',
 	'https://example.edu/caliper/target/endpoint',
