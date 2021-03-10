@@ -5,7 +5,13 @@ import { EntityType } from './Entities/EntityType';
 import { ISoftwareApplication } from './Entities/SoftwareApplication';
 
 export interface CaliperSettings {
+	/**
+	 * Publicly accessible URL of current running application/service
+	 */
 	applicationUri: string | null;
+	/**
+	 * Enable or disable validation when sending events to a remote destination
+	 */
 	isValidationEnabled: boolean;
 }
 
@@ -16,22 +22,16 @@ export type CaliperDuration = string;
  * Global settings for Caliper
  */
 const settings: CaliperSettings = {
-	/**
-	 * Publicly accessible URL of current running application/service
-	 */
 	applicationUri: null,
-	/**
-	 * Enable or disable validation when sending events to a remote destination
-	 */
-	isValidationEnabled: true
+	isValidationEnabled: true,
 };
 
 /**
  * Format or create an instance of a Caliper compliant UUID
- * @param uuid The optional uuid v4 object to format
+ * @param id The optional uuid v4 object to format
  */
-function uuid(uuid?: string) {
-	return `urn:uuid:${uuid || v4()}`;
+function uuid(id?: string) {
+	return `urn:uuid:${id ?? v4()}`;
 }
 
 /**
