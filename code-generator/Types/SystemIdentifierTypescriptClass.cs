@@ -43,7 +43,7 @@ export interface I{Type.GetTypescriptName()}Params {{
 }}
 
 export function {Type.FullName.Split('.').Last().Replace("+", "_")}(params: I{Type.GetTypescriptName()}Params) : {Name} {{
-	const {{ sourceUrl, ...args }} = params;
+    const {{ sourceUrl, ...args }} = params;
     const source = {typeof(SoftwareApplication).Name}({{ id: sourceUrl }});
 
     return {{
