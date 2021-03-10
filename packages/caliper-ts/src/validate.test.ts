@@ -1,5 +1,6 @@
 import {
 	Caliper,
+	CaliperAction,
 	Instructor,
 	Organization,
 	OrganizationActivatedEvent,
@@ -70,7 +71,7 @@ describe('validate(..)', () => {
 	it('passes for valid OrganizationActivatedEvent', () => {
 		const event = OrganizationActivatedEvent({
 			actor: User({ id: 'https://foo.bar/user/1' }),
-			object: Organization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') })
+			object: Organization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') }),
 		});
 		expect(() => validate(event)).not.toThrowError();
 	});
@@ -78,28 +79,27 @@ describe('validate(..)', () => {
 	it('throws error for invalid ID', () => {
 		const event = OrganizationActivatedEvent({
 			actor: User({ id: 'https://foo.bar/user/1' }),
-			object: Organization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') })
+			object: Organization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') }),
 		});
 		event.id = 'this-is-not-a-valid-event-id';
 
 		expect(() => validate(event)).toThrowError();
 	});
 
-	it('validate_FAIL_InvalidEventAction', () => {
+	it('throws error for invalid event action', () => {
 		const event = OrganizationActivatedEvent({
 			actor: User({ id: 'https://foo.bar/user/1' }),
-			object: Organization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') })
+			object: Organization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') }),
 		});
 		event.action = CaliperAction.ChangedResolution;
 
-		const errors = getValidationErrors(event);
-		expect(errors).not.toHaveLength(0);
+		expect(() => validate(event)).toThrowError();
 	});
 
 	it('throws error for invalid timestamp', () => {
 		const event = OrganizationActivatedEvent({
 			actor: User({ id: 'https://foo.bar/user/1' }),
-			object: Organization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') })
+			object: Organization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') }),
 		});
 		event.eventTime = 'whatever, blah blah';
 
@@ -109,7 +109,7 @@ describe('validate(..)', () => {
 	it('throws error for invalid entity ID', () => {
 		const event = OrganizationActivatedEvent({
 			actor: User({ id: 'https://foo.bar/user/1' }),
-			object: Organization({ id: 'cab85afa-de4f-4ee0-bce3-66030d906c25' })
+			object: Organization({ id: 'cab85afa-de4f-4ee0-bce3-66030d906c25' }),
 		});
 
 		expect(() => validate(event)).toThrowError();
