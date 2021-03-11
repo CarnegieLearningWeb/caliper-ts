@@ -2,9 +2,9 @@ import { CaliperSettings } from './caliper';
 import { httpClient } from './clients/httpClient';
 import { DEFAULT_CONFIG, getJsonLdContext } from './config/config';
 import { EntityType } from './models/Entities/EntityType';
-import { Group } from './models/Entities/Group';
-import { User } from './models/Entities/User';
-import { GroupDeletedEvent, IGroupDeletedEvent } from './models/Events/GroupDeletedEvent';
+import { createGroup } from './models/Entities/Group';
+import { createUser } from './models/Entities/User';
+import { createGroupDeletedEvent, GroupDeletedEvent } from './models/Events/GroupDeletedEvent';
 import { Sensor } from './sensor';
 import { validate } from './validate';
 
@@ -13,15 +13,15 @@ jest.mock('./validate', () => ({
 }));
 
 describe('Sensor', () => {
-	let event: IGroupDeletedEvent;
+	let event: GroupDeletedEvent;
 	let sensor: Sensor;
 	let settings: CaliperSettings;
 
 	beforeEach(() => {
 		jest.resetAllMocks();
-		event = GroupDeletedEvent({
-			actor: User({ id: 'https://foo.bar/user/123' }),
-			object: Group({ id: 'https://foo.bar/group/1' }),
+		event = createGroupDeletedEvent({
+			actor: createUser({ id: 'https://foo.bar/user/123' }),
+			object: createGroup({ id: 'https://foo.bar/group/1' }),
 		});
 		settings = {
 			applicationUri: 'https://unit.test',
@@ -94,9 +94,9 @@ describe('Sensor', () => {
 				applicationUri: 'https://example.com',
 				isValidationEnabled: false,
 			});
-			const { edApp } = sensor.createEvent(GroupDeletedEvent, {
-				actor: User({ id: 'https://foo.bar/user/123' }),
-				object: Group({ id: 'https://foo.bar/group/1' }),
+			const { edApp } = sensor.createEvent(createGroupDeletedEvent, {
+				actor: createUser({ id: 'https://foo.bar/user/123' }),
+				object: createGroup({ id: 'https://foo.bar/group/1' }),
 			});
 			expect(edApp).toEqual({
 				id: 'https://example.com',

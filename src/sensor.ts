@@ -2,7 +2,7 @@ import Caliper, { CaliperSettings } from './caliper';
 import { Client } from './clients/client';
 import { DEFAULT_CONFIG, getJsonLdContext } from './config/config';
 import { createEnvelope, Envelope, EnvelopeOptions } from './envelope';
-import { IEvent } from './models/Events/Event';
+import { Event } from './models/Events/Event';
 import { validate } from './validate';
 
 export class Sensor {
@@ -16,7 +16,7 @@ export class Sensor {
 		}
 	}
 
-	createEnvelope<T extends IEvent>(options: Partial<EnvelopeOptions<T>>) {
+	createEnvelope<T extends Event>(options: Partial<EnvelopeOptions<T>>) {
 		if (options.data === null || options.data === undefined) {
 			throw new Error('Caliper Sensor Envelope data has not been provided.');
 		}
@@ -28,7 +28,7 @@ export class Sensor {
 		return createEnvelope<T>({ sensor, sendTime, dataVersion, data: options.data });
 	}
 
-	createEvent<TEvent extends IEvent, TParams>(
+	createEvent<TEvent extends Event, TParams>(
 		eventFactory: (params: TParams, settings?: CaliperSettings) => TEvent,
 		params: TParams
 	) {
@@ -55,7 +55,7 @@ export class Sensor {
 		this.clients[client.getId()] = client;
 	}
 
-	sendToClient<TEnvelope extends IEvent, TResponse>(
+	sendToClient<TEnvelope extends Event, TResponse>(
 		client: Client | string,
 		envelope: Envelope<TEnvelope>
 	) {
@@ -73,7 +73,7 @@ export class Sensor {
 		return httpClient.send<TEnvelope, TResponse>(envelope);
 	}
 
-	sendToClients<TEnvelope extends IEvent, TResponse>(envelope: Envelope<TEnvelope>) {
+	sendToClients<TEnvelope extends Event, TResponse>(envelope: Envelope<TEnvelope>) {
 		const clients = this.getClients();
 		if (!clients.length) {
 			throw new Error('No Clients have been registered.');

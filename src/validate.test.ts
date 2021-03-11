@@ -1,13 +1,13 @@
 import Caliper from './caliper';
-import { Instructor } from './models/Entities/Instructor';
-import { Organization } from './models/Entities/Organization';
+import { createInstructor } from './models/Entities/Instructor';
+import { createOrganization } from './models/Entities/Organization';
 import { Status } from './models/Entities/Status';
-import { User } from './models/Entities/User';
+import { createUser } from './models/Entities/User';
 import { CaliperAction } from './models/Events/CaliperAction';
-import { UserEvent_Student } from './models/Events/Internals/UserEvent';
-import { OrganizationActivatedEvent } from './models/Events/OrganizationActivatedEvent';
-import { UserCreatedEvent } from './models/Events/UserCreatedEvent';
-import { SystemIdentifier } from './models/SystemIdentifier';
+import { createUserEventStudent } from './models/Events/Internals/UserEvent';
+import { createOrganizationActivatedEvent } from './models/Events/OrganizationActivatedEvent';
+import { createUserCreatedEvent } from './models/Events/UserCreatedEvent';
+import { createSystemIdentifier } from './models/SystemIdentifier';
 import { SystemIdentifierType } from './models/SystemIdentifierType';
 import { validate } from './validate';
 
@@ -22,9 +22,9 @@ describe('validate(..)', () => {
 
 	it('passes for valid UserCreatedEvent', () => {
 		const timestamp = Caliper.timestamp(new Date());
-		const event = UserCreatedEvent({
-			actor: Instructor({ id: 'https://foo.bar/user/1' }),
-			object: UserEvent_Student({
+		const event = createUserCreatedEvent({
+			actor: createInstructor({ id: 'https://foo.bar/user/1' }),
+			object: createUserEventStudent({
 				id: 'https://foo.bar/user/9999',
 				dateCreated: timestamp,
 				dateModified: timestamp,
@@ -35,22 +35,22 @@ describe('validate(..)', () => {
 				englishLanguageLearner: true,
 				individualEducationPlan: true,
 				otherIdentifiers: [
-					SystemIdentifier({
+					createSystemIdentifier({
 						sourceUrl: 'https://nwea.org',
 						identifier: 'https://nwea.org/fake-user/8c9a5212-c91c-4904-a3e6-ba98aa7d640f',
 						identifierType: SystemIdentifierType.SystemId,
 					}),
-					SystemIdentifier({
+					createSystemIdentifier({
 						sourceUrl: 'https://whatever.com/external',
 						identifier: '8ece0ac2-b4cd-4e66-ae26-a59cec4edad7',
 						identifierType: SystemIdentifierType.SystemId,
 					}),
-					SystemIdentifier({
+					createSystemIdentifier({
 						sourceUrl: 'https://renaissance.com',
 						identifier: 'ABC0005',
 						identifierType: SystemIdentifierType.SystemId,
 					}),
-					SystemIdentifier({
+					createSystemIdentifier({
 						sourceUrl: 'https://the-lmsadmin-url.com',
 						identifier: '12345',
 						identifierType: SystemIdentifierType.SystemId,
@@ -67,17 +67,17 @@ describe('validate(..)', () => {
 	});
 
 	it('passes for valid OrganizationActivatedEvent', () => {
-		const event = OrganizationActivatedEvent({
-			actor: User({ id: 'https://foo.bar/user/1' }),
-			object: Organization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') }),
+		const event = createOrganizationActivatedEvent({
+			actor: createUser({ id: 'https://foo.bar/user/1' }),
+			object: createOrganization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') }),
 		});
 		expect(() => validate(event)).not.toThrowError();
 	});
 
 	it('throws error for invalid ID', () => {
-		const event = OrganizationActivatedEvent({
-			actor: User({ id: 'https://foo.bar/user/1' }),
-			object: Organization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') }),
+		const event = createOrganizationActivatedEvent({
+			actor: createUser({ id: 'https://foo.bar/user/1' }),
+			object: createOrganization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') }),
 		});
 		event.id = 'this-is-not-a-valid-event-id';
 
@@ -85,9 +85,9 @@ describe('validate(..)', () => {
 	});
 
 	it('throws error for invalid event action', () => {
-		const event = OrganizationActivatedEvent({
-			actor: User({ id: 'https://foo.bar/user/1' }),
-			object: Organization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') }),
+		const event = createOrganizationActivatedEvent({
+			actor: createUser({ id: 'https://foo.bar/user/1' }),
+			object: createOrganization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') }),
 		});
 		event.action = CaliperAction.ChangedResolution;
 
@@ -95,9 +95,9 @@ describe('validate(..)', () => {
 	});
 
 	it('throws error for invalid timestamp', () => {
-		const event = OrganizationActivatedEvent({
-			actor: User({ id: 'https://foo.bar/user/1' }),
-			object: Organization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') }),
+		const event = createOrganizationActivatedEvent({
+			actor: createUser({ id: 'https://foo.bar/user/1' }),
+			object: createOrganization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') }),
 		});
 		event.eventTime = 'whatever, blah blah';
 
@@ -105,9 +105,9 @@ describe('validate(..)', () => {
 	});
 
 	it('throws error for invalid entity ID', () => {
-		const event = OrganizationActivatedEvent({
-			actor: User({ id: 'https://foo.bar/user/1' }),
-			object: Organization({ id: 'cab85afa-de4f-4ee0-bce3-66030d906c25' }),
+		const event = createOrganizationActivatedEvent({
+			actor: createUser({ id: 'https://foo.bar/user/1' }),
+			object: createOrganization({ id: 'cab85afa-de4f-4ee0-bce3-66030d906c25' }),
 		});
 
 		expect(() => validate(event)).toThrowError();
