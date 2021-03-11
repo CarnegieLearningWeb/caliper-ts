@@ -149,7 +149,7 @@ export const GroupCreatedEventSchema = {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['type', 'id'],
+						required: ['id', 'type'],
 					},
 					{
 						title: 'Entity',
@@ -161,7 +161,7 @@ export const GroupCreatedEventSchema = {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['type', 'id'],
+						required: ['id', 'type'],
 					},
 					{
 						title: 'Entity',
@@ -221,7 +221,7 @@ export const GroupCreatedEventSchema = {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['type', 'id'],
+						required: ['id', 'type'],
 					},
 					{
 						title: 'Entity',
@@ -965,6 +965,10 @@ export const GroupCreatedEventSchema = {
 				title: 'Entity',
 				type: 'object',
 				properties: {
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
 					type: {
 						type: 'string',
 						default: 'Entity',
@@ -972,10 +976,6 @@ export const GroupCreatedEventSchema = {
 					},
 					name: {
 						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
 					},
 					description: {
 						type: 'string',

@@ -970,16 +970,6 @@ export const GroupUpdatedEventSchema = {
 						default: 'Entity',
 						enum: ['Entity'],
 					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
 					dateCreated: {
 						type: 'string',
 						format: 'date-time',
@@ -987,6 +977,16 @@ export const GroupUpdatedEventSchema = {
 					dateModified: {
 						type: 'string',
 						format: 'date-time',
+					},
+					name: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
 					},
 					otherIdentifiers: {
 						type: 'array',

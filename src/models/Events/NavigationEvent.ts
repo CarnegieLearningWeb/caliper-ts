@@ -216,11 +216,6 @@ export const NavigationEventSchema = {
 						title: 'Organization',
 						type: 'object',
 						properties: {
-							type: {
-								type: 'string',
-								default: 'Organization',
-								enum: ['Organization'],
-							},
 							subOrganizationOf: {
 								title: 'Organization',
 								allOf: [
@@ -232,6 +227,11 @@ export const NavigationEventSchema = {
 										$ref: '#/definitions/Organization',
 									},
 								],
+							},
+							type: {
+								type: 'string',
+								default: 'Organization',
+								enum: ['Organization'],
 							},
 							id: {
 								title: 'Uri',
@@ -566,11 +566,6 @@ export const NavigationEventSchema = {
 				title: 'Organization',
 				type: 'object',
 				properties: {
-					type: {
-						type: 'string',
-						default: 'Organization',
-						enum: ['Organization'],
-					},
 					subOrganizationOf: {
 						title: 'Organization',
 						allOf: [
@@ -582,6 +577,11 @@ export const NavigationEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					type: {
+						type: 'string',
+						default: 'Organization',
+						enum: ['Organization'],
 					},
 					id: {
 						title: 'Uri',
