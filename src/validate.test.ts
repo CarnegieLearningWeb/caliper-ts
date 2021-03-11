@@ -1,16 +1,14 @@
-import {
-	Caliper,
-	CaliperAction,
-	Instructor,
-	Organization,
-	OrganizationActivatedEvent,
-	Status,
-	SystemIdentifier,
-	SystemIdentifierType,
-	User,
-	UserCreatedEvent,
-	UserEvent_Student,
-} from '@imaginelearning/caliper-ts-models';
+import Caliper from './caliper';
+import { Instructor } from './models/Entities/Instructor';
+import { Organization } from './models/Entities/Organization';
+import { Status } from './models/Entities/Status';
+import { User } from './models/Entities/User';
+import { CaliperAction } from './models/Events/CaliperAction';
+import { UserEvent_Student } from './models/Events/Internals/UserEvent';
+import { OrganizationActivatedEvent } from './models/Events/OrganizationActivatedEvent';
+import { UserCreatedEvent } from './models/Events/UserCreatedEvent';
+import { SystemIdentifier } from './models/SystemIdentifier';
+import { SystemIdentifierType } from './models/SystemIdentifierType';
 import { validate } from './validate';
 
 describe('validate(..)', () => {

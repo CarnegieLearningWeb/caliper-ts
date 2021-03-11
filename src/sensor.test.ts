@@ -1,13 +1,10 @@
-import {
-	CaliperSettings,
-	EntityType,
-	Group,
-	GroupDeletedEvent,
-	IGroupDeletedEvent,
-	User,
-} from '@imaginelearning/caliper-ts-models';
+import { CaliperSettings } from './caliper';
 import { httpClient } from './clients/httpClient';
 import { DEFAULT_CONFIG, getJsonLdContext } from './config/config';
+import { EntityType } from './models/Entities/EntityType';
+import { Group } from './models/Entities/Group';
+import { User } from './models/Entities/User';
+import { GroupDeletedEvent, IGroupDeletedEvent } from './models/Events/GroupDeletedEvent';
 import { Sensor } from './sensor';
 import { validate } from './validate';
 

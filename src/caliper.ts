@@ -1,8 +1,8 @@
 import formatISODuration from 'date-fns/formatISODuration';
 import intervalToDuration from 'date-fns/intervalToDuration';
 import { v4 } from 'uuid';
-import { EntityType } from './Entities/EntityType';
-import { ISoftwareApplication } from './Entities/SoftwareApplication';
+import { EntityType } from './models/Entities/EntityType';
+import { ISoftwareApplication } from './models/Entities/SoftwareApplication';
 
 export interface CaliperSettings {
 	/**

@@ -1,5 +1,5 @@
 import Caliper from './caliper';
-import { EntityType } from './Entities/EntityType';
+import { EntityType } from './models/Entities/EntityType';
 
 describe('Caliper module', () => {
 	beforeAll(() => {
