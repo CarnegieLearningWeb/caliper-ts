@@ -28,10 +28,10 @@ const settings: CaliperSettings = {
 
 /**
  * Format or create an instance of a Caliper compliant UUID
- * @param id The optional uuid v4 object to format
+ * @param guid The optional uuid v4 object to format
  */
-function uuid(id?: string) {
-	return `urn:uuid:${id ?? v4()}`;
+function uuid(guid?: string) {
+	return `urn:uuid:${guid ?? v4()}`;
 }
 
 /**
