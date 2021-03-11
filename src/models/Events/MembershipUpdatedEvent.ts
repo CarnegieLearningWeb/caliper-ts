@@ -15,21 +15,16 @@ import { User } from '../Entities/User';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
-import {
-	UserEvent,
-	UserEventInstructor,
-	UserEventStudent,
-	UserEventUser,
-} from './Internals/UserEvent';
+import { MembershipEvent, MembershipEventMembership } from './Internals/MembershipEvent';
 
-export interface UserDeletedEvent extends UserEvent {
+export interface MembershipUpdatedEvent extends MembershipEvent {
 	actor: SoftwareApplication | User | Instructor;
-	object: UserEventUser | UserEventInstructor | UserEventStudent;
+	object: MembershipEventMembership;
 }
 
-export interface UserDeletedEventParams {
+export interface MembershipUpdatedEventParams {
 	actor: SoftwareApplication | User | Instructor;
-	object: UserEventUser | UserEventInstructor | UserEventStudent;
+	object: MembershipEventMembership;
 	profile?: CaliperProfile;
 	target?: Entity;
 	generated?: Entity;
@@ -41,17 +36,17 @@ export interface UserDeletedEventParams {
 	extensions?: Record<string, any>;
 }
 
-export function createUserDeletedEvent(
-	params: UserDeletedEventParams,
+export function createMembershipUpdatedEvent(
+	params: MembershipUpdatedEventParams,
 	settings?: CaliperSettings
-): UserDeletedEvent {
+): MembershipUpdatedEvent {
 	return {
 		'@context': [
-			'http://edgenuity.com/events/user-deleted/0-0-2',
+			'http://edgenuity.com/events/membership-updated/0-0-2',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
-		action: CaliperAction.Deleted,
-		type: EventType.UserEvent,
+		action: CaliperAction.Modified,
+		type: EventType.MembershipEvent,
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
 		edApp: Caliper.edApp(settings) as SoftwareApplication,
@@ -59,10 +54,10 @@ export function createUserDeletedEvent(
 	};
 }
 
-export const UserDeletedEventSchema = {
-	context: 'http://edgenuity.com/events/user-deleted/0-0-2',
+export const MembershipUpdatedEventSchema = {
+	context: 'http://edgenuity.com/events/membership-updated/0-0-2',
 	schema: {
-		title: 'UserDeletedEvent',
+		title: 'MembershipUpdatedEvent',
 		type: 'object',
 		required: ['@context', 'action', 'type', 'actor', 'object', 'id', 'eventTime', 'edApp'],
 		properties: {
@@ -71,8 +66,8 @@ export const UserDeletedEventSchema = {
 				items: [
 					{
 						type: 'string',
-						default: 'http://edgenuity.com/events/user-deleted/0-0-2',
-						enum: ['http://edgenuity.com/events/user-deleted/0-0-2'],
+						default: 'http://edgenuity.com/events/membership-updated/0-0-2',
+						enum: ['http://edgenuity.com/events/membership-updated/0-0-2'],
 					},
 					{
 						type: 'string',
@@ -83,13 +78,13 @@ export const UserDeletedEventSchema = {
 			},
 			action: {
 				type: 'string',
-				default: 'Deleted',
-				enum: ['Deleted'],
+				default: 'Modified',
+				enum: ['Modified'],
 			},
 			type: {
 				type: 'string',
-				default: 'UserEvent',
-				enum: ['UserEvent'],
+				default: 'MembershipEvent',
+				enum: ['MembershipEvent'],
 			},
 			actor: {
 				required: ['id', 'type'],
@@ -109,67 +104,22 @@ export const UserDeletedEventSchema = {
 				],
 			},
 			object: {
-				oneOf: [
+				title: 'Membership',
+				allOf: [
 					{
-						title: 'User',
-						allOf: [
-							{
-								required: [
-									'dateCreated',
-									'dateModified',
-									'firstName',
-									'lastName',
-									'status',
-									'type',
-									'id',
-								],
-							},
-							{
-								title: 'User',
-								$ref: '#/definitions/User',
-							},
+						required: [
+							'dateCreated',
+							'dateModified',
+							'member',
+							'organization',
+							'roles',
+							'type',
+							'id',
 						],
 					},
 					{
-						title: 'Instructor',
-						allOf: [
-							{
-								required: [
-									'type',
-									'dateCreated',
-									'dateModified',
-									'firstName',
-									'lastName',
-									'status',
-									'id',
-								],
-							},
-							{
-								title: 'Instructor',
-								$ref: '#/definitions/Instructor',
-							},
-						],
-					},
-					{
-						title: 'Student',
-						allOf: [
-							{
-								required: [
-									'type',
-									'gradeLevel',
-									'dateCreated',
-									'dateModified',
-									'firstName',
-									'lastName',
-									'status',
-									'id',
-								],
-							},
-							{
-								title: 'Student',
-								$ref: '#/definitions/Student',
-							},
-						],
+						title: 'Membership',
+						$ref: '#/definitions/Membership',
 					},
 				],
 			},
@@ -405,30 +355,22 @@ export const UserDeletedEventSchema = {
 				title: 'User',
 				type: 'object',
 				properties: {
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					firstName: {
-						type: 'string',
-					},
-					lastName: {
-						type: 'string',
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
 					type: {
 						type: 'string',
 						default: 'User',
 						enum: ['User'],
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					name: {
+						type: 'string',
+					},
+					firstName: {
+						type: 'string',
+					},
+					lastName: {
 						type: 'string',
 					},
 					id: {
@@ -437,6 +379,14 @@ export const UserDeletedEventSchema = {
 					},
 					description: {
 						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -477,6 +427,26 @@ export const UserDeletedEventSchema = {
 						type: 'object',
 						additionalProperties: true,
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					name: {
+						type: 'string',
+					},
+					firstName: {
+						type: 'string',
+					},
+					lastName: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
 					dateCreated: {
 						type: 'string',
 						format: 'date-time',
@@ -485,22 +455,99 @@ export const UserDeletedEventSchema = {
 						type: 'string',
 						format: 'date-time',
 					},
-					firstName: {
-						type: 'string',
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
 					},
-					lastName: {
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Membership: {
+				title: 'Membership',
+				type: 'object',
+				properties: {
+					dateCreated: {
 						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					member: {
+						required: ['id', 'type'],
+						oneOf: [
+							{
+								title: 'User',
+								$ref: '#/definitions/User',
+							},
+							{
+								title: 'Instructor',
+								$ref: '#/definitions/Instructor',
+							},
+							{
+								title: 'Student',
+								$ref: '#/definitions/Student',
+							},
+						],
+					},
+					organization: {
+						required: ['id', 'type'],
+						oneOf: [
+							{
+								title: 'Organization',
+								$ref: '#/definitions/Organization',
+							},
+							{
+								title: 'School',
+								$ref: '#/definitions/School',
+							},
+							{
+								title: 'Group',
+								$ref: '#/definitions/Group',
+							},
+							{
+								title: 'Class',
+								$ref: '#/definitions/Class',
+							},
+						],
+					},
+					roles: {
+						type: 'array',
+						items: {
+							title: 'Role',
+							$ref: '#/definitions/Role',
+						},
+					},
+					type: {
+						type: 'string',
+						default: 'Membership',
+						enum: ['Membership'],
 					},
 					status: {
 						title: 'Status',
 						$ref: '#/definitions/Status',
 					},
-					name: {
-						type: 'string',
-					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
 					},
 					description: {
 						type: 'string',
@@ -568,20 +615,6 @@ export const UserDeletedEventSchema = {
 							},
 						},
 					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					firstName: {
-						type: 'string',
-					},
-					lastName: {
-						type: 'string',
-					},
 					status: {
 						title: 'Status',
 						$ref: '#/definitions/Status',
@@ -589,64 +622,17 @@ export const UserDeletedEventSchema = {
 					name: {
 						type: 'string',
 					},
+					firstName: {
+						type: 'string',
+					},
+					lastName: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
 					},
 					description: {
-						type: 'string',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			CaliperProfile: {
-				type: 'string',
-				title: 'CaliperProfile',
-				enum: [
-					'GeneralProfile',
-					'AnnotationProfile',
-					'AssessmentProfile',
-					'AssignableProfile',
-					'FeedbackProfile',
-					'ForumProfile',
-					'GradingProfile',
-					'MediaProfile',
-					'ReadingProfile',
-					'ResourceManagementProfile',
-					'SearchProfile',
-					'SessionProfile',
-					'ToolLaunchProfile',
-					'ToolUseProfile',
-				],
-			},
-			Entity: {
-				title: 'Entity',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Entity',
-						enum: ['Entity'],
-					},
-					name: {
 						type: 'string',
 					},
 					dateCreated: {
@@ -656,13 +642,6 @@ export const UserDeletedEventSchema = {
 					dateModified: {
 						type: 'string',
 						format: 'date-time',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -689,93 +668,7 @@ export const UserDeletedEventSchema = {
 				title: 'Organization',
 				type: 'object',
 				properties: {
-					type: {
-						type: 'string',
-						default: 'Organization',
-						enum: ['Organization'],
-					},
 					subOrganizationOf: {
-						title: 'Organization',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Organization',
-								$ref: '#/definitions/Organization',
-							},
-						],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Membership: {
-				title: 'Membership',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Membership',
-						enum: ['Membership'],
-					},
-					member: {
-						required: ['id', 'type'],
-						oneOf: [
-							{
-								title: 'Person',
-								$ref: '#/definitions/Person',
-							},
-							{
-								title: 'User',
-								$ref: '#/definitions/User',
-							},
-							{
-								title: 'Instructor',
-								$ref: '#/definitions/Instructor',
-							},
-							{
-								title: 'Student',
-								$ref: '#/definitions/Student',
-							},
-						],
-					},
-					organization: {
 						required: ['id', 'type'],
 						oneOf: [
 							{
@@ -796,64 +689,10 @@ export const UserDeletedEventSchema = {
 							},
 						],
 					},
-					roles: {
-						type: 'array',
-						items: {
-							title: 'Role',
-							$ref: '#/definitions/Role',
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Person: {
-				title: 'Person',
-				type: 'object',
-				properties: {
 					type: {
 						type: 'string',
-						default: 'Person',
-						enum: ['Person'],
+						default: 'Organization',
+						enum: ['Organization'],
 					},
 					id: {
 						title: 'Uri',
@@ -898,6 +737,27 @@ export const UserDeletedEventSchema = {
 				title: 'School',
 				type: 'object',
 				properties: {
+					subOrganizationOf: {
+						required: ['id', 'type'],
+						oneOf: [
+							{
+								title: 'Organization',
+								$ref: '#/definitions/Organization',
+							},
+							{
+								title: 'School',
+								$ref: '#/definitions/School',
+							},
+							{
+								title: 'Group',
+								$ref: '#/definitions/Group',
+							},
+							{
+								title: 'Class',
+								$ref: '#/definitions/Class',
+							},
+						],
+					},
 					type: {
 						type: 'string',
 						default: 'School',
@@ -906,18 +766,6 @@ export const UserDeletedEventSchema = {
 					status: {
 						title: 'Status',
 						$ref: '#/definitions/Status',
-					},
-					subOrganizationOf: {
-						title: 'Organization',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Organization',
-								$ref: '#/definitions/Organization',
-							},
-						],
 					},
 					id: {
 						title: 'Uri',
@@ -962,22 +810,31 @@ export const UserDeletedEventSchema = {
 				title: 'Group',
 				type: 'object',
 				properties: {
-					type: {
-						type: 'string',
-						default: 'Group',
-						enum: ['Group'],
-					},
 					subOrganizationOf: {
-						title: 'Organization',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
+						required: ['id', 'type'],
+						oneOf: [
 							{
 								title: 'Organization',
 								$ref: '#/definitions/Organization',
 							},
+							{
+								title: 'School',
+								$ref: '#/definitions/School',
+							},
+							{
+								title: 'Group',
+								$ref: '#/definitions/Group',
+							},
+							{
+								title: 'Class',
+								$ref: '#/definitions/Class',
+							},
 						],
+					},
+					type: {
+						type: 'string',
+						default: 'Group',
+						enum: ['Group'],
 					},
 					id: {
 						title: 'Uri',
@@ -1022,6 +879,27 @@ export const UserDeletedEventSchema = {
 				title: 'Class',
 				type: 'object',
 				properties: {
+					subOrganizationOf: {
+						required: ['id', 'type'],
+						oneOf: [
+							{
+								title: 'Organization',
+								$ref: '#/definitions/Organization',
+							},
+							{
+								title: 'School',
+								$ref: '#/definitions/School',
+							},
+							{
+								title: 'Group',
+								$ref: '#/definitions/Group',
+							},
+							{
+								title: 'Class',
+								$ref: '#/definitions/Class',
+							},
+						],
+					},
 					type: {
 						type: 'string',
 						default: 'Class',
@@ -1030,18 +908,6 @@ export const UserDeletedEventSchema = {
 					status: {
 						title: 'Status',
 						$ref: '#/definitions/Status',
-					},
-					subOrganizationOf: {
-						title: 'Organization',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Organization',
-								$ref: '#/definitions/Organization',
-							},
-						],
 					},
 					id: {
 						title: 'Uri',
@@ -1146,6 +1012,74 @@ export const UserDeletedEventSchema = {
 					'Officer#Vice-Chair',
 				],
 			},
+			CaliperProfile: {
+				type: 'string',
+				title: 'CaliperProfile',
+				enum: [
+					'GeneralProfile',
+					'AnnotationProfile',
+					'AssessmentProfile',
+					'AssignableProfile',
+					'FeedbackProfile',
+					'ForumProfile',
+					'GradingProfile',
+					'MediaProfile',
+					'ReadingProfile',
+					'ResourceManagementProfile',
+					'SearchProfile',
+					'SessionProfile',
+					'ToolLaunchProfile',
+					'ToolUseProfile',
+				],
+			},
+			Entity: {
+				title: 'Entity',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Entity',
+						enum: ['Entity'],
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
 			LtiSession: {
 				title: 'LtiSession',
 				type: 'object',
@@ -1191,6 +1125,54 @@ export const UserDeletedEventSchema = {
 					duration: {
 						type: 'string',
 						pattern: '^P(?:\\d+Y)?(?:\\d+M)?(?:\\d+D)?T?(?:\\d+H)?(?:\\d+M)?(?:\\d+S)?',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Person: {
+				title: 'Person',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Person',
+						enum: ['Person'],
 					},
 					id: {
 						title: 'Uri',

@@ -18,6 +18,7 @@ import { LoginSuccessEventSchema } from './Events/LoginSuccessEvent';
 import { LogoutEventSchema } from './Events/LogoutEvent';
 import { MembershipCreatedEventSchema } from './Events/MembershipCreatedEvent';
 import { MembershipDeletedEventSchema } from './Events/MembershipDeletedEvent';
+import { MembershipUpdatedEventSchema } from './Events/MembershipUpdatedEvent';
 import { NavigationEventSchema } from './Events/NavigationEvent';
 import { OrganizationActivatedEventSchema } from './Events/OrganizationActivatedEvent';
 import { OrganizationCreatedEventSchema } from './Events/OrganizationCreatedEvent';
@@ -45,6 +46,7 @@ export const schemas = {
 	[LoginSuccessEventSchema.context]: LoginSuccessEventSchema.schema,
 	[LoginFailedEventSchema.context]: LoginFailedEventSchema.schema,
 	[MembershipCreatedEventSchema.context]: MembershipCreatedEventSchema.schema,
+	[MembershipUpdatedEventSchema.context]: MembershipUpdatedEventSchema.schema,
 	[MembershipDeletedEventSchema.context]: MembershipDeletedEventSchema.schema,
 	[NavigationEventSchema.context]: NavigationEventSchema.schema,
 	[OrganizationCreatedEventSchema.context]: OrganizationCreatedEventSchema.schema,

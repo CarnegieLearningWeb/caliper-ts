@@ -104,6 +104,7 @@ export * from './Events/LogoutEvent';
 export * from './Events/MediaEvent';
 export * from './Events/MembershipCreatedEvent';
 export * from './Events/MembershipDeletedEvent';
+export * from './Events/MembershipUpdatedEvent';
 export * from './Events/MessageEvent';
 export * from './Events/NavigationEvent';
 export * from './Events/OrganizationActivatedEvent';

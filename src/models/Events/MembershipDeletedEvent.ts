@@ -506,54 +506,23 @@ export const MembershipDeletedEventSchema = {
 						],
 					},
 					organization: {
+						required: ['id', 'type'],
 						oneOf: [
 							{
 								title: 'Organization',
-								allOf: [
-									{
-										required: ['type', 'id'],
-									},
-									{
-										title: 'Organization',
-										$ref: '#/definitions/Organization',
-									},
-								],
+								$ref: '#/definitions/Organization',
 							},
 							{
 								title: 'School',
-								allOf: [
-									{
-										required: ['type', 'id'],
-									},
-									{
-										title: 'School',
-										$ref: '#/definitions/School',
-									},
-								],
+								$ref: '#/definitions/School',
 							},
 							{
 								title: 'Group',
-								allOf: [
-									{
-										required: ['type', 'id'],
-									},
-									{
-										title: 'Group',
-										$ref: '#/definitions/Group',
-									},
-								],
+								$ref: '#/definitions/Group',
 							},
 							{
 								title: 'Class',
-								allOf: [
-									{
-										required: ['subOrganizationOf', 'type', 'id'],
-									},
-									{
-										title: 'Class',
-										$ref: '#/definitions/Class',
-									},
-								],
+								$ref: '#/definitions/Class',
 							},
 						],
 					},

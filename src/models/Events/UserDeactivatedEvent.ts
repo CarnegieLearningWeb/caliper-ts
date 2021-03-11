@@ -597,13 +597,6 @@ export const UserDeactivatedEventSchema = {
 					name: {
 						type: 'string',
 					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
 					dateCreated: {
 						type: 'string',
 						format: 'date-time',
@@ -611,6 +604,13 @@ export const UserDeactivatedEventSchema = {
 					dateModified: {
 						type: 'string',
 						format: 'date-time',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
 					},
 					otherIdentifiers: {
 						type: 'array',

@@ -69,13 +69,13 @@ export function createMembershipEventMembership(
 export interface MembershipEventOrganization extends Organization {
 	id: string;
 	name: string;
-	subOrganizationOf: Organization | School | Group | Class;
+	subOrganizationOf?: Organization | School | Group | Class;
 }
 
 export interface MembershipEventOrganizationParams {
 	id: string;
 	name: string;
-	subOrganizationOf: Organization | School | Group | Class;
+	subOrganizationOf?: Organization | School | Group | Class;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
@@ -95,13 +95,13 @@ export function createMembershipEventOrganization(
 export interface MembershipEventSchool extends School {
 	id: string;
 	name: string;
-	subOrganizationOf: Organization | School | Group | Class;
+	subOrganizationOf?: Organization | School | Group | Class;
 }
 
 export interface MembershipEventSchoolParams {
 	id: string;
 	name: string;
-	subOrganizationOf: Organization | School | Group | Class;
+	subOrganizationOf?: Organization | School | Group | Class;
 	status?: Status;
 	description?: string;
 	dateCreated?: string;
@@ -122,13 +122,13 @@ export function createMembershipEventSchool(
 export interface MembershipEventGroup extends Group {
 	id: string;
 	name: string;
-	subOrganizationOf: Organization | School | Group | Class;
+	subOrganizationOf?: Organization | School | Group | Class;
 }
 
 export interface MembershipEventGroupParams {
 	id: string;
 	name: string;
-	subOrganizationOf: Organization | School | Group | Class;
+	subOrganizationOf?: Organization | School | Group | Class;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
@@ -148,13 +148,13 @@ export function createMembershipEventGroup(
 export interface MembershipEventClass extends Class {
 	id: string;
 	name: string;
-	subOrganizationOf: School | Organization | Group | Class;
+	subOrganizationOf?: Organization | School | Group | Class;
 }
 
 export interface MembershipEventClassParams {
 	id: string;
 	name: string;
-	subOrganizationOf: School | Organization | Group | Class;
+	subOrganizationOf?: Organization | School | Group | Class;
 	status?: Status;
 	description?: string;
 	dateCreated?: string;
