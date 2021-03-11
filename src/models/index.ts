@@ -3,7 +3,6 @@
  * This file was automatically generated.
  */
 
-export { CaliperDuration, CaliperSettings, CaliperTimestamp, default as Caliper } from './caliper';
 export * from './Entities/Agent';
 export * from './Entities/Annotation';
 export * from './Entities/Assessment';

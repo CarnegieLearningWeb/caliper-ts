@@ -3,7 +3,7 @@
  * This file was automatically generated.
  */
 
-import Caliper, { CaliperSettings } from '../caliper';
+import Caliper, { CaliperSettings } from '../../caliper';
 import { IBookmarkAnnotation } from '../Entities/BookmarkAnnotation';
 import { IDigitalResource } from '../Entities/DigitalResource';
 import { IEntity } from '../Entities/Entity';
