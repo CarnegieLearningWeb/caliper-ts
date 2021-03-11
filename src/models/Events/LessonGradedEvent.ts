@@ -50,7 +50,7 @@ export function createLessonGradedEvent(
 		type: EventType.LessonEvent,
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as ISoftwareApplication,
+		edApp: Caliper.edApp(settings) as SoftwareApplication,
 		...params,
 	};
 }

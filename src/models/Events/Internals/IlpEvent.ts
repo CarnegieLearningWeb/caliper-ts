@@ -52,7 +52,7 @@ export function createIlpEvent(params: IlpEventParams, settings?: CaliperSetting
 		id: Caliper.uuid(),
 		action: CaliperAction.None,
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as ISoftwareApplication,
+		edApp: Caliper.edApp(settings) as SoftwareApplication,
 		...params,
 	};
 }

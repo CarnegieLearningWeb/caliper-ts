@@ -54,7 +54,7 @@ export function createNavigationEvent(
 		action: CaliperAction.NavigatedTo,
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as ISoftwareApplication,
+		edApp: Caliper.edApp(settings) as SoftwareApplication,
 		...params,
 	};
 }
@@ -216,6 +216,11 @@ export const NavigationEventSchema = {
 						title: 'Organization',
 						type: 'object',
 						properties: {
+							type: {
+								type: 'string',
+								default: 'Organization',
+								enum: ['Organization'],
+							},
 							subOrganizationOf: {
 								title: 'Organization',
 								allOf: [
@@ -227,11 +232,6 @@ export const NavigationEventSchema = {
 										$ref: '#/definitions/Organization',
 									},
 								],
-							},
-							type: {
-								type: 'string',
-								default: 'Organization',
-								enum: ['Organization'],
 							},
 							id: {
 								title: 'Uri',
@@ -566,6 +566,11 @@ export const NavigationEventSchema = {
 				title: 'Organization',
 				type: 'object',
 				properties: {
+					type: {
+						type: 'string',
+						default: 'Organization',
+						enum: ['Organization'],
+					},
 					subOrganizationOf: {
 						title: 'Organization',
 						allOf: [
@@ -577,11 +582,6 @@ export const NavigationEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
-					},
-					type: {
-						type: 'string',
-						default: 'Organization',
-						enum: ['Organization'],
 					},
 					id: {
 						title: 'Uri',

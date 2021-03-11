@@ -49,7 +49,7 @@ export function createMembershipCreatedEvent(
 		type: EventType.MembershipEvent,
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as ISoftwareApplication,
+		edApp: Caliper.edApp(settings) as SoftwareApplication,
 		...params,
 	};
 }

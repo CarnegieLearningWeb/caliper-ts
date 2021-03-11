@@ -52,7 +52,7 @@ export function createGroupDeletedEvent(
 		action: CaliperAction.Deleted,
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as ISoftwareApplication,
+		edApp: Caliper.edApp(settings) as SoftwareApplication,
 		...params,
 	};
 }

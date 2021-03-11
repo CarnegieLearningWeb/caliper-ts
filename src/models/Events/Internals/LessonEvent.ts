@@ -57,7 +57,7 @@ export function createLessonEvent(
 		id: Caliper.uuid(),
 		action: CaliperAction.None,
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as ISoftwareApplication,
+		edApp: Caliper.edApp(settings) as SoftwareApplication,
 		...params,
 	};
 }

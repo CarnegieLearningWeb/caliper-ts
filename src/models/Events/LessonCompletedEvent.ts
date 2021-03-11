@@ -9,6 +9,7 @@ import { LtiSession } from '../Entities/LtiSession';
 import { Membership } from '../Entities/Membership';
 import { Organization } from '../Entities/Organization';
 import { Session } from '../Entities/Session';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { Student } from '../Entities/Student';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
@@ -47,7 +48,7 @@ export function createLessonCompletedEvent(
 		type: EventType.LessonEvent,
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as ISoftwareApplication,
+		edApp: Caliper.edApp(settings) as SoftwareApplication,
 		...params,
 	};
 }

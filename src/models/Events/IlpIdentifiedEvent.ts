@@ -51,7 +51,7 @@ export function createIlpIdentifiedEvent(
 		type: EventType.IlpEvent,
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as ISoftwareApplication,
+		edApp: Caliper.edApp(settings) as SoftwareApplication,
 		...params,
 	};
 }

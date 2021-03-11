@@ -63,7 +63,7 @@ export function createEvent(params: EventParams, settings?: CaliperSettings): Ev
 		type: EventType.Event,
 		action: CaliperAction.None,
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as ISoftwareApplication,
+		edApp: Caliper.edApp(settings) as SoftwareApplication,
 		...params,
 	};
 }
