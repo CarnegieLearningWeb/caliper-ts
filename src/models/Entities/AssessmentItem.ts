@@ -3,17 +3,17 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IAssignableDigitalResource } from './AssignableDigitalResource';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { AssignableDigitalResource } from './AssignableDigitalResource';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 
-export interface IAssessmentItem extends IAssignableDigitalResource {
+export interface AssessmentItem extends AssignableDigitalResource {
 	id: string;
 	isTimeDependent?: boolean;
 }
 
-export interface IAssessmentItemParams {
+export interface AssessmentItemParams {
 	id: string;
 	isTimeDependent?: boolean;
 	dateToActivate?: string;
@@ -24,18 +24,18 @@ export interface IAssessmentItemParams {
 	maxSubmits?: number;
 	maxScore?: number;
 	mediaType?: string;
-	isPartOf?: IEntity;
+	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function AssessmentItem(params: IAssessmentItemParams): IAssessmentItem {
+export function createAssessmentItem(params: AssessmentItemParams): AssessmentItem {
 	return {
 		type: EntityType.AssessmentItem,
 		learningObjectives: [],

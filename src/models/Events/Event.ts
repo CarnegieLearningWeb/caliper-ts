@@ -4,59 +4,59 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IAgent } from '../Entities/Agent';
-import { IEntity } from '../Entities/Entity';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { IPerson } from '../Entities/Person';
-import { ISession } from '../Entities/Session';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
+import { Agent } from '../Entities/Agent';
+import { Entity } from '../Entities/Entity';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { Person } from '../Entities/Person';
+import { Session } from '../Entities/Session';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
 
-export interface IEvent {
-	actor: IAgent | IPerson | ISoftwareApplication | IOrganization;
-	object: IEntity;
+export interface Event {
+	actor: Agent | Person | SoftwareApplication | Organization;
+	object: Entity;
 	action: CaliperAction;
 	'@context': string[];
 	id: string;
 	type: EventType;
 	eventTime: string;
-	edApp: ISoftwareApplication;
+	edApp: SoftwareApplication;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export interface IEventParams {
-	actor: IAgent | IPerson | ISoftwareApplication | IOrganization;
-	object: IEntity;
+export interface EventParams {
+	actor: Agent | Person | SoftwareApplication | Organization;
+	object: Entity;
 	action?: CaliperAction;
 	'@context'?: string[];
 	id?: string;
 	type?: EventType;
 	eventTime?: string;
-	edApp?: ISoftwareApplication;
+	edApp?: SoftwareApplication;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function Event(params: IEventParams, settings?: CaliperSettings): IEvent {
+export function createEvent(params: EventParams, settings?: CaliperSettings): Event {
 	return {
 		'@context': ['http://purl.imsglobal.org/ctx/caliper/v1p2'],
 		id: Caliper.uuid(),

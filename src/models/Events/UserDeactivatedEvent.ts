@@ -4,43 +4,43 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IEntity } from '../Entities/Entity';
-import { IInstructor } from '../Entities/Instructor';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { ISession } from '../Entities/Session';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
-import { IStudent } from '../Entities/Student';
-import { IUser } from '../Entities/User';
+import { Entity } from '../Entities/Entity';
+import { Instructor } from '../Entities/Instructor';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { Session } from '../Entities/Session';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { Student } from '../Entities/Student';
+import { User } from '../Entities/User';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
-import { IEvent } from './Event';
+import { Event } from './Event';
 import { EventType } from './EventType';
 
-export interface IUserDeactivatedEvent extends IEvent {
-	actor: ISoftwareApplication | IUser | IInstructor;
-	object: IUser | IInstructor | IStudent;
+export interface UserDeactivatedEvent extends Event {
+	actor: SoftwareApplication | User | Instructor;
+	object: User | Instructor | Student;
 }
 
-export interface IUserDeactivatedEventParams {
-	actor: ISoftwareApplication | IUser | IInstructor;
-	object: IUser | IInstructor | IStudent;
+export interface UserDeactivatedEventParams {
+	actor: SoftwareApplication | User | Instructor;
+	object: User | Instructor | Student;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function UserDeactivatedEvent(
-	params: IUserDeactivatedEventParams,
+export function createUserDeactivatedEvent(
+	params: UserDeactivatedEventParams,
 	settings?: CaliperSettings
-): IUserDeactivatedEvent {
+): UserDeactivatedEvent {
 	return {
 		'@context': [
 			'http://edgenuity.com/events/user-deactivated/0-0-2',

@@ -3,25 +3,25 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 
-export interface IAgent extends IEntity {
+export interface Agent extends Entity {
 	id: string;
 }
 
-export interface IAgentParams {
+export interface AgentParams {
 	id: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Agent(params: IAgentParams): IAgent {
+export function createAgent(params: AgentParams): Agent {
 	return {
 		type: EntityType.Agent,
 		...params,

@@ -3,32 +3,32 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IDigitalResource } from './DigitalResource';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { DigitalResource } from './DigitalResource';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 
-export interface IFrame extends IDigitalResource {
+export interface Frame extends DigitalResource {
 	id: string;
 	index?: number;
 }
 
-export interface IFrameParams {
+export interface FrameParams {
 	id: string;
 	index?: number;
 	mediaType?: string;
-	isPartOf?: IEntity;
+	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Frame(params: IFrameParams): IFrame {
+export function createFrame(params: FrameParams): Frame {
 	return {
 		type: EntityType.Frame,
 		learningObjectives: [],

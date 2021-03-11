@@ -3,26 +3,26 @@
  * This file was automatically generated.
  */
 
-import { IAgent } from '../../Entities/Agent';
-import { IDistrict } from '../../Entities/District';
+import { Agent } from '../../Entities/Agent';
+import { District } from '../../Entities/District';
 import { EntityType } from '../../Entities/EntityType';
-import { IInstructor } from '../../Entities/Instructor';
-import { IOrganization } from '../../Entities/Organization';
-import { ISchool } from '../../Entities/School';
-import { ISoftwareApplication } from '../../Entities/SoftwareApplication';
+import { Instructor } from '../../Entities/Instructor';
+import { Organization } from '../../Entities/Organization';
+import { School } from '../../Entities/School';
+import { SoftwareApplication } from '../../Entities/SoftwareApplication';
 import { Status } from '../../Entities/Status';
-import { IUser } from '../../Entities/User';
-import { ISystemIdentifier } from '../../SystemIdentifier';
+import { User } from '../../Entities/User';
+import { SystemIdentifier } from '../../SystemIdentifier';
 import { CaliperAction } from '../CaliperAction';
-import { IEvent } from '../Event';
+import { Event } from '../Event';
 
-export interface IOrganizationEvent extends IEvent {
-	actor: IAgent | ISoftwareApplication | IUser | IInstructor;
-	object: IOrganizationEventOrganization | IOrganizationEventDistrict | IOrganizationEventSchool;
+export interface OrganizationEvent extends Event {
+	actor: Agent | SoftwareApplication | User | Instructor;
+	object: OrganizationEventOrganization | OrganizationEventDistrict | OrganizationEventSchool;
 	action: CaliperAction;
 }
 
-export interface IOrganizationEventOrganization extends IOrganization {
+export interface OrganizationEventOrganization extends Organization {
 	id: string;
 	dateCreated: string;
 	dateModified: string;
@@ -30,11 +30,11 @@ export interface IOrganizationEventOrganization extends IOrganization {
 	name: string;
 	state: string;
 	timezone: string;
-	subOrganizationOf?: IOrganization | IDistrict | ISchool;
-	otherIdentifiers?: ISystemIdentifier[];
+	subOrganizationOf?: Organization | District | School;
+	otherIdentifiers?: SystemIdentifier[];
 }
 
-export interface IOrganizationEventOrganizationParams {
+export interface OrganizationEventOrganizationParams {
 	id: string;
 	dateCreated: string;
 	dateModified: string;
@@ -42,22 +42,22 @@ export interface IOrganizationEventOrganizationParams {
 	name: string;
 	state: string;
 	timezone: string;
-	subOrganizationOf?: IOrganization | IDistrict | ISchool;
-	otherIdentifiers?: ISystemIdentifier[];
+	subOrganizationOf?: Organization | District | School;
+	otherIdentifiers?: SystemIdentifier[];
 	description?: string;
 	extensions?: Record<string, any>;
 }
 
-export function OrganizationEvent_Organization(
-	params: IOrganizationEventOrganizationParams
-): IOrganizationEventOrganization {
+export function createOrganizationEventOrganization(
+	params: OrganizationEventOrganizationParams
+): OrganizationEventOrganization {
 	return {
 		type: EntityType.Organization,
 		...params,
 	};
 }
 
-export interface IOrganizationEventDistrict extends IOrganizationEventOrganization {
+export interface OrganizationEventDistrict extends OrganizationEventOrganization {
 	id: string;
 	dateCreated: string;
 	dateModified: string;
@@ -65,11 +65,11 @@ export interface IOrganizationEventDistrict extends IOrganizationEventOrganizati
 	name: string;
 	state: string;
 	timezone: string;
-	subOrganizationOf?: IOrganization | IDistrict | ISchool;
-	otherIdentifiers?: ISystemIdentifier[];
+	subOrganizationOf?: Organization | District | School;
+	otherIdentifiers?: SystemIdentifier[];
 }
 
-export interface IOrganizationEventDistrictParams {
+export interface OrganizationEventDistrictParams {
 	id: string;
 	dateCreated: string;
 	dateModified: string;
@@ -77,22 +77,22 @@ export interface IOrganizationEventDistrictParams {
 	name: string;
 	state: string;
 	timezone: string;
-	subOrganizationOf?: IOrganization | IDistrict | ISchool;
-	otherIdentifiers?: ISystemIdentifier[];
+	subOrganizationOf?: Organization | District | School;
+	otherIdentifiers?: SystemIdentifier[];
 	description?: string;
 	extensions?: Record<string, any>;
 }
 
-export function OrganizationEvent_District(
-	params: IOrganizationEventDistrictParams
-): IOrganizationEventDistrict {
+export function createOrganizationEventDistrict(
+	params: OrganizationEventDistrictParams
+): OrganizationEventDistrict {
 	return {
 		type: EntityType.District,
 		...params,
 	};
 }
 
-export interface IOrganizationEventSchool extends IOrganizationEventOrganization {
+export interface OrganizationEventSchool extends OrganizationEventOrganization {
 	id: string;
 	dateCreated: string;
 	dateModified: string;
@@ -100,11 +100,11 @@ export interface IOrganizationEventSchool extends IOrganizationEventOrganization
 	name: string;
 	state: string;
 	timezone: string;
-	subOrganizationOf?: IOrganization | IDistrict | ISchool;
-	otherIdentifiers?: ISystemIdentifier[];
+	subOrganizationOf?: Organization | District | School;
+	otherIdentifiers?: SystemIdentifier[];
 }
 
-export interface IOrganizationEventSchoolParams {
+export interface OrganizationEventSchoolParams {
 	id: string;
 	dateCreated: string;
 	dateModified: string;
@@ -112,15 +112,15 @@ export interface IOrganizationEventSchoolParams {
 	name: string;
 	state: string;
 	timezone: string;
-	subOrganizationOf?: IOrganization | IDistrict | ISchool;
-	otherIdentifiers?: ISystemIdentifier[];
+	subOrganizationOf?: Organization | District | School;
+	otherIdentifiers?: SystemIdentifier[];
 	description?: string;
 	extensions?: Record<string, any>;
 }
 
-export function OrganizationEvent_School(
-	params: IOrganizationEventSchoolParams
-): IOrganizationEventSchool {
+export function createOrganizationEventSchool(
+	params: OrganizationEventSchoolParams
+): OrganizationEventSchool {
 	return {
 		type: EntityType.School,
 		...params,

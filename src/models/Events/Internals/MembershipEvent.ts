@@ -3,165 +3,169 @@
  * This file was automatically generated.
  */
 
-import { IAgent } from '../../Entities/Agent';
-import { IClass } from '../../Entities/Class';
+import { Agent } from '../../Entities/Agent';
+import { Class } from '../../Entities/Class';
 import { EntityType } from '../../Entities/EntityType';
-import { IGroup } from '../../Entities/Group';
-import { IInstructor } from '../../Entities/Instructor';
-import { IMembership } from '../../Entities/Membership';
-import { IOrganization } from '../../Entities/Organization';
+import { Group } from '../../Entities/Group';
+import { Instructor } from '../../Entities/Instructor';
+import { Membership } from '../../Entities/Membership';
+import { Organization } from '../../Entities/Organization';
 import { Role } from '../../Entities/Role';
-import { ISchool } from '../../Entities/School';
-import { ISoftwareApplication } from '../../Entities/SoftwareApplication';
+import { School } from '../../Entities/School';
+import { SoftwareApplication } from '../../Entities/SoftwareApplication';
 import { Status } from '../../Entities/Status';
-import { IStudent } from '../../Entities/Student';
-import { IUser } from '../../Entities/User';
-import { ISystemIdentifier } from '../../SystemIdentifier';
+import { Student } from '../../Entities/Student';
+import { User } from '../../Entities/User';
+import { SystemIdentifier } from '../../SystemIdentifier';
 import { CaliperAction } from '../CaliperAction';
-import { IEvent } from '../Event';
+import { Event } from '../Event';
 
-export interface IMembershipEvent extends IEvent {
-	actor: IAgent | ISoftwareApplication | IUser | IInstructor;
-	object: IMembershipEventMembership;
+export interface MembershipEvent extends Event {
+	actor: Agent | SoftwareApplication | User | Instructor;
+	object: MembershipEventMembership;
 	action: CaliperAction;
 }
 
-export interface IMembershipEventMembership extends IMembership {
+export interface MembershipEventMembership extends Membership {
 	id: string;
-	member: IUser | IInstructor | IStudent;
+	member: User | Instructor | Student;
 	organization:
-		| IMembershipEventOrganization
-		| IMembershipEventSchool
-		| IMembershipEventGroup
-		| IMembershipEventClass;
+		| MembershipEventOrganization
+		| MembershipEventSchool
+		| MembershipEventGroup
+		| MembershipEventClass;
 	dateCreated: string;
 	dateModified: string;
 	roles: Role[];
 }
 
-export interface IMembershipEventMembershipParams {
+export interface MembershipEventMembershipParams {
 	id: string;
-	member: IUser | IInstructor | IStudent;
+	member: User | Instructor | Student;
 	organization:
-		| IMembershipEventOrganization
-		| IMembershipEventSchool
-		| IMembershipEventGroup
-		| IMembershipEventClass;
+		| MembershipEventOrganization
+		| MembershipEventSchool
+		| MembershipEventGroup
+		| MembershipEventClass;
 	dateCreated: string;
 	dateModified: string;
 	roles: Role[];
 	status?: Status;
 	name?: string;
 	description?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function MembershipEvent_Membership(
-	params: IMembershipEventMembershipParams
-): IMembershipEventMembership {
+export function createMembershipEventMembership(
+	params: MembershipEventMembershipParams
+): MembershipEventMembership {
 	return {
 		type: EntityType.Membership,
 		...params,
 	};
 }
 
-export interface IMembershipEventOrganization extends IOrganization {
+export interface MembershipEventOrganization extends Organization {
 	id: string;
 	name: string;
-	subOrganizationOf: IOrganization | ISchool | IGroup | IClass;
+	subOrganizationOf: Organization | School | Group | Class;
 }
 
-export interface IMembershipEventOrganizationParams {
+export interface MembershipEventOrganizationParams {
 	id: string;
 	name: string;
-	subOrganizationOf: IOrganization | ISchool | IGroup | IClass;
+	subOrganizationOf: Organization | School | Group | Class;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function MembershipEvent_Organization(
-	params: IMembershipEventOrganizationParams
-): IMembershipEventOrganization {
+export function createMembershipEventOrganization(
+	params: MembershipEventOrganizationParams
+): MembershipEventOrganization {
 	return {
 		type: EntityType.Organization,
 		...params,
 	};
 }
 
-export interface IMembershipEventSchool extends ISchool {
+export interface MembershipEventSchool extends School {
 	id: string;
 	name: string;
-	subOrganizationOf: IOrganization | ISchool | IGroup | IClass;
+	subOrganizationOf: Organization | School | Group | Class;
 }
 
-export interface IMembershipEventSchoolParams {
+export interface MembershipEventSchoolParams {
 	id: string;
 	name: string;
-	subOrganizationOf: IOrganization | ISchool | IGroup | IClass;
+	subOrganizationOf: Organization | School | Group | Class;
 	status?: Status;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function MembershipEvent_School(
-	params: IMembershipEventSchoolParams
-): IMembershipEventSchool {
+export function createMembershipEventSchool(
+	params: MembershipEventSchoolParams
+): MembershipEventSchool {
 	return {
 		type: EntityType.School,
 		...params,
 	};
 }
 
-export interface IMembershipEventGroup extends IGroup {
+export interface MembershipEventGroup extends Group {
 	id: string;
 	name: string;
-	subOrganizationOf: IOrganization | ISchool | IGroup | IClass;
+	subOrganizationOf: Organization | School | Group | Class;
 }
 
-export interface IMembershipEventGroupParams {
+export interface MembershipEventGroupParams {
 	id: string;
 	name: string;
-	subOrganizationOf: IOrganization | ISchool | IGroup | IClass;
+	subOrganizationOf: Organization | School | Group | Class;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function MembershipEvent_Group(params: IMembershipEventGroupParams): IMembershipEventGroup {
+export function createMembershipEventGroup(
+	params: MembershipEventGroupParams
+): MembershipEventGroup {
 	return {
 		type: EntityType.Group,
 		...params,
 	};
 }
 
-export interface IMembershipEventClass extends IClass {
+export interface MembershipEventClass extends Class {
 	id: string;
 	name: string;
-	subOrganizationOf: ISchool | IOrganization | IGroup | IClass;
+	subOrganizationOf: School | Organization | Group | Class;
 }
 
-export interface IMembershipEventClassParams {
+export interface MembershipEventClassParams {
 	id: string;
 	name: string;
-	subOrganizationOf: ISchool | IOrganization | IGroup | IClass;
+	subOrganizationOf: School | Organization | Group | Class;
 	status?: Status;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function MembershipEvent_Class(params: IMembershipEventClassParams): IMembershipEventClass {
+export function createMembershipEventClass(
+	params: MembershipEventClassParams
+): MembershipEventClass {
 	return {
 		type: EntityType.Class,
 		...params,

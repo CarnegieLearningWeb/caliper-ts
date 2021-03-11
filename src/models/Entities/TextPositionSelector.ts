@@ -11,12 +11,14 @@ export interface TextPositionSelector extends Selector {
 	end: number;
 }
 
-export interface ITextPositionSelectorParams {
+export interface TextPositionSelectorParams {
 	start: number;
 	end: number;
 }
 
-export function TextPositionSelector(params: ITextPositionSelectorParams): TextPositionSelector {
+export function createTextPositionSelector(
+	params: TextPositionSelectorParams
+): TextPositionSelector {
 	return {
 		type: SelectorType.TextPositionSelector,
 		...params,

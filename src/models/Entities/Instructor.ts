@@ -3,18 +3,18 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
+import { SystemIdentifier } from '../SystemIdentifier';
 import { EntityType } from './EntityType';
 import { InstructorPermissions } from './InstructorPermissions';
 import { Status } from './Status';
-import { IUser } from './User';
+import { User } from './User';
 
-export interface IInstructor extends IUser {
+export interface Instructor extends User {
 	id: string;
 	permissions?: InstructorPermissions;
 }
 
-export interface IInstructorParams {
+export interface InstructorParams {
 	id: string;
 	permissions?: InstructorPermissions;
 	status?: Status;
@@ -24,11 +24,11 @@ export interface IInstructorParams {
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Instructor(params: IInstructorParams): IInstructor {
+export function createInstructor(params: InstructorParams): Instructor {
 	return {
 		type: EntityType.Instructor,
 		...params,

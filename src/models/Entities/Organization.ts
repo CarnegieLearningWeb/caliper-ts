@@ -3,27 +3,27 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IAgent } from './Agent';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Agent } from './Agent';
 import { EntityType } from './EntityType';
 
-export interface IOrganization extends IAgent {
+export interface Organization extends Agent {
 	id: string;
-	subOrganizationOf?: IOrganization;
+	subOrganizationOf?: Organization;
 }
 
-export interface IOrganizationParams {
+export interface OrganizationParams {
 	id: string;
-	subOrganizationOf?: IOrganization;
+	subOrganizationOf?: Organization;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Organization(params: IOrganizationParams): IOrganization {
+export function createOrganization(params: OrganizationParams): Organization {
 	return {
 		type: EntityType.Organization,
 		...params,

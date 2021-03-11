@@ -3,20 +3,20 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IAttempt } from './Attempt';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Attempt } from './Attempt';
 import { EntityType } from './EntityType';
-import { IResponse } from './Response';
+import { Response } from './Response';
 
-export interface IFillInBlankResponse extends IResponse {
+export interface FillInBlankResponse extends Response {
 	id: string;
 	values?: string[];
 }
 
-export interface IFillInBlankResponseParams {
+export interface FillInBlankResponseParams {
 	id: string;
 	values?: string[];
-	attempt?: IAttempt;
+	attempt?: Attempt;
 	startedAtTime?: string;
 	endedAtTime?: string;
 	duration?: string;
@@ -24,11 +24,11 @@ export interface IFillInBlankResponseParams {
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function FillInBlankResponse(params: IFillInBlankResponseParams): IFillInBlankResponse {
+export function createFillInBlankResponse(params: FillInBlankResponseParams): FillInBlankResponse {
 	return {
 		type: EntityType.FillinBlankResponse,
 		...params,

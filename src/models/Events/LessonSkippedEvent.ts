@@ -4,42 +4,42 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IEntity } from '../Entities/Entity';
-import { IInstructor } from '../Entities/Instructor';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { ISession } from '../Entities/Session';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
-import { IUser } from '../Entities/User';
+import { Entity } from '../Entities/Entity';
+import { Instructor } from '../Entities/Instructor';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { Session } from '../Entities/Session';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { User } from '../Entities/User';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
-import { ILessonEvent, ILessonEventLesson } from './Internals/LessonEvent';
+import { LessonEvent, LessonEventLesson } from './Internals/LessonEvent';
 
-export interface ILessonSkippedEvent extends ILessonEvent {
-	actor: ISoftwareApplication | IUser | IInstructor;
-	object: ILessonEventLesson;
+export interface LessonSkippedEvent extends LessonEvent {
+	actor: SoftwareApplication | User | Instructor;
+	object: LessonEventLesson;
 }
 
-export interface ILessonSkippedEventParams {
-	actor: ISoftwareApplication | IUser | IInstructor;
-	object: ILessonEventLesson;
+export interface LessonSkippedEventParams {
+	actor: SoftwareApplication | User | Instructor;
+	object: LessonEventLesson;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function LessonSkippedEvent(
-	params: ILessonSkippedEventParams,
+export function createLessonSkippedEvent(
+	params: LessonSkippedEventParams,
 	settings?: CaliperSettings
-): ILessonSkippedEvent {
+): LessonSkippedEvent {
 	return {
 		'@context': [
 			'http://edgenuity.com/events/lesson-skipped/0-0-2',

@@ -4,41 +4,40 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IEntity } from '../Entities/Entity';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { ISession } from '../Entities/Session';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
-import { IStudent } from '../Entities/Student';
+import { Entity } from '../Entities/Entity';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { Session } from '../Entities/Session';
+import { Student } from '../Entities/Student';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
-import { ILessonEvent, ILessonEventLesson } from './Internals/LessonEvent';
+import { LessonEvent, LessonEventLesson } from './Internals/LessonEvent';
 
-export interface ILessonCompletedEvent extends ILessonEvent {
-	actor: IStudent;
-	object: ILessonEventLesson;
+export interface LessonCompletedEvent extends LessonEvent {
+	actor: Student;
+	object: LessonEventLesson;
 }
 
-export interface ILessonCompletedEventParams {
-	actor: IStudent;
-	object: ILessonEventLesson;
+export interface LessonCompletedEventParams {
+	actor: Student;
+	object: LessonEventLesson;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function LessonCompletedEvent(
-	params: ILessonCompletedEventParams,
+export function createLessonCompletedEvent(
+	params: LessonCompletedEventParams,
 	settings?: CaliperSettings
-): ILessonCompletedEvent {
+): LessonCompletedEvent {
 	return {
 		'@context': [
 			'http://edgenuity.com/events/lesson-completed/0-0-2',

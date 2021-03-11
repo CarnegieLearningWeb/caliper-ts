@@ -3,20 +3,20 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IAssignableDigitalResource } from './AssignableDigitalResource';
-import { IDigitalResource } from './DigitalResource';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { AssignableDigitalResource } from './AssignableDigitalResource';
+import { DigitalResource } from './DigitalResource';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 
-export interface IAssessment extends IAssignableDigitalResource {
+export interface Assessment extends AssignableDigitalResource {
 	id: string;
-	items?: IDigitalResource[];
+	items?: DigitalResource[];
 }
 
-export interface IAssessmentParams {
+export interface AssessmentParams {
 	id: string;
-	items?: IDigitalResource[];
+	items?: DigitalResource[];
 	dateToActivate?: string;
 	dateToShow?: string;
 	dateToStartOn?: string;
@@ -25,18 +25,18 @@ export interface IAssessmentParams {
 	maxSubmits?: number;
 	maxScore?: number;
 	mediaType?: string;
-	isPartOf?: IEntity;
+	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Assessment(params: IAssessmentParams): IAssessment {
+export function createAssessment(params: AssessmentParams): Assessment {
 	return {
 		type: EntityType.Assessment,
 		learningObjectives: [],

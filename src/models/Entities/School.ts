@@ -3,29 +3,29 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
+import { SystemIdentifier } from '../SystemIdentifier';
 import { EntityType } from './EntityType';
-import { IOrganization } from './Organization';
+import { Organization } from './Organization';
 import { Status } from './Status';
 
-export interface ISchool extends IOrganization {
+export interface School extends Organization {
 	id: string;
 	status?: Status;
 }
 
-export interface ISchoolParams {
+export interface SchoolParams {
 	id: string;
 	status?: Status;
-	subOrganizationOf?: IOrganization;
+	subOrganizationOf?: Organization;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function School(params: ISchoolParams): ISchool {
+export function createSchool(params: SchoolParams): School {
 	return {
 		type: EntityType.School,
 		...params,

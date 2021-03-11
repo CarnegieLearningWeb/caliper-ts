@@ -3,24 +3,24 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
+import { SystemIdentifier } from '../SystemIdentifier';
 import { EntityType } from './EntityType';
-import { IInstructor } from './Instructor';
-import { IPerson } from './Person';
-import { ISession } from './Session';
-import { IStudent } from './Student';
-import { IUser } from './User';
+import { Instructor } from './Instructor';
+import { Person } from './Person';
+import { Session } from './Session';
+import { Student } from './Student';
+import { User } from './User';
 
-export interface ILtiSession extends ISession {
+export interface LtiSession extends Session {
 	id: string;
 	messageParameters?: Record<string, any>;
-	user?: IPerson | IUser | IInstructor | IStudent;
+	user?: Person | User | Instructor | Student;
 }
 
-export interface ILtiSessionParams {
+export interface LtiSessionParams {
 	id: string;
 	messageParameters?: Record<string, any>;
-	user?: IPerson | IUser | IInstructor | IStudent;
+	user?: Person | User | Instructor | Student;
 	startedAtTime?: string;
 	endedAtTime?: string;
 	duration?: string;
@@ -28,11 +28,11 @@ export interface ILtiSessionParams {
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function LtiSession(params: ILtiSessionParams): ILtiSession {
+export function createLtiSession(params: LtiSessionParams): LtiSession {
 	return {
 		type: EntityType.LtiSession,
 		...params,

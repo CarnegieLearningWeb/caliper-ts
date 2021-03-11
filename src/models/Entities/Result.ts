@@ -3,37 +3,37 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IAgent } from './Agent';
-import { IAttempt } from './Attempt';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Agent } from './Agent';
+import { Attempt } from './Attempt';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 
-export interface IResult extends IEntity {
+export interface Result extends Entity {
 	id: string;
-	attempt?: IAttempt;
+	attempt?: Attempt;
 	maxResultScore?: number;
 	resultScore?: number;
 	comment?: string;
-	scoredBy?: IAgent;
+	scoredBy?: Agent;
 }
 
-export interface IResultParams {
+export interface ResultParams {
 	id: string;
-	attempt?: IAttempt;
+	attempt?: Attempt;
 	maxResultScore?: number;
 	resultScore?: number;
 	comment?: string;
-	scoredBy?: IAgent;
+	scoredBy?: Agent;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Result(params: IResultParams): IResult {
+export function createResult(params: ResultParams): Result {
 	return {
 		type: EntityType.Result,
 		resultScore: 0,

@@ -4,47 +4,47 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IEntity } from '../Entities/Entity';
-import { IInstructor } from '../Entities/Instructor';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { ISession } from '../Entities/Session';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
-import { IUser } from '../Entities/User';
+import { Entity } from '../Entities/Entity';
+import { Instructor } from '../Entities/Instructor';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { Session } from '../Entities/Session';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { User } from '../Entities/User';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
 import {
-	IUserEvent,
-	IUserEventInstructor,
-	IUserEventStudent,
-	IUserEventUser,
+	UserEvent,
+	UserEventInstructor,
+	UserEventStudent,
+	UserEventUser,
 } from './Internals/UserEvent';
 
-export interface IUserCreatedEvent extends IUserEvent {
-	actor: ISoftwareApplication | IUser | IInstructor;
-	object: IUserEventUser | IUserEventInstructor | IUserEventStudent;
+export interface UserCreatedEvent extends UserEvent {
+	actor: SoftwareApplication | User | Instructor;
+	object: UserEventUser | UserEventInstructor | UserEventStudent;
 }
 
-export interface IUserCreatedEventParams {
-	actor: ISoftwareApplication | IUser | IInstructor;
-	object: IUserEventUser | IUserEventInstructor | IUserEventStudent;
+export interface UserCreatedEventParams {
+	actor: SoftwareApplication | User | Instructor;
+	object: UserEventUser | UserEventInstructor | UserEventStudent;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function UserCreatedEvent(
-	params: IUserCreatedEventParams,
+export function createUserCreatedEvent(
+	params: UserCreatedEventParams,
 	settings?: CaliperSettings
-): IUserCreatedEvent {
+): UserCreatedEvent {
 	return {
 		'@context': [
 			'http://edgenuity.com/events/user-created/0-0-2',
@@ -649,13 +649,6 @@ export const UserCreatedEventSchema = {
 					name: {
 						type: 'string',
 					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
 					dateCreated: {
 						type: 'string',
 						format: 'date-time',
@@ -663,6 +656,13 @@ export const UserCreatedEventSchema = {
 					dateModified: {
 						type: 'string',
 						format: 'date-time',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
 					},
 					otherIdentifiers: {
 						type: 'array',

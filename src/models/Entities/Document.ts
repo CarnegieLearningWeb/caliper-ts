@@ -3,30 +3,30 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IDigitalResource } from './DigitalResource';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { DigitalResource } from './DigitalResource';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 
-export interface IDocument extends IDigitalResource {
+export interface Document extends DigitalResource {
 	id: string;
 }
 
-export interface IDocumentParams {
+export interface DocumentParams {
 	id: string;
 	mediaType?: string;
-	isPartOf?: IEntity;
+	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Document(params: IDocumentParams): IDocument {
+export function createDocument(params: DocumentParams): Document {
 	return {
 		type: EntityType.Document,
 		learningObjectives: [],

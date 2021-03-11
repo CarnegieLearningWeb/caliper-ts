@@ -3,30 +3,30 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
+import { SystemIdentifier } from '../SystemIdentifier';
 import { EntityType } from './EntityType';
-import { IGroup } from './Group';
-import { IOrganization } from './Organization';
+import { Group } from './Group';
+import { Organization } from './Organization';
 import { Status } from './Status';
 
-export interface IClass extends IGroup {
+export interface Class extends Group {
 	id: string;
 	status?: Status;
 }
 
-export interface IClassParams {
+export interface ClassParams {
 	id: string;
 	status?: Status;
-	subOrganizationOf?: IOrganization;
+	subOrganizationOf?: Organization;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Class(params: IClassParams): IClass {
+export function createClass(params: ClassParams): Class {
 	return {
 		type: EntityType.Class,
 		...params,

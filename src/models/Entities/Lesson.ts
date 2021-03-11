@@ -3,23 +3,23 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IAssignableDigitalResource } from './AssignableDigitalResource';
-import { IDomain } from './Domain';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { AssignableDigitalResource } from './AssignableDigitalResource';
+import { Domain } from './Domain';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 
-export interface ILesson extends IAssignableDigitalResource {
+export interface Lesson extends AssignableDigitalResource {
 	id: string;
-	domain?: IDomain;
+	domain?: Domain;
 	gradeLevel?: number;
 	domainOrder?: number;
 	lessonOrder?: number;
 }
 
-export interface ILessonParams {
+export interface LessonParams {
 	id: string;
-	domain?: IDomain;
+	domain?: Domain;
 	gradeLevel?: number;
 	domainOrder?: number;
 	lessonOrder?: number;
@@ -31,18 +31,18 @@ export interface ILessonParams {
 	maxSubmits?: number;
 	maxScore?: number;
 	mediaType?: string;
-	isPartOf?: IEntity;
+	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Lesson(params: ILessonParams): ILesson {
+export function createLesson(params: LessonParams): Lesson {
 	return {
 		type: EntityType.Lesson,
 		learningObjectives: [],

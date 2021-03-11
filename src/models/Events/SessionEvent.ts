@@ -4,47 +4,47 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IAgent } from '../Entities/Agent';
-import { IDigitalResource } from '../Entities/DigitalResource';
-import { IEntity } from '../Entities/Entity';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { IPerson } from '../Entities/Person';
-import { ISession } from '../Entities/Session';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
+import { Agent } from '../Entities/Agent';
+import { DigitalResource } from '../Entities/DigitalResource';
+import { Entity } from '../Entities/Entity';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { Person } from '../Entities/Person';
+import { Session } from '../Entities/Session';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
-import { IEvent } from './Event';
+import { Event } from './Event';
 import { EventType } from './EventType';
 
-export interface ISessionEvent extends IEvent {
-	actor: IAgent | IPerson | ISoftwareApplication;
-	object: ISoftwareApplication | ISession;
+export interface SessionEvent extends Event {
+	actor: Agent | Person | SoftwareApplication;
+	object: SoftwareApplication | Session;
 	action: CaliperAction;
-	target?: IDigitalResource;
-	referrer?: IDigitalResource | ISoftwareApplication;
+	target?: DigitalResource;
+	referrer?: DigitalResource | SoftwareApplication;
 }
 
-export interface ISessionEventParams {
-	actor: IAgent | IPerson | ISoftwareApplication;
-	object: ISoftwareApplication | ISession;
+export interface SessionEventParams {
+	actor: Agent | Person | SoftwareApplication;
+	object: SoftwareApplication | Session;
 	action?: CaliperAction;
-	target?: IDigitalResource;
-	referrer?: IDigitalResource | ISoftwareApplication;
+	target?: DigitalResource;
+	referrer?: DigitalResource | SoftwareApplication;
 	profile?: CaliperProfile;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
 	extensions?: Record<string, any>;
 }
 
-export function SessionEvent(
-	params: ISessionEventParams,
+export function createSessionEvent(
+	params: SessionEventParams,
 	settings?: CaliperSettings
-): ISessionEvent {
+): SessionEvent {
 	return {
 		type: EventType.SessionEvent,
 		action: CaliperAction.None,

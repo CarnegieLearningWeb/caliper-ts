@@ -3,31 +3,31 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IAnnotation } from './Annotation';
-import { IDigitalResource } from './DigitalResource';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Annotation } from './Annotation';
+import { DigitalResource } from './DigitalResource';
 import { EntityType } from './EntityType';
-import { IPerson } from './Person';
+import { Person } from './Person';
 
-export interface ITagAnnotation extends IAnnotation {
+export interface TagAnnotation extends Annotation {
 	id: string;
 	tags?: string[];
 }
 
-export interface ITagAnnotationParams {
+export interface TagAnnotationParams {
 	id: string;
 	tags?: string[];
-	annotator?: IPerson;
-	annotated?: IDigitalResource;
+	annotator?: Person;
+	annotated?: DigitalResource;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function TagAnnotation(params: ITagAnnotationParams): ITagAnnotation {
+export function createTagAnnotation(params: TagAnnotationParams): TagAnnotation {
 	return {
 		type: EntityType.TagAnnotation,
 		tags: [],

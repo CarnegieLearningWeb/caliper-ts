@@ -3,20 +3,20 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IAttempt } from './Attempt';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Attempt } from './Attempt';
 import { EntityType } from './EntityType';
-import { IResponse } from './Response';
+import { Response } from './Response';
 
-export interface IMultipleChoiceResponse extends IResponse {
+export interface MultipleChoiceResponse extends Response {
 	id: string;
 	value?: string;
 }
 
-export interface IMultipleChoiceResponseParams {
+export interface MultipleChoiceResponseParams {
 	id: string;
 	value?: string;
-	attempt?: IAttempt;
+	attempt?: Attempt;
 	startedAtTime?: string;
 	endedAtTime?: string;
 	duration?: string;
@@ -24,13 +24,13 @@ export interface IMultipleChoiceResponseParams {
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function MultipleChoiceResponse(
-	params: IMultipleChoiceResponseParams
-): IMultipleChoiceResponse {
+export function createMultipleChoiceResponse(
+	params: MultipleChoiceResponseParams
+): MultipleChoiceResponse {
 	return {
 		type: EntityType.MultipleChoiceResponse,
 		...params,

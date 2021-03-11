@@ -3,31 +3,31 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IAnnotation } from './Annotation';
-import { IDigitalResource } from './DigitalResource';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Annotation } from './Annotation';
+import { DigitalResource } from './DigitalResource';
 import { EntityType } from './EntityType';
-import { IPerson } from './Person';
+import { Person } from './Person';
 
-export interface IBookmarkAnnotation extends IAnnotation {
+export interface BookmarkAnnotation extends Annotation {
 	id: string;
 	bookmarkNotes?: string;
 }
 
-export interface IBookmarkAnnotationParams {
+export interface BookmarkAnnotationParams {
 	id: string;
 	bookmarkNotes?: string;
-	annotator?: IPerson;
-	annotated?: IDigitalResource;
+	annotator?: Person;
+	annotated?: DigitalResource;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function BookmarkAnnotation(params: IBookmarkAnnotationParams): IBookmarkAnnotation {
+export function createBookmarkAnnotation(params: BookmarkAnnotationParams): BookmarkAnnotation {
 	return {
 		type: EntityType.BookmarkAnnotation,
 		...params,

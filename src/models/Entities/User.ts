@@ -3,19 +3,19 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
+import { SystemIdentifier } from '../SystemIdentifier';
 import { EntityType } from './EntityType';
-import { IPerson } from './Person';
+import { Person } from './Person';
 import { Status } from './Status';
 
-export interface IUser extends IPerson {
+export interface User extends Person {
 	id: string;
 	status?: Status;
 	firstName?: string;
 	lastName?: string;
 }
 
-export interface IUserParams {
+export interface UserParams {
 	id: string;
 	status?: Status;
 	firstName?: string;
@@ -24,11 +24,11 @@ export interface IUserParams {
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function User(params: IUserParams): IUser {
+export function createUser(params: UserParams): User {
 	return {
 		type: EntityType.User,
 		...params,

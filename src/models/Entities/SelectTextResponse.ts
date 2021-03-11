@@ -3,20 +3,20 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IAttempt } from './Attempt';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Attempt } from './Attempt';
 import { EntityType } from './EntityType';
-import { IResponse } from './Response';
+import { Response } from './Response';
 
-export interface ISelectTextResponse extends IResponse {
+export interface SelectTextResponse extends Response {
 	id: string;
 	values?: string[];
 }
 
-export interface ISelectTextResponseParams {
+export interface SelectTextResponseParams {
 	id: string;
 	values?: string[];
-	attempt?: IAttempt;
+	attempt?: Attempt;
 	startedAtTime?: string;
 	endedAtTime?: string;
 	duration?: string;
@@ -24,11 +24,11 @@ export interface ISelectTextResponseParams {
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function SelectTextResponse(params: ISelectTextResponseParams): ISelectTextResponse {
+export function createSelectTextResponse(params: SelectTextResponseParams): SelectTextResponse {
 	return {
 		type: EntityType.SelectTextResponse,
 		...params,

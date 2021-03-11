@@ -4,48 +4,48 @@
  */
 
 import Caliper, { CaliperSettings } from '../../../caliper';
-import { IAgent } from '../../Entities/Agent';
-import { IDomain } from '../../Entities/Domain';
-import { IEntity } from '../../Entities/Entity';
+import { Agent } from '../../Entities/Agent';
+import { Domain } from '../../Entities/Domain';
+import { Entity } from '../../Entities/Entity';
 import { EntityType } from '../../Entities/EntityType';
-import { IIndividualizedLearningPath } from '../../Entities/IndividualizedLearningPath';
-import { IInstructor } from '../../Entities/Instructor';
-import { ILesson } from '../../Entities/Lesson';
-import { ILtiSession } from '../../Entities/LtiSession';
-import { IMembership } from '../../Entities/Membership';
-import { IOrganization } from '../../Entities/Organization';
-import { ISession } from '../../Entities/Session';
-import { ISoftwareApplication } from '../../Entities/SoftwareApplication';
-import { IStudent } from '../../Entities/Student';
-import { IUser } from '../../Entities/User';
-import { ISystemIdentifier } from '../../SystemIdentifier';
+import { IndividualizedLearningPath } from '../../Entities/IndividualizedLearningPath';
+import { Instructor } from '../../Entities/Instructor';
+import { Lesson } from '../../Entities/Lesson';
+import { LtiSession } from '../../Entities/LtiSession';
+import { Membership } from '../../Entities/Membership';
+import { Organization } from '../../Entities/Organization';
+import { Session } from '../../Entities/Session';
+import { SoftwareApplication } from '../../Entities/SoftwareApplication';
+import { Student } from '../../Entities/Student';
+import { User } from '../../Entities/User';
+import { SystemIdentifier } from '../../SystemIdentifier';
 import { CaliperAction } from '../CaliperAction';
 import { CaliperProfile } from '../CaliperProfile';
-import { IEvent } from '../Event';
+import { Event } from '../Event';
 import { EventType } from '../EventType';
 
-export interface IIlpEvent extends IEvent {
-	actor: IAgent | ISoftwareApplication | IUser | IInstructor | IStudent;
-	object: IIlpEventIndividualizedLearningPath;
+export interface IlpEvent extends Event {
+	actor: Agent | SoftwareApplication | User | Instructor | Student;
+	object: IlpEventIndividualizedLearningPath;
 	action: CaliperAction;
 }
 
-export interface IIlpEventParams {
-	actor: IAgent | ISoftwareApplication | IUser | IInstructor | IStudent;
-	object: IIlpEventIndividualizedLearningPath;
+export interface IlpEventParams {
+	actor: Agent | SoftwareApplication | User | Instructor | Student;
+	object: IlpEventIndividualizedLearningPath;
 	action?: CaliperAction;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function IlpEvent(params: IIlpEventParams, settings?: CaliperSettings): IIlpEvent {
+export function createIlpEvent(params: IlpEventParams, settings?: CaliperSettings): IlpEvent {
 	return {
 		type: EventType.IlpEvent,
 		'@context': ['http://purl.imsglobal.org/ctx/caliper/v1p2'],
@@ -57,55 +57,55 @@ export function IlpEvent(params: IIlpEventParams, settings?: CaliperSettings): I
 	};
 }
 
-export interface IIlpEventIndividualizedLearningPath extends IIndividualizedLearningPath {
+export interface IlpEventIndividualizedLearningPath extends IndividualizedLearningPath {
 	id: string;
-	student: IStudent;
+	student: Student;
 	subject: string;
 	state: string;
 	highestGradeLevel: number;
 	lowestPlacementGrade: number;
-	lessons: IIlpEventLesson[];
+	lessons: IlpEventLesson[];
 }
 
-export interface IIlpEventIndividualizedLearningPathParams {
+export interface IlpEventIndividualizedLearningPathParams {
 	id: string;
-	student: IStudent;
+	student: Student;
 	subject: string;
 	state: string;
 	highestGradeLevel: number;
 	lowestPlacementGrade: number;
-	lessons: IIlpEventLesson[];
+	lessons: IlpEventLesson[];
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function IlpEvent_IndividualizedLearningPath(
-	params: IIlpEventIndividualizedLearningPathParams
-): IIlpEventIndividualizedLearningPath {
+export function createIlpEventIndividualizedLearningPath(
+	params: IlpEventIndividualizedLearningPathParams
+): IlpEventIndividualizedLearningPath {
 	return {
 		type: EntityType.ILP,
 		...params,
 	};
 }
 
-export interface IIlpEventLesson extends ILesson {
+export interface IlpEventLesson extends Lesson {
 	id: string;
 	gradeLevel: number;
 	domainOrder: number;
 	lessonOrder: number;
-	domain: IDomain;
+	domain: Domain;
 }
 
-export interface IIlpEventLessonParams {
+export interface IlpEventLessonParams {
 	id: string;
 	gradeLevel: number;
 	domainOrder: number;
 	lessonOrder: number;
-	domain: IDomain;
+	domain: Domain;
 	dateToActivate?: string;
 	dateToShow?: string;
 	dateToStartOn?: string;
@@ -114,18 +114,18 @@ export interface IIlpEventLessonParams {
 	maxSubmits?: number;
 	maxScore?: number;
 	mediaType?: string;
-	isPartOf?: IEntity;
+	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function IlpEvent_Lesson(params: IIlpEventLessonParams): IIlpEventLesson {
+export function createIlpEventLesson(params: IlpEventLessonParams): IlpEventLesson {
 	return {
 		type: EntityType.Lesson,
 		learningObjectives: [],

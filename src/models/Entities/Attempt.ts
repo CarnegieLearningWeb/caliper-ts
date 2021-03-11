@@ -3,44 +3,44 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IDigitalResource } from './DigitalResource';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { DigitalResource } from './DigitalResource';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
-import { IInstructor } from './Instructor';
-import { IPerson } from './Person';
-import { IStudent } from './Student';
-import { IUser } from './User';
+import { Instructor } from './Instructor';
+import { Person } from './Person';
+import { Student } from './Student';
+import { User } from './User';
 
-export interface IAttempt extends IEntity {
+export interface Attempt extends Entity {
 	id: string;
-	assignable?: IDigitalResource;
-	assignee?: IPerson | IUser | IInstructor | IStudent;
+	assignable?: DigitalResource;
+	assignee?: Person | User | Instructor | Student;
 	count?: number;
 	startedAtTime?: string;
 	endedAtTime?: string;
 	duration?: string;
-	isPartOf?: IAttempt;
+	isPartOf?: Attempt;
 }
 
-export interface IAttemptParams {
+export interface AttemptParams {
 	id: string;
-	assignable?: IDigitalResource;
-	assignee?: IPerson | IUser | IInstructor | IStudent;
+	assignable?: DigitalResource;
+	assignee?: Person | User | Instructor | Student;
 	count?: number;
 	startedAtTime?: string;
 	endedAtTime?: string;
 	duration?: string;
-	isPartOf?: IAttempt;
+	isPartOf?: Attempt;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Attempt(params: IAttemptParams): IAttempt {
+export function createAttempt(params: AttemptParams): Attempt {
 	return {
 		type: EntityType.Attempt,
 		...params,

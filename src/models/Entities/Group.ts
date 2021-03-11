@@ -3,26 +3,26 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
+import { SystemIdentifier } from '../SystemIdentifier';
 import { EntityType } from './EntityType';
-import { IOrganization } from './Organization';
+import { Organization } from './Organization';
 
-export interface IGroup extends IOrganization {
+export interface Group extends Organization {
 	id: string;
 }
 
-export interface IGroupParams {
+export interface GroupParams {
 	id: string;
-	subOrganizationOf?: IOrganization;
+	subOrganizationOf?: Organization;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Group(params: IGroupParams): IGroup {
+export function createGroup(params: GroupParams): Group {
 	return {
 		type: EntityType.Group,
 		...params,

@@ -4,49 +4,49 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IBookmarkAnnotation } from '../Entities/BookmarkAnnotation';
-import { IDigitalResource } from '../Entities/DigitalResource';
-import { IEntity } from '../Entities/Entity';
-import { IHighlightAnnotation } from '../Entities/HighlightAnnotation';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { IPerson } from '../Entities/Person';
-import { ISession } from '../Entities/Session';
-import { ISharedAnnotation } from '../Entities/SharedAnnotation';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
-import { ITagAnnotation } from '../Entities/TagAnnotation';
+import { BookmarkAnnotation } from '../Entities/BookmarkAnnotation';
+import { DigitalResource } from '../Entities/DigitalResource';
+import { Entity } from '../Entities/Entity';
+import { HighlightAnnotation } from '../Entities/HighlightAnnotation';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { Person } from '../Entities/Person';
+import { Session } from '../Entities/Session';
+import { SharedAnnotation } from '../Entities/SharedAnnotation';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { TagAnnotation } from '../Entities/TagAnnotation';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
-import { IEvent } from './Event';
+import { Event } from './Event';
 import { EventType } from './EventType';
 
-export interface IAnnotationEvent extends IEvent {
-	actor: IPerson | ISoftwareApplication | IOrganization;
-	object: IDigitalResource;
-	generated: IBookmarkAnnotation | IHighlightAnnotation | ISharedAnnotation | ITagAnnotation;
+export interface AnnotationEvent extends Event {
+	actor: Person | SoftwareApplication | Organization;
+	object: DigitalResource;
+	generated: BookmarkAnnotation | HighlightAnnotation | SharedAnnotation | TagAnnotation;
 	action: CaliperAction;
 }
 
-export interface IAnnotationEventParams {
-	actor: IPerson | ISoftwareApplication | IOrganization;
-	object: IDigitalResource;
-	generated: IBookmarkAnnotation | IHighlightAnnotation | ISharedAnnotation | ITagAnnotation;
+export interface AnnotationEventParams {
+	actor: Person | SoftwareApplication | Organization;
+	object: DigitalResource;
+	generated: BookmarkAnnotation | HighlightAnnotation | SharedAnnotation | TagAnnotation;
 	action?: CaliperAction;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function AnnotationEvent(
-	params: IAnnotationEventParams,
+export function createAnnotationEvent(
+	params: AnnotationEventParams,
 	settings?: CaliperSettings
-): IAnnotationEvent {
+): AnnotationEvent {
 	return {
 		type: EventType.AnnotationEvent,
 		action: CaliperAction.None,

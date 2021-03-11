@@ -3,30 +3,30 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IDigitalResource } from './DigitalResource';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { DigitalResource } from './DigitalResource';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 
-export interface IPage extends IDigitalResource {
+export interface Page extends DigitalResource {
 	id: string;
 }
 
-export interface IPageParams {
+export interface PageParams {
 	id: string;
 	mediaType?: string;
-	isPartOf?: IEntity;
+	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Page(params: IPageParams): IPage {
+export function createPage(params: PageParams): Page {
 	return {
 		type: EntityType.Page,
 		learningObjectives: [],

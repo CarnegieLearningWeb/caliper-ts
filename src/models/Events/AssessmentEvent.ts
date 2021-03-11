@@ -4,46 +4,46 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IAssessment } from '../Entities/Assessment';
-import { IAttempt } from '../Entities/Attempt';
-import { IEntity } from '../Entities/Entity';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { IPerson } from '../Entities/Person';
-import { ISession } from '../Entities/Session';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
+import { Assessment } from '../Entities/Assessment';
+import { Attempt } from '../Entities/Attempt';
+import { Entity } from '../Entities/Entity';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { Person } from '../Entities/Person';
+import { Session } from '../Entities/Session';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
-import { IEvent } from './Event';
+import { Event } from './Event';
 import { EventType } from './EventType';
 
-export interface IAssessmentEvent extends IEvent {
-	actor: IPerson | ISoftwareApplication | IOrganization;
-	object: IAssessment;
+export interface AssessmentEvent extends Event {
+	actor: Person | SoftwareApplication | Organization;
+	object: Assessment;
 	action: CaliperAction;
-	generated: IAttempt;
+	generated: Attempt;
 }
 
-export interface IAssessmentEventParams {
-	actor: IPerson | ISoftwareApplication | IOrganization;
-	object: IAssessment;
+export interface AssessmentEventParams {
+	actor: Person | SoftwareApplication | Organization;
+	object: Assessment;
 	action?: CaliperAction;
-	generated: IAttempt;
+	generated: Attempt;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function AssessmentEvent(
-	params: IAssessmentEventParams,
+export function createAssessmentEvent(
+	params: AssessmentEventParams,
 	settings?: CaliperSettings
-): IAssessmentEvent {
+): AssessmentEvent {
 	return {
 		type: EventType.AssessmentEvent,
 		action: CaliperAction.None,

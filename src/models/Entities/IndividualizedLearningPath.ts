@@ -3,41 +3,41 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
-import { ILesson } from './Lesson';
-import { IStudent } from './Student';
+import { Lesson } from './Lesson';
+import { Student } from './Student';
 
-export interface IIndividualizedLearningPath extends IEntity {
+export interface IndividualizedLearningPath extends Entity {
 	id: string;
 	state?: string;
-	student?: IStudent;
+	student?: Student;
 	subject?: string;
 	highestGradeLevel?: number;
 	lowestPlacementGrade?: number;
-	lessons?: ILesson[];
+	lessons?: Lesson[];
 }
 
-export interface IIndividualizedLearningPathParams {
+export interface IndividualizedLearningPathParams {
 	id: string;
 	state?: string;
-	student?: IStudent;
+	student?: Student;
 	subject?: string;
 	highestGradeLevel?: number;
 	lowestPlacementGrade?: number;
-	lessons?: ILesson[];
+	lessons?: Lesson[];
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function IndividualizedLearningPath(
-	params: IIndividualizedLearningPathParams
-): IIndividualizedLearningPath {
+export function createIndividualizedLearningPath(
+	params: IndividualizedLearningPathParams
+): IndividualizedLearningPath {
 	return {
 		type: EntityType.ILP,
 		...params,

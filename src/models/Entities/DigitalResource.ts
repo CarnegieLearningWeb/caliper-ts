@@ -3,41 +3,41 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IAgent } from './Agent';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Agent } from './Agent';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
-import { ILearningObjective } from './LearningObjective';
+import { LearningObjective } from './LearningObjective';
 
-export interface IDigitalResource extends IEntity {
+export interface DigitalResource extends Entity {
 	id: string;
-	learningObjectives?: ILearningObjective[];
+	learningObjectives?: LearningObjective[];
 	keywords?: string[];
-	creators?: IAgent[];
+	creators?: Agent[];
 	mediaType?: string;
-	isPartOf?: IEntity;
+	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 }
 
-export interface IDigitalResourceParams {
+export interface DigitalResourceParams {
 	id: string;
-	learningObjectives?: ILearningObjective[];
+	learningObjectives?: LearningObjective[];
 	keywords?: string[];
-	creators?: IAgent[];
+	creators?: Agent[];
 	mediaType?: string;
-	isPartOf?: IEntity;
+	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function DigitalResource(params: IDigitalResourceParams): IDigitalResource {
+export function createDigitalResource(params: DigitalResourceParams): DigitalResource {
 	return {
 		type: EntityType.DigitalResource,
 		learningObjectives: [],

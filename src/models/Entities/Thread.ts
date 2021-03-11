@@ -3,33 +3,33 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IDigitalResourceCollection } from './DigitalResourceCollection';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { DigitalResourceCollection } from './DigitalResourceCollection';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
-import { IMessage } from './Message';
+import { Message } from './Message';
 
-export interface IThread extends IDigitalResourceCollection {
+export interface Thread extends DigitalResourceCollection {
 	id: string;
-	items?: IMessage[];
+	items?: Message[];
 }
 
-export interface IThreadParams {
+export interface ThreadParams {
 	id: string;
-	items?: IMessage[];
+	items?: Message[];
 	mediaType?: string;
-	isPartOf?: IEntity;
+	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Thread(params: IThreadParams): IThread {
+export function createThread(params: ThreadParams): Thread {
 	return {
 		type: EntityType.Thread,
 		learningObjectives: [],

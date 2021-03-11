@@ -4,41 +4,41 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IEntity } from '../Entities/Entity';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMediaObject } from '../Entities/MediaObject';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { IPerson } from '../Entities/Person';
-import { ISession } from '../Entities/Session';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
+import { Entity } from '../Entities/Entity';
+import { LtiSession } from '../Entities/LtiSession';
+import { MediaObject } from '../Entities/MediaObject';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { Person } from '../Entities/Person';
+import { Session } from '../Entities/Session';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
-import { IEvent } from './Event';
+import { Event } from './Event';
 import { EventType } from './EventType';
 
-export interface IMediaEvent extends IEvent {
-	actor: IPerson | ISoftwareApplication | IOrganization;
-	object: IMediaObject;
+export interface MediaEvent extends Event {
+	actor: Person | SoftwareApplication | Organization;
+	object: MediaObject;
 	action: CaliperAction;
 }
 
-export interface IMediaEventParams {
-	actor: IPerson | ISoftwareApplication | IOrganization;
-	object: IMediaObject;
+export interface MediaEventParams {
+	actor: Person | SoftwareApplication | Organization;
+	object: MediaObject;
 	action?: CaliperAction;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function MediaEvent(params: IMediaEventParams, settings?: CaliperSettings): IMediaEvent {
+export function createMediaEvent(params: MediaEventParams, settings?: CaliperSettings): MediaEvent {
 	return {
 		type: EventType.MediaEvent,
 		action: CaliperAction.None,

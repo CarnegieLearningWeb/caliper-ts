@@ -3,20 +3,20 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IAttempt } from './Attempt';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Attempt } from './Attempt';
 import { EntityType } from './EntityType';
-import { IResponse } from './Response';
+import { Response } from './Response';
 
-export interface IMultipleResponseResponse extends IResponse {
+export interface MultipleResponseResponse extends Response {
 	id: string;
 	values?: string[];
 }
 
-export interface IMultipleResponseResponseParams {
+export interface MultipleResponseResponseParams {
 	id: string;
 	values?: string[];
-	attempt?: IAttempt;
+	attempt?: Attempt;
 	startedAtTime?: string;
 	endedAtTime?: string;
 	duration?: string;
@@ -24,13 +24,13 @@ export interface IMultipleResponseResponseParams {
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function MultipleResponseResponse(
-	params: IMultipleResponseResponseParams
-): IMultipleResponseResponse {
+export function createMultipleResponseResponse(
+	params: MultipleResponseResponseParams
+): MultipleResponseResponse {
 	return {
 		type: EntityType.MultipleResponseResponse,
 		...params,

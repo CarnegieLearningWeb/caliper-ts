@@ -3,31 +3,31 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { ICourseOffering } from './CourseOffering';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { CourseOffering } from './CourseOffering';
 import { EntityType } from './EntityType';
-import { IOrganization } from './Organization';
+import { Organization } from './Organization';
 
-export interface ICourseSection extends ICourseOffering {
+export interface CourseSection extends CourseOffering {
 	id: string;
 	category?: string;
 }
 
-export interface ICourseSectionParams {
+export interface CourseSectionParams {
 	id: string;
 	category?: string;
 	courseNumber?: string;
 	academicSession?: string;
-	subOrganizationOf?: IOrganization;
+	subOrganizationOf?: Organization;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function CourseSection(params: ICourseSectionParams): ICourseSection {
+export function createCourseSection(params: CourseSectionParams): CourseSection {
 	return {
 		type: EntityType.CourseSection,
 		...params,

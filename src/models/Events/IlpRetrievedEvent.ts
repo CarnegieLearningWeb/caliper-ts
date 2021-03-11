@@ -4,44 +4,44 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IAgent } from '../Entities/Agent';
-import { IEntity } from '../Entities/Entity';
-import { IInstructor } from '../Entities/Instructor';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { ISession } from '../Entities/Session';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
-import { IStudent } from '../Entities/Student';
-import { IUser } from '../Entities/User';
+import { Agent } from '../Entities/Agent';
+import { Entity } from '../Entities/Entity';
+import { Instructor } from '../Entities/Instructor';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { Session } from '../Entities/Session';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { Student } from '../Entities/Student';
+import { User } from '../Entities/User';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
-import { IIlpEvent, IIlpEventIndividualizedLearningPath } from './Internals/IlpEvent';
+import { IlpEvent, IlpEventIndividualizedLearningPath } from './Internals/IlpEvent';
 
-export interface IIlpRetrievedEvent extends IIlpEvent {
-	actor: IAgent | ISoftwareApplication | IUser | IInstructor | IStudent;
-	object: IIlpEventIndividualizedLearningPath;
+export interface IlpRetrievedEvent extends IlpEvent {
+	actor: Agent | SoftwareApplication | User | Instructor | Student;
+	object: IlpEventIndividualizedLearningPath;
 }
 
-export interface IIlpRetrievedEventParams {
-	actor: IAgent | ISoftwareApplication | IUser | IInstructor | IStudent;
-	object: IIlpEventIndividualizedLearningPath;
+export interface IlpRetrievedEventParams {
+	actor: Agent | SoftwareApplication | User | Instructor | Student;
+	object: IlpEventIndividualizedLearningPath;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function IlpRetrievedEvent(
-	params: IIlpRetrievedEventParams,
+export function createIlpRetrievedEvent(
+	params: IlpRetrievedEventParams,
 	settings?: CaliperSettings
-): IIlpRetrievedEvent {
+): IlpRetrievedEvent {
 	return {
 		'@context': [
 			'http://edgenuity.com/events/ilp-retrieved/0-0-2',

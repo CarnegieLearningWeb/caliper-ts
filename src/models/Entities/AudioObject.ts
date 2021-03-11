@@ -3,12 +3,12 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
-import { IMediaObject } from './MediaObject';
+import { MediaObject } from './MediaObject';
 
-export interface IAudioObject extends IMediaObject {
+export interface AudioObject extends MediaObject {
 	id: string;
 	volumeMin?: string;
 	volumeMax?: string;
@@ -16,7 +16,7 @@ export interface IAudioObject extends IMediaObject {
 	muted?: boolean;
 }
 
-export interface IAudioObjectParams {
+export interface AudioObjectParams {
 	id: string;
 	volumeMin?: string;
 	volumeMax?: string;
@@ -24,18 +24,18 @@ export interface IAudioObjectParams {
 	muted?: boolean;
 	duration?: string;
 	mediaType?: string;
-	isPartOf?: IEntity;
+	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function AudioObject(params: IAudioObjectParams): IAudioObject {
+export function createAudioObject(params: AudioObjectParams): AudioObject {
 	return {
 		type: EntityType.AudioObject,
 		learningObjectives: [],

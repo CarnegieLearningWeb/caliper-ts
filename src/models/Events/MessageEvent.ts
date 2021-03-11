@@ -4,44 +4,44 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IEntity } from '../Entities/Entity';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IMessage } from '../Entities/Message';
-import { IOrganization } from '../Entities/Organization';
-import { IPerson } from '../Entities/Person';
-import { ISession } from '../Entities/Session';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
+import { Entity } from '../Entities/Entity';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Message } from '../Entities/Message';
+import { Organization } from '../Entities/Organization';
+import { Person } from '../Entities/Person';
+import { Session } from '../Entities/Session';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
-import { IEvent } from './Event';
+import { Event } from './Event';
 import { EventType } from './EventType';
 
-export interface IMessageEvent extends IEvent {
-	actor: IPerson | ISoftwareApplication | IOrganization;
-	object: IMessage;
+export interface MessageEvent extends Event {
+	actor: Person | SoftwareApplication | Organization;
+	object: Message;
 	action: CaliperAction;
 }
 
-export interface IMessageEventParams {
-	actor: IPerson | ISoftwareApplication | IOrganization;
-	object: IMessage;
+export interface MessageEventParams {
+	actor: Person | SoftwareApplication | Organization;
+	object: Message;
 	action?: CaliperAction;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function MessageEvent(
-	params: IMessageEventParams,
+export function createMessageEvent(
+	params: MessageEventParams,
 	settings?: CaliperSettings
-): IMessageEvent {
+): MessageEvent {
 	return {
 		type: EventType.MessageEvent,
 		action: CaliperAction.None,

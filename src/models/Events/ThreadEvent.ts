@@ -4,41 +4,44 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IEntity } from '../Entities/Entity';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { IPerson } from '../Entities/Person';
-import { ISession } from '../Entities/Session';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
-import { IThread } from '../Entities/Thread';
+import { Entity } from '../Entities/Entity';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { Person } from '../Entities/Person';
+import { Session } from '../Entities/Session';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { Thread } from '../Entities/Thread';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
-import { IEvent } from './Event';
+import { Event } from './Event';
 import { EventType } from './EventType';
 
-export interface IThreadEvent extends IEvent {
-	actor: IPerson | ISoftwareApplication | IOrganization;
-	object: IThread;
+export interface ThreadEvent extends Event {
+	actor: Person | SoftwareApplication | Organization;
+	object: Thread;
 	action: CaliperAction;
 }
 
-export interface IThreadEventParams {
-	actor: IPerson | ISoftwareApplication | IOrganization;
-	object: IThread;
+export interface ThreadEventParams {
+	actor: Person | SoftwareApplication | Organization;
+	object: Thread;
 	action?: CaliperAction;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function ThreadEvent(params: IThreadEventParams, settings?: CaliperSettings): IThreadEvent {
+export function createThreadEvent(
+	params: ThreadEventParams,
+	settings?: CaliperSettings
+): ThreadEvent {
 	return {
 		type: EventType.ThreadEvent,
 		action: CaliperAction.None,

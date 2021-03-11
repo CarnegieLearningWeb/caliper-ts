@@ -3,20 +3,20 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IAttempt } from './Attempt';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Attempt } from './Attempt';
 import { EntityType } from './EntityType';
-import { IResponse } from './Response';
+import { Response } from './Response';
 
-export interface ITrueFalseResponse extends IResponse {
+export interface TrueFalseResponse extends Response {
 	id: string;
 	value?: boolean;
 }
 
-export interface ITrueFalseResponseParams {
+export interface TrueFalseResponseParams {
 	id: string;
 	value?: boolean;
-	attempt?: IAttempt;
+	attempt?: Attempt;
 	startedAtTime?: string;
 	endedAtTime?: string;
 	duration?: string;
@@ -24,11 +24,11 @@ export interface ITrueFalseResponseParams {
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function TrueFalseResponse(params: ITrueFalseResponseParams): ITrueFalseResponse {
+export function createTrueFalseResponse(params: TrueFalseResponseParams): TrueFalseResponse {
 	return {
 		type: EntityType.TrueFalseResponse,
 		value: false,

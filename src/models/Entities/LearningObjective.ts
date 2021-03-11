@@ -3,25 +3,25 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 
-export interface ILearningObjective extends IEntity {
+export interface LearningObjective extends Entity {
 	id: string;
 }
 
-export interface ILearningObjectiveParams {
+export interface LearningObjectiveParams {
 	id: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function LearningObjective(params: ILearningObjectiveParams): ILearningObjective {
+export function createLearningObjective(params: LearningObjectiveParams): LearningObjective {
 	return {
 		type: EntityType.LearningObjective,
 		...params,

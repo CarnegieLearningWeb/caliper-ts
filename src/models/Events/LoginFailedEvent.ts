@@ -5,50 +5,50 @@
 
 import Caliper, { CaliperSettings } from '../../caliper';
 import { CredentialType } from '../Entities/CredentialType';
-import { IDigitalResource } from '../Entities/DigitalResource';
-import { IEntity } from '../Entities/Entity';
+import { DigitalResource } from '../Entities/DigitalResource';
+import { Entity } from '../Entities/Entity';
 import { EntityType } from '../Entities/EntityType';
-import { IInstructor } from '../Entities/Instructor';
+import { Instructor } from '../Entities/Instructor';
 import { LoginType } from '../Entities/LoginType';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { IPerson } from '../Entities/Person';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
-import { IStudent } from '../Entities/Student';
-import { IUser } from '../Entities/User';
-import { ISystemIdentifier } from '../SystemIdentifier';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { Person } from '../Entities/Person';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { Student } from '../Entities/Student';
+import { User } from '../Entities/User';
+import { SystemIdentifier } from '../SystemIdentifier';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
-import { ILoginEvent, ILoginEventUserSession } from './Internals/LoginEvent';
+import { LoginEvent, LoginEventUserSession } from './Internals/LoginEvent';
 
-export interface ILoginFailedEvent extends ILoginEvent {
-	actor: IUser | IInstructor | IStudent;
-	object: ISoftwareApplication;
-	session: ILoginFailedEventUserSession;
-	target?: IDigitalResource;
-	referrer?: IDigitalResource | ISoftwareApplication;
+export interface LoginFailedEvent extends LoginEvent {
+	actor: User | Instructor | Student;
+	object: SoftwareApplication;
+	session: LoginFailedEventUserSession;
+	target?: DigitalResource;
+	referrer?: DigitalResource | SoftwareApplication;
 }
 
-export interface ILoginFailedEventParams {
-	actor: IUser | IInstructor | IStudent;
-	object: ISoftwareApplication;
-	session: ILoginFailedEventUserSession;
-	target?: IDigitalResource;
-	referrer?: IDigitalResource | ISoftwareApplication;
+export interface LoginFailedEventParams {
+	actor: User | Instructor | Student;
+	object: SoftwareApplication;
+	session: LoginFailedEventUserSession;
+	target?: DigitalResource;
+	referrer?: DigitalResource | SoftwareApplication;
 	profile?: CaliperProfile;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
 	extensions?: Record<string, any>;
 }
 
-export function LoginFailedEvent(
-	params: ILoginFailedEventParams,
+export function createLoginFailedEvent(
+	params: LoginFailedEventParams,
 	settings?: CaliperSettings
-): ILoginFailedEvent {
+): LoginFailedEvent {
 	return {
 		'@context': [
 			'http://edgenuity.com/events/login-failed/0-0-2',
@@ -63,7 +63,7 @@ export function LoginFailedEvent(
 	};
 }
 
-export interface ILoginFailedEventUserSession extends ILoginEventUserSession {
+export interface LoginFailedEventUserSession extends LoginEventUserSession {
 	id: string;
 	loginType: LoginType;
 	credentials: CredentialType[];
@@ -72,10 +72,10 @@ export interface ILoginFailedEventUserSession extends ILoginEventUserSession {
 	ipAddress: string;
 	localTimestamp: string;
 	description: string;
-	user?: IPerson | IUser | IInstructor | IStudent;
+	user?: Person | User | Instructor | Student;
 }
 
-export interface ILoginFailedEventUserSessionParams {
+export interface LoginFailedEventUserSessionParams {
 	id: string;
 	loginType: LoginType;
 	credentials: CredentialType[];
@@ -84,20 +84,20 @@ export interface ILoginFailedEventUserSessionParams {
 	ipAddress: string;
 	localTimestamp: string;
 	description: string;
-	user?: IPerson | IUser | IInstructor | IStudent;
+	user?: Person | User | Instructor | Student;
 	startedAtTime?: string;
 	endedAtTime?: string;
 	duration?: string;
 	name?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function LoginFailedEvent_UserSession(
-	params: ILoginFailedEventUserSessionParams
-): ILoginFailedEventUserSession {
+export function createLoginFailedEventUserSession(
+	params: LoginFailedEventUserSessionParams
+): LoginFailedEventUserSession {
 	return {
 		type: EntityType.UserSession,
 		...params,

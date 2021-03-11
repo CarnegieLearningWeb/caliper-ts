@@ -4,43 +4,42 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IAttempt } from '../Entities/Attempt';
-import { IEntity } from '../Entities/Entity';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { ISession } from '../Entities/Session';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
-import { IStudent } from '../Entities/Student';
+import { Attempt } from '../Entities/Attempt';
+import { Entity } from '../Entities/Entity';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { Session } from '../Entities/Session';
+import { Student } from '../Entities/Student';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
-import { ILessonEvent, ILessonEventLesson } from './Internals/LessonEvent';
+import { LessonEvent, LessonEventLesson } from './Internals/LessonEvent';
 
-export interface ILessonStartedEvent extends ILessonEvent {
-	actor: IStudent;
-	object: ILessonEventLesson;
-	generated: IAttempt;
+export interface LessonStartedEvent extends LessonEvent {
+	actor: Student;
+	object: LessonEventLesson;
+	generated: Attempt;
 }
 
-export interface ILessonStartedEventParams {
-	actor: IStudent;
-	object: ILessonEventLesson;
-	generated: IAttempt;
+export interface LessonStartedEventParams {
+	actor: Student;
+	object: LessonEventLesson;
+	generated: Attempt;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function LessonStartedEvent(
-	params: ILessonStartedEventParams,
+export function createLessonStartedEvent(
+	params: LessonStartedEventParams,
 	settings?: CaliperSettings
-): ILessonStartedEvent {
+): LessonStartedEvent {
 	return {
 		'@context': [
 			'http://edgenuity.com/events/lesson-started/0-0-2',

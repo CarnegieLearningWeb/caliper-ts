@@ -4,44 +4,44 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IDistrict } from '../Entities/District';
-import { IEntity } from '../Entities/Entity';
-import { IInstructor } from '../Entities/Instructor';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { ISchool } from '../Entities/School';
-import { ISession } from '../Entities/Session';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
-import { IUser } from '../Entities/User';
+import { District } from '../Entities/District';
+import { Entity } from '../Entities/Entity';
+import { Instructor } from '../Entities/Instructor';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { School } from '../Entities/School';
+import { Session } from '../Entities/Session';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { User } from '../Entities/User';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
-import { IEvent } from './Event';
+import { Event } from './Event';
 import { EventType } from './EventType';
 
-export interface IOrganizationDeactivatedEvent extends IEvent {
-	actor: ISoftwareApplication | IUser | IInstructor;
-	object: IOrganization | ISchool | IDistrict;
+export interface OrganizationDeactivatedEvent extends Event {
+	actor: SoftwareApplication | User | Instructor;
+	object: Organization | School | District;
 }
 
-export interface IOrganizationDeactivatedEventParams {
-	actor: ISoftwareApplication | IUser | IInstructor;
-	object: IOrganization | ISchool | IDistrict;
+export interface OrganizationDeactivatedEventParams {
+	actor: SoftwareApplication | User | Instructor;
+	object: Organization | School | District;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function OrganizationDeactivatedEvent(
-	params: IOrganizationDeactivatedEventParams,
+export function createOrganizationDeactivatedEvent(
+	params: OrganizationDeactivatedEventParams,
 	settings?: CaliperSettings
-): IOrganizationDeactivatedEvent {
+): OrganizationDeactivatedEvent {
 	return {
 		'@context': [
 			'http://edgenuity.com/events/organization-deactivated/0-0-2',
@@ -695,6 +695,13 @@ export const OrganizationDeactivatedEventSchema = {
 					name: {
 						type: 'string',
 					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
 					dateCreated: {
 						type: 'string',
 						format: 'date-time',
@@ -702,13 +709,6 @@ export const OrganizationDeactivatedEventSchema = {
 					dateModified: {
 						type: 'string',
 						format: 'date-time',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
 					},
 					otherIdentifiers: {
 						type: 'array',

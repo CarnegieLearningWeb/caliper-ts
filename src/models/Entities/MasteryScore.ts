@@ -3,37 +3,37 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IAgent } from './Agent';
-import { IAttempt } from './Attempt';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Agent } from './Agent';
+import { Attempt } from './Attempt';
 import { EntityType } from './EntityType';
 import { LessonStatus } from './LessonStatus';
-import { IScore } from './Score';
+import { Score } from './Score';
 
-export interface IMasteryScore extends IScore {
+export interface MasteryScore extends Score {
 	id: string;
 	passThreshold?: number;
 	lessonStatus?: LessonStatus;
 }
 
-export interface IMasteryScoreParams {
+export interface MasteryScoreParams {
 	id: string;
 	passThreshold?: number;
 	lessonStatus?: LessonStatus;
-	attempt?: IAttempt;
+	attempt?: Attempt;
 	maxScore?: number;
 	scoreGiven?: number;
 	comment?: string;
-	scoredBy?: IAgent;
+	scoredBy?: Agent;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function MasteryScore(params: IMasteryScoreParams): IMasteryScore {
+export function createMasteryScore(params: MasteryScoreParams): MasteryScore {
 	return {
 		type: EntityType.MasteryScore,
 		...params,

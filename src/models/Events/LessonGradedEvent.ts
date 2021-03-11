@@ -4,47 +4,43 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IEntity } from '../Entities/Entity';
-import { IInstructor } from '../Entities/Instructor';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { ISession } from '../Entities/Session';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
-import { IUser } from '../Entities/User';
+import { Entity } from '../Entities/Entity';
+import { Instructor } from '../Entities/Instructor';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { Session } from '../Entities/Session';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { User } from '../Entities/User';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
-import {
-	ILessonEvent,
-	ILessonEventLesson,
-	ILessonEventMasteryScore,
-} from './Internals/LessonEvent';
+import { LessonEvent, LessonEventLesson, LessonEventMasteryScore } from './Internals/LessonEvent';
 
-export interface ILessonGradedEvent extends ILessonEvent {
-	actor: ISoftwareApplication | IUser | IInstructor;
-	object: ILessonEventLesson;
-	generated: ILessonEventMasteryScore;
+export interface LessonGradedEvent extends LessonEvent {
+	actor: SoftwareApplication | User | Instructor;
+	object: LessonEventLesson;
+	generated: LessonEventMasteryScore;
 }
 
-export interface ILessonGradedEventParams {
-	actor: ISoftwareApplication | IUser | IInstructor;
-	object: ILessonEventLesson;
-	generated: ILessonEventMasteryScore;
+export interface LessonGradedEventParams {
+	actor: SoftwareApplication | User | Instructor;
+	object: LessonEventLesson;
+	generated: LessonEventMasteryScore;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function LessonGradedEvent(
-	params: ILessonGradedEventParams,
+export function createLessonGradedEvent(
+	params: LessonGradedEventParams,
 	settings?: CaliperSettings
-): ILessonGradedEvent {
+): LessonGradedEvent {
 	return {
 		'@context': [
 			'http://edgenuity.com/events/lesson-graded/0-0-2',

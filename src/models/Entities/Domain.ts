@@ -3,28 +3,28 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 
-export interface IDomain extends IEntity {
+export interface Domain extends Entity {
 	standard: string;
 	code: string;
 	name: string;
 }
 
-export interface IDomainParams {
+export interface DomainParams {
 	standard: string;
 	code: string;
 	name: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Domain(params: IDomainParams): IDomain {
+export function createDomain(params: DomainParams): Domain {
 	return {
 		id: `urn:domain:${params.standard.toLocaleUpperCase()}${params.code.toLocaleUpperCase()}`,
 		type: EntityType.Domain,

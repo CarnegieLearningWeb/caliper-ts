@@ -3,27 +3,27 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IAgent } from './Agent';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Agent } from './Agent';
 import { EntityType } from './EntityType';
 
-export interface ISoftwareApplication extends IAgent {
+export interface SoftwareApplication extends Agent {
 	id: string;
 	version?: string;
 }
 
-export interface ISoftwareApplicationParams {
+export interface SoftwareApplicationParams {
 	id: string;
 	version?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function SoftwareApplication(params: ISoftwareApplicationParams): ISoftwareApplication {
+export function createSoftwareApplication(params: SoftwareApplicationParams): SoftwareApplication {
 	return {
 		type: EntityType.SoftwareApplication,
 		...params,

@@ -3,12 +3,12 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IDigitalResource } from './DigitalResource';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { DigitalResource } from './DigitalResource';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 
-export interface IAssignableDigitalResource extends IDigitalResource {
+export interface AssignableDigitalResource extends DigitalResource {
 	id: string;
 	dateToActivate?: string;
 	dateToShow?: string;
@@ -19,7 +19,7 @@ export interface IAssignableDigitalResource extends IDigitalResource {
 	maxScore?: number;
 }
 
-export interface IAssignableDigitalResourceParams {
+export interface AssignableDigitalResourceParams {
 	id: string;
 	dateToActivate?: string;
 	dateToShow?: string;
@@ -29,20 +29,20 @@ export interface IAssignableDigitalResourceParams {
 	maxSubmits?: number;
 	maxScore?: number;
 	mediaType?: string;
-	isPartOf?: IEntity;
+	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function AssignableDigitalResource(
-	params: IAssignableDigitalResourceParams
-): IAssignableDigitalResource {
+export function createAssignableDigitalResource(
+	params: AssignableDigitalResourceParams
+): AssignableDigitalResource {
 	return {
 		type: EntityType.AssignableDigitalResource,
 		learningObjectives: [],

@@ -3,31 +3,31 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
-import { IMediaObject } from './MediaObject';
+import { MediaObject } from './MediaObject';
 
-export interface IVideoObject extends IMediaObject {
+export interface VideoObject extends MediaObject {
 	id: string;
 }
 
-export interface IVideoObjectParams {
+export interface VideoObjectParams {
 	id: string;
 	duration?: string;
 	mediaType?: string;
-	isPartOf?: IEntity;
+	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function VideoObject(params: IVideoObjectParams): IVideoObject {
+export function createVideoObject(params: VideoObjectParams): VideoObject {
 	return {
 		type: EntityType.VideoObject,
 		learningObjectives: [],

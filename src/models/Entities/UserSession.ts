@@ -3,17 +3,17 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
+import { SystemIdentifier } from '../SystemIdentifier';
 import { CredentialType } from './CredentialType';
 import { EntityType } from './EntityType';
-import { IInstructor } from './Instructor';
+import { Instructor } from './Instructor';
 import { LoginType } from './LoginType';
-import { IPerson } from './Person';
-import { ISession } from './Session';
-import { IStudent } from './Student';
-import { IUser } from './User';
+import { Person } from './Person';
+import { Session } from './Session';
+import { Student } from './Student';
+import { User } from './User';
 
-export interface IUserSession extends ISession {
+export interface UserSession extends Session {
 	id: string;
 	loginType?: LoginType;
 	credentials?: CredentialType[];
@@ -21,10 +21,10 @@ export interface IUserSession extends ISession {
 	userAgent?: string;
 	ipAddress?: string;
 	localTimestamp?: string;
-	user?: IPerson | IUser | IInstructor | IStudent;
+	user?: Person | User | Instructor | Student;
 }
 
-export interface IUserSessionParams {
+export interface UserSessionParams {
 	id: string;
 	loginType?: LoginType;
 	credentials?: CredentialType[];
@@ -32,7 +32,7 @@ export interface IUserSessionParams {
 	userAgent?: string;
 	ipAddress?: string;
 	localTimestamp?: string;
-	user?: IPerson | IUser | IInstructor | IStudent;
+	user?: Person | User | Instructor | Student;
 	startedAtTime?: string;
 	endedAtTime?: string;
 	duration?: string;
@@ -40,11 +40,11 @@ export interface IUserSessionParams {
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function UserSession(params: IUserSessionParams): IUserSession {
+export function createUserSession(params: UserSessionParams): UserSession {
 	return {
 		type: EntityType.UserSession,
 		...params,

@@ -3,82 +3,82 @@
  * This file was automatically generated.
  */
 
-import { IAgent } from '../../Entities/Agent';
+import { Agent } from '../../Entities/Agent';
 import { EntityType } from '../../Entities/EntityType';
-import { IGroup } from '../../Entities/Group';
-import { IInstructor } from '../../Entities/Instructor';
-import { IOrganization } from '../../Entities/Organization';
-import { ISchool } from '../../Entities/School';
-import { ISoftwareApplication } from '../../Entities/SoftwareApplication';
+import { Group } from '../../Entities/Group';
+import { Instructor } from '../../Entities/Instructor';
+import { Organization } from '../../Entities/Organization';
+import { School } from '../../Entities/School';
+import { SoftwareApplication } from '../../Entities/SoftwareApplication';
 import { Status } from '../../Entities/Status';
-import { IStudent } from '../../Entities/Student';
-import { IUser } from '../../Entities/User';
-import { ISystemIdentifier } from '../../SystemIdentifier';
+import { Student } from '../../Entities/Student';
+import { User } from '../../Entities/User';
+import { SystemIdentifier } from '../../SystemIdentifier';
 import { CaliperAction } from '../CaliperAction';
-import { IEvent } from '../Event';
+import { Event } from '../Event';
 
-export interface IGroupEvent extends IEvent {
-	actor: IAgent | ISoftwareApplication | IUser | IInstructor | IStudent;
-	object: IGroupEventGroup | IGroupEventClass;
+export interface GroupEvent extends Event {
+	actor: Agent | SoftwareApplication | User | Instructor | Student;
+	object: GroupEventGroup | GroupEventClass;
 	action: CaliperAction;
 }
 
-export interface IGroupEventGroup extends IGroup {
+export interface GroupEventGroup extends Group {
 	id: string;
 	dateCreated: string;
 	dateModified: string;
 	status: Status;
 	name: string;
 	subjects: string[];
-	subOrganizationOf: IOrganization | ISchool | IGroupEventGroup | IGroupEventClass;
-	otherIdentifiers: ISystemIdentifier[];
+	subOrganizationOf: Organization | School | GroupEventGroup | GroupEventClass;
+	otherIdentifiers: SystemIdentifier[];
 }
 
-export interface IGroupEventGroupParams {
+export interface GroupEventGroupParams {
 	id: string;
 	dateCreated: string;
 	dateModified: string;
 	status: Status;
 	name: string;
 	subjects: string[];
-	subOrganizationOf: IOrganization | ISchool | IGroupEventGroup | IGroupEventClass;
-	otherIdentifiers: ISystemIdentifier[];
+	subOrganizationOf: Organization | School | GroupEventGroup | GroupEventClass;
+	otherIdentifiers: SystemIdentifier[];
 	description?: string;
 	extensions?: Record<string, any>;
 }
 
-export function GroupEvent_Group(params: IGroupEventGroupParams): IGroupEventGroup {
+export function createGroupEventGroup(params: GroupEventGroupParams): GroupEventGroup {
 	return {
 		type: EntityType.Group,
 		...params,
 	};
 }
 
-export interface IGroupEventClass extends IGroupEventGroup {
+export interface GroupEventClass extends GroupEventGroup {
 	id: string;
 	dateCreated: string;
 	dateModified: string;
 	status: Status;
 	name: string;
 	subjects: string[];
-	subOrganizationOf: IOrganization | ISchool | IGroupEventGroup | IGroupEventClass;
-	otherIdentifiers: ISystemIdentifier[];
+	subOrganizationOf: Organization | School | GroupEventGroup | GroupEventClass;
+	otherIdentifiers: SystemIdentifier[];
 }
 
-export interface IGroupEventClassParams {
+export interface GroupEventClassParams {
 	id: string;
 	dateCreated: string;
 	dateModified: string;
 	status: Status;
 	name: string;
 	subjects: string[];
-	subOrganizationOf: IOrganization | ISchool | IGroupEventGroup | IGroupEventClass;
-	otherIdentifiers: ISystemIdentifier[];
+	subOrganizationOf: Organization | School | GroupEventGroup | GroupEventClass;
+	otherIdentifiers: SystemIdentifier[];
 	description?: string;
 	extensions?: Record<string, any>;
 }
 
-export function GroupEvent_Class(params: IGroupEventClassParams): IGroupEventClass {
+export function createGroupEventClass(params: GroupEventClassParams): GroupEventClass {
 	return {
 		type: EntityType.Class,
 		...params,

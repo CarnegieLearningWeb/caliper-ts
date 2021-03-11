@@ -3,22 +3,22 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IAttempt } from './Attempt';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Attempt } from './Attempt';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 
-export interface IResponse extends IEntity {
+export interface Response extends Entity {
 	id: string;
-	attempt?: IAttempt;
+	attempt?: Attempt;
 	startedAtTime?: string;
 	endedAtTime?: string;
 	duration?: string;
 }
 
-export interface IResponseParams {
+export interface ResponseParams {
 	id: string;
-	attempt?: IAttempt;
+	attempt?: Attempt;
 	startedAtTime?: string;
 	endedAtTime?: string;
 	duration?: string;
@@ -26,11 +26,11 @@ export interface IResponseParams {
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Response(params: IResponseParams): IResponse {
+export function createResponse(params: ResponseParams): Response {
 	return {
 		type: EntityType.Response,
 		...params,

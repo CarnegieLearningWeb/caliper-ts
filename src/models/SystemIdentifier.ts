@@ -3,27 +3,27 @@
  * This file was automatically generated.
  */
 
-import { ISoftwareApplication, SoftwareApplication } from './Entities/SoftwareApplication';
+import { createSoftwareApplication, SoftwareApplication } from './Entities/SoftwareApplication';
 import { SystemIdentifierType } from './SystemIdentifierType';
 
-export interface ISystemIdentifier {
+export interface SystemIdentifier {
 	identifier: string;
 	identifierType: SystemIdentifierType;
 	type: string;
-	source: ISoftwareApplication;
+	source: SoftwareApplication;
 	extensions?: Record<string, any>;
 }
 
-export interface ISystemIdentifierParams {
+export interface SystemIdentifierParams {
 	sourceUrl: string;
 	identifier: string;
 	identifierType: SystemIdentifierType;
 	extensions?: Record<string, any>;
 }
 
-export function SystemIdentifier(params: ISystemIdentifierParams): ISystemIdentifier {
+export function createSystemIdentifier(params: SystemIdentifierParams): SystemIdentifier {
 	const { sourceUrl, ...args } = params;
-	const source = SoftwareApplication({ id: sourceUrl });
+	const source = createSoftwareApplication({ id: sourceUrl });
 
 	return {
 		type: 'SystemIdentifier',

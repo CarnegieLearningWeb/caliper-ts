@@ -4,43 +4,43 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IEntity } from '../Entities/Entity';
-import { IInstructor } from '../Entities/Instructor';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { ISession } from '../Entities/Session';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
-import { IStudent } from '../Entities/Student';
-import { IUser } from '../Entities/User';
+import { Entity } from '../Entities/Entity';
+import { Instructor } from '../Entities/Instructor';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { Session } from '../Entities/Session';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { Student } from '../Entities/Student';
+import { User } from '../Entities/User';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
-import { IGroupEvent, IGroupEventClass, IGroupEventGroup } from './Internals/GroupEvent';
+import { GroupEvent, GroupEventClass, GroupEventGroup } from './Internals/GroupEvent';
 
-export interface IGroupCreatedEvent extends IGroupEvent {
-	actor: ISoftwareApplication | IUser | IInstructor | IStudent;
-	object: IGroupEventGroup | IGroupEventClass;
+export interface GroupCreatedEvent extends GroupEvent {
+	actor: SoftwareApplication | User | Instructor | Student;
+	object: GroupEventGroup | GroupEventClass;
 }
 
-export interface IGroupCreatedEventParams {
-	actor: ISoftwareApplication | IUser | IInstructor | IStudent;
-	object: IGroupEventGroup | IGroupEventClass;
+export interface GroupCreatedEventParams {
+	actor: SoftwareApplication | User | Instructor | Student;
+	object: GroupEventGroup | GroupEventClass;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function GroupCreatedEvent(
-	params: IGroupCreatedEventParams,
+export function createGroupCreatedEvent(
+	params: GroupCreatedEventParams,
 	settings?: CaliperSettings
-): IGroupCreatedEvent {
+): GroupCreatedEvent {
 	return {
 		'@context': [
 			'http://edgenuity.com/events/group-created/0-0-2',
@@ -149,7 +149,7 @@ export const GroupCreatedEventSchema = {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['type', 'id'],
+						required: ['id', 'type'],
 					},
 					{
 						title: 'Entity',
@@ -161,7 +161,7 @@ export const GroupCreatedEventSchema = {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['type', 'id'],
+						required: ['id', 'type'],
 					},
 					{
 						title: 'Entity',
@@ -221,7 +221,7 @@ export const GroupCreatedEventSchema = {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['type', 'id'],
+						required: ['id', 'type'],
 					},
 					{
 						title: 'Entity',
@@ -965,10 +965,20 @@ export const GroupCreatedEventSchema = {
 				title: 'Entity',
 				type: 'object',
 				properties: {
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
 					type: {
 						type: 'string',
 						default: 'Entity',
 						enum: ['Entity'],
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
 					},
 					dateCreated: {
 						type: 'string',
@@ -977,16 +987,6 @@ export const GroupCreatedEventSchema = {
 					dateModified: {
 						type: 'string',
 						format: 'date-time',
-					},
-					name: {
-						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
 					},
 					otherIdentifiers: {
 						type: 'array',

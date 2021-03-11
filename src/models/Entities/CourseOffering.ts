@@ -3,30 +3,30 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
+import { SystemIdentifier } from '../SystemIdentifier';
 import { EntityType } from './EntityType';
-import { IOrganization } from './Organization';
+import { Organization } from './Organization';
 
-export interface ICourseOffering extends IOrganization {
+export interface CourseOffering extends Organization {
 	id: string;
 	courseNumber?: string;
 	academicSession?: string;
 }
 
-export interface ICourseOfferingParams {
+export interface CourseOfferingParams {
 	id: string;
 	courseNumber?: string;
 	academicSession?: string;
-	subOrganizationOf?: IOrganization;
+	subOrganizationOf?: Organization;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function CourseOffering(params: ICourseOfferingParams): ICourseOffering {
+export function createCourseOffering(params: CourseOfferingParams): CourseOffering {
 	return {
 		type: EntityType.CourseOffering,
 		...params,

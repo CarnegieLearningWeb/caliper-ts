@@ -3,32 +3,32 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
+import { SystemIdentifier } from '../SystemIdentifier';
 import { EntityType } from './EntityType';
 
-export interface IEntity {
+export interface Entity {
 	id: string;
 	type: EntityType;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export interface IEntityParams {
+export interface EntityParams {
 	id: string;
 	type?: EntityType;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Entity(params: IEntityParams): IEntity {
+export function createEntity(params: EntityParams): Entity {
 	return {
 		type: EntityType.Entity,
 		...params,

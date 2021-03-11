@@ -3,30 +3,30 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IDigitalResource } from './DigitalResource';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { DigitalResource } from './DigitalResource';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 
-export interface IWebPage extends IDigitalResource {
+export interface WebPage extends DigitalResource {
 	id: string;
 }
 
-export interface IWebPageParams {
+export interface WebPageParams {
 	id: string;
 	mediaType?: string;
-	isPartOf?: IEntity;
+	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function WebPage(params: IWebPageParams): IWebPage {
+export function createWebPage(params: WebPageParams): WebPage {
 	return {
 		type: EntityType.WebPage,
 		learningObjectives: [],

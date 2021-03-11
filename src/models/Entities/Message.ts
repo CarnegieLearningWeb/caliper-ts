@@ -3,36 +3,36 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IDigitalResource } from './DigitalResource';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { DigitalResource } from './DigitalResource';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 
-export interface IMessage extends IDigitalResource {
+export interface Message extends DigitalResource {
 	id: string;
-	replyTo?: IMessage;
+	replyTo?: Message;
 	body?: string;
-	attachments?: IDigitalResource[];
+	attachments?: DigitalResource[];
 }
 
-export interface IMessageParams {
+export interface MessageParams {
 	id: string;
-	replyTo?: IMessage;
+	replyTo?: Message;
 	body?: string;
-	attachments?: IDigitalResource[];
+	attachments?: DigitalResource[];
 	mediaType?: string;
-	isPartOf?: IEntity;
+	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Message(params: IMessageParams): IMessage {
+export function createMessage(params: MessageParams): Message {
 	return {
 		type: EntityType.Message,
 		learningObjectives: [],

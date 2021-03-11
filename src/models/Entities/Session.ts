@@ -3,25 +3,25 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
-import { IInstructor } from './Instructor';
-import { IPerson } from './Person';
-import { IStudent } from './Student';
-import { IUser } from './User';
+import { Instructor } from './Instructor';
+import { Person } from './Person';
+import { Student } from './Student';
+import { User } from './User';
 
-export interface ISession extends IEntity {
+export interface Session extends Entity {
 	id: string;
-	user?: IPerson | IUser | IInstructor | IStudent;
+	user?: Person | User | Instructor | Student;
 	startedAtTime?: string;
 	endedAtTime?: string;
 	duration?: string;
 }
 
-export interface ISessionParams {
+export interface SessionParams {
 	id: string;
-	user?: IPerson | IUser | IInstructor | IStudent;
+	user?: Person | User | Instructor | Student;
 	startedAtTime?: string;
 	endedAtTime?: string;
 	duration?: string;
@@ -29,11 +29,11 @@ export interface ISessionParams {
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Session(params: ISessionParams): ISession {
+export function createSession(params: SessionParams): Session {
 	return {
 		type: EntityType.Session,
 		...params,

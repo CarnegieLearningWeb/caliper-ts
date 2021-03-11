@@ -3,43 +3,43 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IClass } from './Class';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Class } from './Class';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
-import { IGroup } from './Group';
-import { IInstructor } from './Instructor';
-import { IOrganization } from './Organization';
-import { IPerson } from './Person';
+import { Group } from './Group';
+import { Instructor } from './Instructor';
+import { Organization } from './Organization';
+import { Person } from './Person';
 import { Role } from './Role';
-import { ISchool } from './School';
+import { School } from './School';
 import { Status } from './Status';
-import { IStudent } from './Student';
-import { IUser } from './User';
+import { Student } from './Student';
+import { User } from './User';
 
-export interface IMembership extends IEntity {
+export interface Membership extends Entity {
 	id: string;
-	member?: IPerson | IUser | IInstructor | IStudent;
-	organization?: IOrganization | ISchool | IGroup | IClass;
+	member?: Person | User | Instructor | Student;
+	organization?: Organization | School | Group | Class;
 	roles?: Role[];
 	status?: Status;
 }
 
-export interface IMembershipParams {
+export interface MembershipParams {
 	id: string;
-	member?: IPerson | IUser | IInstructor | IStudent;
-	organization?: IOrganization | ISchool | IGroup | IClass;
+	member?: Person | User | Instructor | Student;
+	organization?: Organization | School | Group | Class;
 	roles?: Role[];
 	status?: Status;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Membership(params: IMembershipParams): IMembership {
+export function createMembership(params: MembershipParams): Membership {
 	return {
 		type: EntityType.Membership,
 		...params,

@@ -3,34 +3,34 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IAnnotation } from './Annotation';
-import { IDigitalResource } from './DigitalResource';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Annotation } from './Annotation';
+import { DigitalResource } from './DigitalResource';
 import { EntityType } from './EntityType';
-import { IPerson } from './Person';
+import { Person } from './Person';
 import { TextPositionSelector } from './TextPositionSelector';
 
-export interface IHighlightAnnotation extends IAnnotation {
+export interface HighlightAnnotation extends Annotation {
 	id: string;
 	selection?: TextPositionSelector;
 	selectionText?: string;
 }
 
-export interface IHighlightAnnotationParams {
+export interface HighlightAnnotationParams {
 	id: string;
 	selection?: TextPositionSelector;
 	selectionText?: string;
-	annotator?: IPerson;
-	annotated?: IDigitalResource;
+	annotator?: Person;
+	annotated?: DigitalResource;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function HighlightAnnotation(params: IHighlightAnnotationParams): IHighlightAnnotation {
+export function createHighlightAnnotation(params: HighlightAnnotationParams): HighlightAnnotation {
 	return {
 		type: EntityType.HighlightAnnotation,
 		...params,

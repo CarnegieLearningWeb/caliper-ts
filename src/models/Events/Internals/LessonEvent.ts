@@ -4,50 +4,53 @@
  */
 
 import Caliper, { CaliperSettings } from '../../../caliper';
-import { IAgent } from '../../Entities/Agent';
-import { IAttempt } from '../../Entities/Attempt';
-import { IDomain } from '../../Entities/Domain';
-import { IEntity } from '../../Entities/Entity';
+import { Agent } from '../../Entities/Agent';
+import { Attempt } from '../../Entities/Attempt';
+import { Domain } from '../../Entities/Domain';
+import { Entity } from '../../Entities/Entity';
 import { EntityType } from '../../Entities/EntityType';
-import { IIndividualizedLearningPath } from '../../Entities/IndividualizedLearningPath';
-import { ILesson } from '../../Entities/Lesson';
+import { IndividualizedLearningPath } from '../../Entities/IndividualizedLearningPath';
+import { Lesson } from '../../Entities/Lesson';
 import { LessonStatus } from '../../Entities/LessonStatus';
-import { ILtiSession } from '../../Entities/LtiSession';
-import { IMasteryScore } from '../../Entities/MasteryScore';
-import { IMembership } from '../../Entities/Membership';
-import { IOrganization } from '../../Entities/Organization';
-import { IPerson } from '../../Entities/Person';
-import { ISession } from '../../Entities/Session';
-import { ISoftwareApplication } from '../../Entities/SoftwareApplication';
-import { IStudent } from '../../Entities/Student';
-import { ISystemIdentifier } from '../../SystemIdentifier';
+import { LtiSession } from '../../Entities/LtiSession';
+import { MasteryScore } from '../../Entities/MasteryScore';
+import { Membership } from '../../Entities/Membership';
+import { Organization } from '../../Entities/Organization';
+import { Person } from '../../Entities/Person';
+import { Session } from '../../Entities/Session';
+import { SoftwareApplication } from '../../Entities/SoftwareApplication';
+import { Student } from '../../Entities/Student';
+import { SystemIdentifier } from '../../SystemIdentifier';
 import { CaliperAction } from '../CaliperAction';
 import { CaliperProfile } from '../CaliperProfile';
-import { IEvent } from '../Event';
+import { Event } from '../Event';
 import { EventType } from '../EventType';
 
-export interface ILessonEvent extends IEvent {
-	actor: IAgent | IPerson | ISoftwareApplication | IOrganization;
-	object: ILessonEventLesson;
+export interface LessonEvent extends Event {
+	actor: Agent | Person | SoftwareApplication | Organization;
+	object: LessonEventLesson;
 	action: CaliperAction;
 }
 
-export interface ILessonEventParams {
-	actor: IAgent | IPerson | ISoftwareApplication | IOrganization;
-	object: ILessonEventLesson;
+export interface LessonEventParams {
+	actor: Agent | Person | SoftwareApplication | Organization;
+	object: LessonEventLesson;
 	action?: CaliperAction;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function LessonEvent(params: ILessonEventParams, settings?: CaliperSettings): ILessonEvent {
+export function createLessonEvent(
+	params: LessonEventParams,
+	settings?: CaliperSettings
+): LessonEvent {
 	return {
 		type: EventType.LessonEvent,
 		'@context': ['http://purl.imsglobal.org/ctx/caliper/v1p2'],
@@ -59,15 +62,15 @@ export function LessonEvent(params: ILessonEventParams, settings?: CaliperSettin
 	};
 }
 
-export interface ILessonEventLesson extends ILesson {
+export interface LessonEventLesson extends Lesson {
 	id: string;
-	isPartOf: ILessonEventIndividualizedLearningPath;
+	isPartOf: LessonEventIndividualizedLearningPath;
 }
 
-export interface ILessonEventLessonParams {
+export interface LessonEventLessonParams {
 	id: string;
-	isPartOf: ILessonEventIndividualizedLearningPath;
-	domain?: IDomain;
+	isPartOf: LessonEventIndividualizedLearningPath;
+	domain?: Domain;
 	gradeLevel?: number;
 	domainOrder?: number;
 	lessonOrder?: number;
@@ -85,11 +88,11 @@ export interface ILessonEventLessonParams {
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function LessonEvent_Lesson(params: ILessonEventLessonParams): ILessonEventLesson {
+export function createLessonEventLesson(params: LessonEventLessonParams): LessonEventLesson {
 	return {
 		type: EntityType.Lesson,
 		learningObjectives: [],
@@ -99,39 +102,39 @@ export function LessonEvent_Lesson(params: ILessonEventLessonParams): ILessonEve
 	};
 }
 
-export interface ILessonEventIndividualizedLearningPath extends IIndividualizedLearningPath {
+export interface LessonEventIndividualizedLearningPath extends IndividualizedLearningPath {
 	id: string;
-	student: IStudent;
+	student: Student;
 	highestGradeLevel?: number;
 	lowestPlacementGrade?: number;
 }
 
-export interface ILessonEventIndividualizedLearningPathParams {
+export interface LessonEventIndividualizedLearningPathParams {
 	id: string;
-	student: IStudent;
+	student: Student;
 	highestGradeLevel?: number;
 	lowestPlacementGrade?: number;
 	state?: string;
 	subject?: string;
-	lessons?: ILesson[];
+	lessons?: Lesson[];
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function LessonEvent_IndividualizedLearningPath(
-	params: ILessonEventIndividualizedLearningPathParams
-): ILessonEventIndividualizedLearningPath {
+export function createLessonEventIndividualizedLearningPath(
+	params: LessonEventIndividualizedLearningPathParams
+): LessonEventIndividualizedLearningPath {
 	return {
 		type: EntityType.ILP,
 		...params,
 	};
 }
 
-export interface ILessonEventMasteryScore extends IMasteryScore {
+export interface LessonEventMasteryScore extends MasteryScore {
 	id: string;
 	maxScore: number;
 	scoreGiven: number;
@@ -139,26 +142,26 @@ export interface ILessonEventMasteryScore extends IMasteryScore {
 	lessonStatus: LessonStatus;
 }
 
-export interface ILessonEventMasteryScoreParams {
+export interface LessonEventMasteryScoreParams {
 	id: string;
 	maxScore: number;
 	scoreGiven: number;
 	passThreshold: number;
 	lessonStatus: LessonStatus;
-	attempt?: IAttempt;
+	attempt?: Attempt;
 	comment?: string;
-	scoredBy?: IAgent;
+	scoredBy?: Agent;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function LessonEvent_MasteryScore(
-	params: ILessonEventMasteryScoreParams
-): ILessonEventMasteryScore {
+export function createLessonEventMasteryScore(
+	params: LessonEventMasteryScoreParams
+): LessonEventMasteryScore {
 	return {
 		type: EntityType.MasteryScore,
 		...params,

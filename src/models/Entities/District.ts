@@ -3,29 +3,29 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
+import { SystemIdentifier } from '../SystemIdentifier';
 import { EntityType } from './EntityType';
-import { IOrganization } from './Organization';
+import { Organization } from './Organization';
 import { Status } from './Status';
 
-export interface IDistrict extends IOrganization {
+export interface District extends Organization {
 	id: string;
 	status?: Status;
 }
 
-export interface IDistrictParams {
+export interface DistrictParams {
 	id: string;
 	status?: Status;
-	subOrganizationOf?: IOrganization;
+	subOrganizationOf?: Organization;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function District(params: IDistrictParams): IDistrict {
+export function createDistrict(params: DistrictParams): District {
 	return {
 		type: EntityType.District,
 		...params,

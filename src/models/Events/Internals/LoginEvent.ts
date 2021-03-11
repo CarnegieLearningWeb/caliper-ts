@@ -4,29 +4,29 @@
  */
 
 import { CredentialType } from '../../Entities/CredentialType';
-import { IDigitalResource } from '../../Entities/DigitalResource';
+import { DigitalResource } from '../../Entities/DigitalResource';
 import { EntityType } from '../../Entities/EntityType';
-import { IInstructor } from '../../Entities/Instructor';
+import { Instructor } from '../../Entities/Instructor';
 import { LoginType } from '../../Entities/LoginType';
-import { IPerson } from '../../Entities/Person';
-import { ISoftwareApplication } from '../../Entities/SoftwareApplication';
-import { IStudent } from '../../Entities/Student';
-import { IUser } from '../../Entities/User';
-import { IUserSession } from '../../Entities/UserSession';
-import { ISystemIdentifier } from '../../SystemIdentifier';
+import { Person } from '../../Entities/Person';
+import { SoftwareApplication } from '../../Entities/SoftwareApplication';
+import { Student } from '../../Entities/Student';
+import { User } from '../../Entities/User';
+import { UserSession } from '../../Entities/UserSession';
+import { SystemIdentifier } from '../../SystemIdentifier';
 import { CaliperAction } from '../CaliperAction';
-import { ISessionEvent } from '../SessionEvent';
+import { SessionEvent } from '../SessionEvent';
 
-export interface ILoginEvent extends ISessionEvent {
-	actor: IUser | IInstructor | IStudent;
-	object: ISoftwareApplication;
+export interface LoginEvent extends SessionEvent {
+	actor: User | Instructor | Student;
+	object: SoftwareApplication;
 	action: CaliperAction;
-	session: ILoginEventUserSession;
-	target?: IDigitalResource;
-	referrer?: IDigitalResource | ISoftwareApplication;
+	session: LoginEventUserSession;
+	target?: DigitalResource;
+	referrer?: DigitalResource | SoftwareApplication;
 }
 
-export interface ILoginEventUserSession extends IUserSession {
+export interface LoginEventUserSession extends UserSession {
 	id: string;
 	loginType: LoginType;
 	credentials: CredentialType[];
@@ -34,10 +34,10 @@ export interface ILoginEventUserSession extends IUserSession {
 	userAgent: string;
 	ipAddress: string;
 	localTimestamp: string;
-	user?: IPerson | IUser | IInstructor | IStudent;
+	user?: Person | User | Instructor | Student;
 }
 
-export interface ILoginEventUserSessionParams {
+export interface LoginEventUserSessionParams {
 	id: string;
 	loginType: LoginType;
 	credentials: CredentialType[];
@@ -45,7 +45,7 @@ export interface ILoginEventUserSessionParams {
 	userAgent: string;
 	ipAddress: string;
 	localTimestamp: string;
-	user?: IPerson | IUser | IInstructor | IStudent;
+	user?: Person | User | Instructor | Student;
 	startedAtTime?: string;
 	endedAtTime?: string;
 	duration?: string;
@@ -53,13 +53,13 @@ export interface ILoginEventUserSessionParams {
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function LoginEvent_UserSession(
-	params: ILoginEventUserSessionParams
-): ILoginEventUserSession {
+export function createLoginEventUserSession(
+	params: LoginEventUserSessionParams
+): LoginEventUserSession {
 	return {
 		type: EntityType.UserSession,
 		...params,

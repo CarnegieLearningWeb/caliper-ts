@@ -4,47 +4,47 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IEntity } from '../Entities/Entity';
-import { IInstructor } from '../Entities/Instructor';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { ISession } from '../Entities/Session';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
-import { IUser } from '../Entities/User';
+import { Entity } from '../Entities/Entity';
+import { Instructor } from '../Entities/Instructor';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { Session } from '../Entities/Session';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { User } from '../Entities/User';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
 import {
-	IOrganizationEvent,
-	IOrganizationEventDistrict,
-	IOrganizationEventOrganization,
-	IOrganizationEventSchool,
+	OrganizationEvent,
+	OrganizationEventDistrict,
+	OrganizationEventOrganization,
+	OrganizationEventSchool,
 } from './Internals/OrganizationEvent';
 
-export interface IOrganizationCreatedEvent extends IOrganizationEvent {
-	actor: ISoftwareApplication | IUser | IInstructor;
-	object: IOrganizationEventOrganization | IOrganizationEventSchool | IOrganizationEventDistrict;
+export interface OrganizationCreatedEvent extends OrganizationEvent {
+	actor: SoftwareApplication | User | Instructor;
+	object: OrganizationEventOrganization | OrganizationEventSchool | OrganizationEventDistrict;
 }
 
-export interface IOrganizationCreatedEventParams {
-	actor: ISoftwareApplication | IUser | IInstructor;
-	object: IOrganizationEventOrganization | IOrganizationEventSchool | IOrganizationEventDistrict;
+export interface OrganizationCreatedEventParams {
+	actor: SoftwareApplication | User | Instructor;
+	object: OrganizationEventOrganization | OrganizationEventSchool | OrganizationEventDistrict;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function OrganizationCreatedEvent(
-	params: IOrganizationCreatedEventParams,
+export function createOrganizationCreatedEvent(
+	params: OrganizationCreatedEventParams,
 	settings?: CaliperSettings
-): IOrganizationCreatedEvent {
+): OrganizationCreatedEvent {
 	return {
 		'@context': [
 			'http://edgenuity.com/events/organization-created/0-0-2',
@@ -735,6 +735,13 @@ export const OrganizationCreatedEventSchema = {
 					name: {
 						type: 'string',
 					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
 					dateCreated: {
 						type: 'string',
 						format: 'date-time',
@@ -742,13 +749,6 @@ export const OrganizationCreatedEventSchema = {
 					dateModified: {
 						type: 'string',
 						format: 'date-time',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -775,10 +775,12 @@ export const OrganizationCreatedEventSchema = {
 				title: 'Membership',
 				type: 'object',
 				properties: {
-					type: {
-						type: 'string',
-						default: 'Membership',
-						enum: ['Membership'],
+					roles: {
+						type: 'array',
+						items: {
+							title: 'Role',
+							$ref: '#/definitions/Role',
+						},
 					},
 					member: {
 						required: ['id', 'type'],
@@ -822,12 +824,10 @@ export const OrganizationCreatedEventSchema = {
 							},
 						],
 					},
-					roles: {
-						type: 'array',
-						items: {
-							title: 'Role',
-							$ref: '#/definitions/Role',
-						},
+					type: {
+						type: 'string',
+						default: 'Membership',
+						enum: ['Membership'],
 					},
 					status: {
 						title: 'Status',
@@ -871,6 +871,70 @@ export const OrganizationCreatedEventSchema = {
 						additionalProperties: true,
 					},
 				},
+			},
+			Role: {
+				title: 'Role',
+				type: 'string',
+				enum: [
+					'Learner',
+					'Learner#Learner',
+					'Learner#ExternalLearner',
+					'Learner#GuestLearner',
+					'Learner#NonCreditLearner',
+					'Instructor',
+					'Instructor#Instructor',
+					'Instructor#Grader',
+					'Instructor#ExternalInstructor',
+					'Instructor#GuestInstructor',
+					'Instructor#Lecturer',
+					'Instructor#PrimaryInstructor',
+					'Instructor#SecondaryInstructor',
+					'Instructor#TeachingAssistant',
+					'Instructor#TeachingAssistantGroup',
+					'Instructor#TeachingAssistantSection',
+					'Instructor#TeachingAssistantOffering',
+					'Instructor#TeachingAssistantTemplate',
+					'Administrator',
+					'Administrator#Administrator',
+					'Administrator#Developer',
+					'Administrator#Support',
+					'Administrator#SystemAdministrator',
+					'Administrator#ExternalDeveloper',
+					'Administrator#ExternalSupport',
+					'Administrator#ExternalSystemAdministrator',
+					'ContentDeveloper',
+					'ContentDeveloper#ContentDeveloper',
+					'ContentDeveloper#Librarian',
+					'ContentDeveloper#ContentExpert',
+					'ContentDeveloper#ExternalContentExpert',
+					'Manager',
+					'Manager#Manager',
+					'Manager#AreaManager',
+					'Manager#CourseCoordinator',
+					'Manager#Observer',
+					'Manager#ExternalObserver',
+					'Member',
+					'Member#Member',
+					'Mentor',
+					'Mentor#Mentor',
+					'Mentor#Advisor',
+					'Mentor#Auditor',
+					'Mentor#Reviewer',
+					'Mentor#Tutor',
+					'Mentor#LearningFacilitator',
+					'Mentor#ExternalMentor',
+					'Mentor#ExternalAdvisor',
+					'Mentor#ExternalAuditor',
+					'Mentor#ExternalReviewer',
+					'Mentor#ExternalTutor',
+					'Mentor#ExternalLearningFacilitator',
+					'Officer',
+					'Officer#Officer',
+					'Officer#Chair',
+					'Officer#Secretary',
+					'Officer#Treasurer',
+					'Officer#Vice-Chair',
+				],
 			},
 			Person: {
 				title: 'Person',
@@ -1134,70 +1198,6 @@ export const OrganizationCreatedEventSchema = {
 						additionalProperties: true,
 					},
 				},
-			},
-			Role: {
-				title: 'Role',
-				type: 'string',
-				enum: [
-					'Learner',
-					'Learner#Learner',
-					'Learner#ExternalLearner',
-					'Learner#GuestLearner',
-					'Learner#NonCreditLearner',
-					'Instructor',
-					'Instructor#Instructor',
-					'Instructor#Grader',
-					'Instructor#ExternalInstructor',
-					'Instructor#GuestInstructor',
-					'Instructor#Lecturer',
-					'Instructor#PrimaryInstructor',
-					'Instructor#SecondaryInstructor',
-					'Instructor#TeachingAssistant',
-					'Instructor#TeachingAssistantGroup',
-					'Instructor#TeachingAssistantSection',
-					'Instructor#TeachingAssistantOffering',
-					'Instructor#TeachingAssistantTemplate',
-					'Administrator',
-					'Administrator#Administrator',
-					'Administrator#Developer',
-					'Administrator#Support',
-					'Administrator#SystemAdministrator',
-					'Administrator#ExternalDeveloper',
-					'Administrator#ExternalSupport',
-					'Administrator#ExternalSystemAdministrator',
-					'ContentDeveloper',
-					'ContentDeveloper#ContentDeveloper',
-					'ContentDeveloper#Librarian',
-					'ContentDeveloper#ContentExpert',
-					'ContentDeveloper#ExternalContentExpert',
-					'Manager',
-					'Manager#Manager',
-					'Manager#AreaManager',
-					'Manager#CourseCoordinator',
-					'Manager#Observer',
-					'Manager#ExternalObserver',
-					'Member',
-					'Member#Member',
-					'Mentor',
-					'Mentor#Mentor',
-					'Mentor#Advisor',
-					'Mentor#Auditor',
-					'Mentor#Reviewer',
-					'Mentor#Tutor',
-					'Mentor#LearningFacilitator',
-					'Mentor#ExternalMentor',
-					'Mentor#ExternalAdvisor',
-					'Mentor#ExternalAuditor',
-					'Mentor#ExternalReviewer',
-					'Mentor#ExternalTutor',
-					'Mentor#ExternalLearningFacilitator',
-					'Officer',
-					'Officer#Officer',
-					'Officer#Chair',
-					'Officer#Secretary',
-					'Officer#Treasurer',
-					'Officer#Vice-Chair',
-				],
 			},
 			LtiSession: {
 				title: 'LtiSession',

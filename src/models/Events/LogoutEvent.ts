@@ -4,43 +4,46 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IDigitalResource } from '../Entities/DigitalResource';
-import { IEntity } from '../Entities/Entity';
-import { IInstructor } from '../Entities/Instructor';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
-import { IStudent } from '../Entities/Student';
-import { IUser } from '../Entities/User';
+import { DigitalResource } from '../Entities/DigitalResource';
+import { Entity } from '../Entities/Entity';
+import { Instructor } from '../Entities/Instructor';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { Student } from '../Entities/Student';
+import { User } from '../Entities/User';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
-import { ILoginEvent, ILoginEventUserSession } from './Internals/LoginEvent';
+import { LoginEvent, LoginEventUserSession } from './Internals/LoginEvent';
 
-export interface ILogoutEvent extends ILoginEvent {
-	actor: IUser | IInstructor | IStudent;
-	object: ISoftwareApplication;
-	session: ILoginEventUserSession;
-	target?: IDigitalResource;
-	referrer?: IDigitalResource | ISoftwareApplication;
+export interface LogoutEvent extends LoginEvent {
+	actor: User | Instructor | Student;
+	object: SoftwareApplication;
+	session: LoginEventUserSession;
+	target?: DigitalResource;
+	referrer?: DigitalResource | SoftwareApplication;
 }
 
-export interface ILogoutEventParams {
-	actor: IUser | IInstructor | IStudent;
-	object: ISoftwareApplication;
-	session: ILoginEventUserSession;
-	target?: IDigitalResource;
-	referrer?: IDigitalResource | ISoftwareApplication;
+export interface LogoutEventParams {
+	actor: User | Instructor | Student;
+	object: SoftwareApplication;
+	session: LoginEventUserSession;
+	target?: DigitalResource;
+	referrer?: DigitalResource | SoftwareApplication;
 	profile?: CaliperProfile;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
 	extensions?: Record<string, any>;
 }
 
-export function LogoutEvent(params: ILogoutEventParams, settings?: CaliperSettings): ILogoutEvent {
+export function createLogoutEvent(
+	params: LogoutEventParams,
+	settings?: CaliperSettings
+): LogoutEvent {
 	return {
 		'@context': [
 			'http://edgenuity.com/events/logout/0-0-2',

@@ -4,43 +4,43 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IEntity } from '../Entities/Entity';
-import { IInstructor } from '../Entities/Instructor';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { ISession } from '../Entities/Session';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
-import { IStudent } from '../Entities/Student';
-import { IUser } from '../Entities/User';
+import { Entity } from '../Entities/Entity';
+import { Instructor } from '../Entities/Instructor';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { Session } from '../Entities/Session';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { Student } from '../Entities/Student';
+import { User } from '../Entities/User';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
-import { IGroupEvent, IGroupEventClass, IGroupEventGroup } from './Internals/GroupEvent';
+import { GroupEvent, GroupEventClass, GroupEventGroup } from './Internals/GroupEvent';
 
-export interface IGroupUpdatedEvent extends IGroupEvent {
-	actor: ISoftwareApplication | IUser | IInstructor | IStudent;
-	object: IGroupEventGroup | IGroupEventClass;
+export interface GroupUpdatedEvent extends GroupEvent {
+	actor: SoftwareApplication | User | Instructor | Student;
+	object: GroupEventGroup | GroupEventClass;
 }
 
-export interface IGroupUpdatedEventParams {
-	actor: ISoftwareApplication | IUser | IInstructor | IStudent;
-	object: IGroupEventGroup | IGroupEventClass;
+export interface GroupUpdatedEventParams {
+	actor: SoftwareApplication | User | Instructor | Student;
+	object: GroupEventGroup | GroupEventClass;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function GroupUpdatedEvent(
-	params: IGroupUpdatedEventParams,
+export function createGroupUpdatedEvent(
+	params: GroupUpdatedEventParams,
 	settings?: CaliperSettings
-): IGroupUpdatedEvent {
+): GroupUpdatedEvent {
 	return {
 		'@context': [
 			'http://edgenuity.com/events/group-updated/0-0-2',
@@ -695,6 +695,11 @@ export const GroupUpdatedEventSchema = {
 				title: 'Organization',
 				type: 'object',
 				properties: {
+					type: {
+						type: 'string',
+						default: 'Organization',
+						enum: ['Organization'],
+					},
 					subOrganizationOf: {
 						title: 'Organization',
 						allOf: [
@@ -706,11 +711,6 @@ export const GroupUpdatedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
-					},
-					type: {
-						type: 'string',
-						default: 'Organization',
-						enum: ['Organization'],
 					},
 					id: {
 						title: 'Uri',
@@ -965,6 +965,11 @@ export const GroupUpdatedEventSchema = {
 				title: 'Entity',
 				type: 'object',
 				properties: {
+					type: {
+						type: 'string',
+						default: 'Entity',
+						enum: ['Entity'],
+					},
 					dateCreated: {
 						type: 'string',
 						format: 'date-time',
@@ -975,11 +980,6 @@ export const GroupUpdatedEventSchema = {
 					},
 					name: {
 						type: 'string',
-					},
-					type: {
-						type: 'string',
-						default: 'Entity',
-						enum: ['Entity'],
 					},
 					id: {
 						title: 'Uri',

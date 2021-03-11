@@ -3,37 +3,37 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IAgent } from './Agent';
-import { IAttempt } from './Attempt';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Agent } from './Agent';
+import { Attempt } from './Attempt';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 
-export interface IScore extends IEntity {
+export interface Score extends Entity {
 	id: string;
-	attempt?: IAttempt;
+	attempt?: Attempt;
 	maxScore?: number;
 	scoreGiven?: number;
 	comment?: string;
-	scoredBy?: IAgent;
+	scoredBy?: Agent;
 }
 
-export interface IScoreParams {
+export interface ScoreParams {
 	id: string;
-	attempt?: IAttempt;
+	attempt?: Attempt;
 	maxScore?: number;
 	scoreGiven?: number;
 	comment?: string;
-	scoredBy?: IAgent;
+	scoredBy?: Agent;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Score(params: IScoreParams): IScore {
+export function createScore(params: ScoreParams): Score {
 	return {
 		type: EntityType.Score,
 		...params,

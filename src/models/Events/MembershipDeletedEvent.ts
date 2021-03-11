@@ -4,42 +4,42 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IEntity } from '../Entities/Entity';
-import { IInstructor } from '../Entities/Instructor';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { ISession } from '../Entities/Session';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
-import { IUser } from '../Entities/User';
+import { Entity } from '../Entities/Entity';
+import { Instructor } from '../Entities/Instructor';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { Session } from '../Entities/Session';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { User } from '../Entities/User';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
-import { IMembershipEvent, IMembershipEventMembership } from './Internals/MembershipEvent';
+import { MembershipEvent, MembershipEventMembership } from './Internals/MembershipEvent';
 
-export interface IMembershipDeletedEvent extends IMembershipEvent {
-	actor: ISoftwareApplication | IUser | IInstructor;
-	object: IMembershipEventMembership;
+export interface MembershipDeletedEvent extends MembershipEvent {
+	actor: SoftwareApplication | User | Instructor;
+	object: MembershipEventMembership;
 }
 
-export interface IMembershipDeletedEventParams {
-	actor: ISoftwareApplication | IUser | IInstructor;
-	object: IMembershipEventMembership;
+export interface MembershipDeletedEventParams {
+	actor: SoftwareApplication | User | Instructor;
+	object: MembershipEventMembership;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
-	session?: ISession;
-	referrer?: IEntity;
+	target?: Entity;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
+	session?: Session;
+	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function MembershipDeletedEvent(
-	params: IMembershipDeletedEventParams,
+export function createMembershipDeletedEvent(
+	params: MembershipDeletedEventParams,
 	settings?: CaliperSettings
-): IMembershipDeletedEvent {
+): MembershipDeletedEvent {
 	return {
 		'@context': [
 			'http://edgenuity.com/events/membership-deleted/0-0-2',
@@ -1072,9 +1072,6 @@ export const MembershipDeletedEventSchema = {
 						default: 'Entity',
 						enum: ['Entity'],
 					},
-					name: {
-						type: 'string',
-					},
 					dateCreated: {
 						type: 'string',
 						format: 'date-time',
@@ -1086,6 +1083,9 @@ export const MembershipDeletedEventSchema = {
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
 					},
 					description: {
 						type: 'string',

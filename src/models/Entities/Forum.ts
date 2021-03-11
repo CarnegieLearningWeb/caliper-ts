@@ -3,33 +3,33 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IDigitalResourceCollection } from './DigitalResourceCollection';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { DigitalResourceCollection } from './DigitalResourceCollection';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
-import { IThread } from './Thread';
+import { Thread } from './Thread';
 
-export interface IForum extends IDigitalResourceCollection {
+export interface Forum extends DigitalResourceCollection {
 	id: string;
-	items?: IThread[];
+	items?: Thread[];
 }
 
-export interface IForumParams {
+export interface ForumParams {
 	id: string;
-	items?: IThread[];
+	items?: Thread[];
 	mediaType?: string;
-	isPartOf?: IEntity;
+	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Forum(params: IForumParams): IForum {
+export function createForum(params: ForumParams): Forum {
 	return {
 		type: EntityType.Forum,
 		learningObjectives: [],

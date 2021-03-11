@@ -3,32 +3,32 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IAgent } from './Agent';
-import { IAnnotation } from './Annotation';
-import { IDigitalResource } from './DigitalResource';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Agent } from './Agent';
+import { Annotation } from './Annotation';
+import { DigitalResource } from './DigitalResource';
 import { EntityType } from './EntityType';
-import { IPerson } from './Person';
+import { Person } from './Person';
 
-export interface ISharedAnnotation extends IAnnotation {
+export interface SharedAnnotation extends Annotation {
 	id: string;
-	withAgents?: IAgent[];
+	withAgents?: Agent[];
 }
 
-export interface ISharedAnnotationParams {
+export interface SharedAnnotationParams {
 	id: string;
-	withAgents?: IAgent[];
-	annotator?: IPerson;
-	annotated?: IDigitalResource;
+	withAgents?: Agent[];
+	annotator?: Person;
+	annotated?: DigitalResource;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function SharedAnnotation(params: ISharedAnnotationParams): ISharedAnnotation {
+export function createSharedAnnotation(params: SharedAnnotationParams): SharedAnnotation {
 	return {
 		type: EntityType.SharedAnnotation,
 		withAgents: [],

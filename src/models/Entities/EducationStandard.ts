@@ -3,25 +3,25 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 
-export interface IEducationStandard extends IEntity {
+export interface EducationStandard extends Entity {
 	id: string;
 }
 
-export interface IEducationStandardParams {
+export interface EducationStandardParams {
 	id: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function EducationStandard(params: IEducationStandardParams): IEducationStandard {
+export function createEducationStandard(params: EducationStandardParams): EducationStandard {
 	return {
 		type: EntityType.EducationStandard,
 		...params,

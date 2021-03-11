@@ -3,87 +3,87 @@
  * This file was automatically generated.
  */
 
-import { IAgent } from '../../Entities/Agent';
+import { Agent } from '../../Entities/Agent';
 import { EntityType } from '../../Entities/EntityType';
-import { IInstructor } from '../../Entities/Instructor';
+import { Instructor } from '../../Entities/Instructor';
 import { InstructorPermissions } from '../../Entities/InstructorPermissions';
-import { ISoftwareApplication } from '../../Entities/SoftwareApplication';
+import { SoftwareApplication } from '../../Entities/SoftwareApplication';
 import { Status } from '../../Entities/Status';
 import { StudentProfileSettings } from '../../Entities/StudentProfileSettings';
-import { IUser } from '../../Entities/User';
-import { ISystemIdentifier } from '../../SystemIdentifier';
+import { User } from '../../Entities/User';
+import { SystemIdentifier } from '../../SystemIdentifier';
 import { CaliperAction } from '../CaliperAction';
-import { IEvent } from '../Event';
+import { Event } from '../Event';
 
-export interface IUserEvent extends IEvent {
-	actor: IAgent | ISoftwareApplication | IUser | IInstructor;
-	object: IUserEventUser | IUserEventInstructor | IUserEventStudent;
+export interface UserEvent extends Event {
+	actor: Agent | SoftwareApplication | User | Instructor;
+	object: UserEventUser | UserEventInstructor | UserEventStudent;
 	action: CaliperAction;
 }
 
-export interface IUserEventUser extends IUser {
+export interface UserEventUser extends User {
 	id: string;
 	dateCreated: string;
 	dateModified: string;
 	status: Status;
 	firstName: string;
 	lastName: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 }
 
-export interface IUserEventUserParams {
+export interface UserEventUserParams {
 	id: string;
 	dateCreated: string;
 	dateModified: string;
 	status: Status;
 	firstName: string;
 	lastName: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	name?: string;
 	description?: string;
 	extensions?: Record<string, any>;
 }
 
-export function UserEvent_User(params: IUserEventUserParams): IUserEventUser {
+export function createUserEventUser(params: UserEventUserParams): UserEventUser {
 	return {
 		type: EntityType.User,
 		...params,
 	};
 }
 
-export interface IUserEventInstructor extends IUserEventUser {
+export interface UserEventInstructor extends UserEventUser {
 	id: string;
 	dateCreated: string;
 	dateModified: string;
 	status: Status;
 	firstName: string;
 	lastName: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	permissions?: InstructorPermissions;
 }
 
-export interface IUserEventInstructorParams {
+export interface UserEventInstructorParams {
 	id: string;
 	dateCreated: string;
 	dateModified: string;
 	status: Status;
 	firstName: string;
 	lastName: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	permissions?: InstructorPermissions;
 	name?: string;
 	description?: string;
 	extensions?: Record<string, any>;
 }
 
-export function UserEvent_Instructor(params: IUserEventInstructorParams): IUserEventInstructor {
+export function createUserEventInstructor(params: UserEventInstructorParams): UserEventInstructor {
 	return {
 		type: EntityType.Instructor,
 		...params,
 	};
 }
 
-export interface IUserEventStudent extends IUserEventUser {
+export interface UserEventStudent extends UserEventUser {
 	id: string;
 	dateCreated: string;
 	dateModified: string;
@@ -93,11 +93,11 @@ export interface IUserEventStudent extends IUserEventUser {
 	gradeLevel: number;
 	individualEducationPlan?: boolean;
 	englishLanguageLearner?: boolean;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	settings?: StudentProfileSettings;
 }
 
-export interface IUserEventStudentParams {
+export interface UserEventStudentParams {
 	id: string;
 	dateCreated: string;
 	dateModified: string;
@@ -107,14 +107,14 @@ export interface IUserEventStudentParams {
 	gradeLevel: number;
 	individualEducationPlan?: boolean;
 	englishLanguageLearner?: boolean;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	settings?: StudentProfileSettings;
 	name?: string;
 	description?: string;
 	extensions?: Record<string, any>;
 }
 
-export function UserEvent_Student(params: IUserEventStudentParams): IUserEventStudent {
+export function createUserEventStudent(params: UserEventStudentParams): UserEventStudent {
 	return {
 		type: EntityType.Student,
 		...params,

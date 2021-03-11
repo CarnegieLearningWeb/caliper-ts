@@ -3,34 +3,34 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
-import { IDigitalResource } from './DigitalResource';
-import { IEntity } from './Entity';
+import { SystemIdentifier } from '../SystemIdentifier';
+import { DigitalResource } from './DigitalResource';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 
-export interface IDigitalResourceCollection extends IDigitalResource {
+export interface DigitalResourceCollection extends DigitalResource {
 	id: string;
-	items?: IDigitalResource[];
+	items?: DigitalResource[];
 }
 
-export interface IDigitalResourceCollectionParams {
+export interface DigitalResourceCollectionParams {
 	id: string;
-	items?: IDigitalResource[];
+	items?: DigitalResource[];
 	mediaType?: string;
-	isPartOf?: IEntity;
+	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function DigitalResourceCollection(
-	params: IDigitalResourceCollectionParams
-): IDigitalResourceCollection {
+export function createDigitalResourceCollection(
+	params: DigitalResourceCollectionParams
+): DigitalResourceCollection {
 	return {
 		type: EntityType.DigitalResourceCollection,
 		learningObjectives: [],

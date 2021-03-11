@@ -3,13 +3,13 @@
  * This file was automatically generated.
  */
 
-import { ISystemIdentifier } from '../SystemIdentifier';
+import { SystemIdentifier } from '../SystemIdentifier';
 import { EntityType } from './EntityType';
 import { Status } from './Status';
 import { StudentProfileSettings } from './StudentProfileSettings';
-import { IUser } from './User';
+import { User } from './User';
 
-export interface IStudent extends IUser {
+export interface Student extends User {
 	id: string;
 	gradeLevel?: number;
 	individualEducationPlan?: boolean;
@@ -17,7 +17,7 @@ export interface IStudent extends IUser {
 	settings?: StudentProfileSettings;
 }
 
-export interface IStudentParams {
+export interface StudentParams {
 	id: string;
 	gradeLevel?: number;
 	individualEducationPlan?: boolean;
@@ -30,11 +30,11 @@ export interface IStudentParams {
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
-	otherIdentifiers?: ISystemIdentifier[];
+	otherIdentifiers?: SystemIdentifier[];
 	extensions?: Record<string, any>;
 }
 
-export function Student(params: IStudentParams): IStudent {
+export function createStudent(params: StudentParams): Student {
 	return {
 		type: EntityType.Student,
 		...params,

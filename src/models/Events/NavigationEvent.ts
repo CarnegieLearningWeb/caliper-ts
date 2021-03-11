@@ -4,47 +4,47 @@
  */
 
 import Caliper, { CaliperSettings } from '../../caliper';
-import { IEntity } from '../Entities/Entity';
-import { IInstructor } from '../Entities/Instructor';
-import { ILtiSession } from '../Entities/LtiSession';
-import { IMembership } from '../Entities/Membership';
-import { IOrganization } from '../Entities/Organization';
-import { IPerson } from '../Entities/Person';
-import { ISession } from '../Entities/Session';
-import { ISoftwareApplication } from '../Entities/SoftwareApplication';
-import { IStudent } from '../Entities/Student';
-import { IUser } from '../Entities/User';
-import { IWebPage } from '../Entities/WebPage';
+import { Entity } from '../Entities/Entity';
+import { Instructor } from '../Entities/Instructor';
+import { LtiSession } from '../Entities/LtiSession';
+import { Membership } from '../Entities/Membership';
+import { Organization } from '../Entities/Organization';
+import { Person } from '../Entities/Person';
+import { Session } from '../Entities/Session';
+import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { Student } from '../Entities/Student';
+import { User } from '../Entities/User';
+import { WebPage } from '../Entities/WebPage';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
-import { IEvent } from './Event';
+import { Event } from './Event';
 import { EventType } from './EventType';
 
-export interface INavigationEvent extends IEvent {
-	actor: IPerson | IUser | IStudent | IInstructor | ISoftwareApplication | IOrganization;
-	object: IWebPage;
-	session: ISession;
-	referrer: ISoftwareApplication | IWebPage;
+export interface NavigationEvent extends Event {
+	actor: Person | User | Student | Instructor | SoftwareApplication | Organization;
+	object: WebPage;
+	session: Session;
+	referrer: SoftwareApplication | WebPage;
 }
 
-export interface INavigationEventParams {
-	actor: IPerson | IUser | IStudent | IInstructor | ISoftwareApplication | IOrganization;
-	object: IWebPage;
-	session: ISession;
-	referrer: ISoftwareApplication | IWebPage;
+export interface NavigationEventParams {
+	actor: Person | User | Student | Instructor | SoftwareApplication | Organization;
+	object: WebPage;
+	session: Session;
+	referrer: SoftwareApplication | WebPage;
 	profile?: CaliperProfile;
-	target?: IEntity;
-	generated?: IEntity;
-	group?: IOrganization;
-	membership?: IMembership;
-	federatedSession?: ILtiSession;
+	target?: Entity;
+	generated?: Entity;
+	group?: Organization;
+	membership?: Membership;
+	federatedSession?: LtiSession;
 	extensions?: Record<string, any>;
 }
 
-export function NavigationEvent(
-	params: INavigationEventParams,
+export function createNavigationEvent(
+	params: NavigationEventParams,
 	settings?: CaliperSettings
-): INavigationEvent {
+): NavigationEvent {
 	return {
 		'@context': [
 			'http://edgenuity.com/events/navigated/0-0-2',
@@ -503,9 +503,6 @@ export const NavigationEventSchema = {
 						default: 'Entity',
 						enum: ['Entity'],
 					},
-					name: {
-						type: 'string',
-					},
 					dateCreated: {
 						type: 'string',
 						format: 'date-time',
@@ -517,6 +514,9 @@ export const NavigationEventSchema = {
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
 					},
 					description: {
 						type: 'string',
@@ -566,11 +566,6 @@ export const NavigationEventSchema = {
 				title: 'Organization',
 				type: 'object',
 				properties: {
-					type: {
-						type: 'string',
-						default: 'Organization',
-						enum: ['Organization'],
-					},
 					subOrganizationOf: {
 						title: 'Organization',
 						allOf: [
@@ -582,6 +577,11 @@ export const NavigationEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					type: {
+						type: 'string',
+						default: 'Organization',
+						enum: ['Organization'],
 					},
 					id: {
 						title: 'Uri',
@@ -626,10 +626,12 @@ export const NavigationEventSchema = {
 				title: 'Membership',
 				type: 'object',
 				properties: {
-					type: {
-						type: 'string',
-						default: 'Membership',
-						enum: ['Membership'],
+					roles: {
+						type: 'array',
+						items: {
+							title: 'Role',
+							$ref: '#/definitions/Role',
+						},
 					},
 					member: {
 						required: ['id', 'type'],
@@ -673,12 +675,10 @@ export const NavigationEventSchema = {
 							},
 						],
 					},
-					roles: {
-						type: 'array',
-						items: {
-							title: 'Role',
-							$ref: '#/definitions/Role',
-						},
+					type: {
+						type: 'string',
+						default: 'Membership',
+						enum: ['Membership'],
 					},
 					status: {
 						title: 'Status',
@@ -722,6 +722,70 @@ export const NavigationEventSchema = {
 						additionalProperties: true,
 					},
 				},
+			},
+			Role: {
+				title: 'Role',
+				type: 'string',
+				enum: [
+					'Learner',
+					'Learner#Learner',
+					'Learner#ExternalLearner',
+					'Learner#GuestLearner',
+					'Learner#NonCreditLearner',
+					'Instructor',
+					'Instructor#Instructor',
+					'Instructor#Grader',
+					'Instructor#ExternalInstructor',
+					'Instructor#GuestInstructor',
+					'Instructor#Lecturer',
+					'Instructor#PrimaryInstructor',
+					'Instructor#SecondaryInstructor',
+					'Instructor#TeachingAssistant',
+					'Instructor#TeachingAssistantGroup',
+					'Instructor#TeachingAssistantSection',
+					'Instructor#TeachingAssistantOffering',
+					'Instructor#TeachingAssistantTemplate',
+					'Administrator',
+					'Administrator#Administrator',
+					'Administrator#Developer',
+					'Administrator#Support',
+					'Administrator#SystemAdministrator',
+					'Administrator#ExternalDeveloper',
+					'Administrator#ExternalSupport',
+					'Administrator#ExternalSystemAdministrator',
+					'ContentDeveloper',
+					'ContentDeveloper#ContentDeveloper',
+					'ContentDeveloper#Librarian',
+					'ContentDeveloper#ContentExpert',
+					'ContentDeveloper#ExternalContentExpert',
+					'Manager',
+					'Manager#Manager',
+					'Manager#AreaManager',
+					'Manager#CourseCoordinator',
+					'Manager#Observer',
+					'Manager#ExternalObserver',
+					'Member',
+					'Member#Member',
+					'Mentor',
+					'Mentor#Mentor',
+					'Mentor#Advisor',
+					'Mentor#Auditor',
+					'Mentor#Reviewer',
+					'Mentor#Tutor',
+					'Mentor#LearningFacilitator',
+					'Mentor#ExternalMentor',
+					'Mentor#ExternalAdvisor',
+					'Mentor#ExternalAuditor',
+					'Mentor#ExternalReviewer',
+					'Mentor#ExternalTutor',
+					'Mentor#ExternalLearningFacilitator',
+					'Officer',
+					'Officer#Officer',
+					'Officer#Chair',
+					'Officer#Secretary',
+					'Officer#Treasurer',
+					'Officer#Vice-Chair',
+				],
 			},
 			Person: {
 				title: 'Person',
@@ -1174,70 +1238,6 @@ export const NavigationEventSchema = {
 						additionalProperties: true,
 					},
 				},
-			},
-			Role: {
-				title: 'Role',
-				type: 'string',
-				enum: [
-					'Learner',
-					'Learner#Learner',
-					'Learner#ExternalLearner',
-					'Learner#GuestLearner',
-					'Learner#NonCreditLearner',
-					'Instructor',
-					'Instructor#Instructor',
-					'Instructor#Grader',
-					'Instructor#ExternalInstructor',
-					'Instructor#GuestInstructor',
-					'Instructor#Lecturer',
-					'Instructor#PrimaryInstructor',
-					'Instructor#SecondaryInstructor',
-					'Instructor#TeachingAssistant',
-					'Instructor#TeachingAssistantGroup',
-					'Instructor#TeachingAssistantSection',
-					'Instructor#TeachingAssistantOffering',
-					'Instructor#TeachingAssistantTemplate',
-					'Administrator',
-					'Administrator#Administrator',
-					'Administrator#Developer',
-					'Administrator#Support',
-					'Administrator#SystemAdministrator',
-					'Administrator#ExternalDeveloper',
-					'Administrator#ExternalSupport',
-					'Administrator#ExternalSystemAdministrator',
-					'ContentDeveloper',
-					'ContentDeveloper#ContentDeveloper',
-					'ContentDeveloper#Librarian',
-					'ContentDeveloper#ContentExpert',
-					'ContentDeveloper#ExternalContentExpert',
-					'Manager',
-					'Manager#Manager',
-					'Manager#AreaManager',
-					'Manager#CourseCoordinator',
-					'Manager#Observer',
-					'Manager#ExternalObserver',
-					'Member',
-					'Member#Member',
-					'Mentor',
-					'Mentor#Mentor',
-					'Mentor#Advisor',
-					'Mentor#Auditor',
-					'Mentor#Reviewer',
-					'Mentor#Tutor',
-					'Mentor#LearningFacilitator',
-					'Mentor#ExternalMentor',
-					'Mentor#ExternalAdvisor',
-					'Mentor#ExternalAuditor',
-					'Mentor#ExternalReviewer',
-					'Mentor#ExternalTutor',
-					'Mentor#ExternalLearningFacilitator',
-					'Officer',
-					'Officer#Officer',
-					'Officer#Chair',
-					'Officer#Secretary',
-					'Officer#Treasurer',
-					'Officer#Vice-Chair',
-				],
 			},
 			LtiSession: {
 				title: 'LtiSession',
