@@ -3,15 +3,13 @@
 	"parserOptions": {
 		"project": [
 			"./tsconfig.json",
-			"./packages/caliper-ts/tsconfig.json",
-			"./packages/caliper-ts/tsconfig.tests.json",
-			"./packages/caliper-ts-models/tsconfig.json"
+			"./tsconfig.tests.json"
 		]
 	},
 	"overrides": [
 		{
 			// Overrides for generated code
-			"files": ["packages/caliper-ts-models/src/**/*.ts"],
+			"files": ["src/models/**/*.ts"],
 			"rules": {
 				"@typescript-eslint/no-explicit-any": "off",
 				"@typescript-eslint/naming-convention": [
