@@ -44,11 +44,11 @@ export interface {Name}{inheritance} {{
 }}
 
 {(!initializers.Any() || Type.IsAbstract ? "" : $@"
-export interface I{className}Params {{
+export interface {className}Params {{
 {string.Join('\n', options.Values.Select(option => $"\t{option};"))}
 }}
 
-export function {className}(params: I{className}Params, settings?: CaliperSettings) : {Name} {{
+export function {FactoryFunctionName}(params: {className}Params, settings?: CaliperSettings) : {Name} {{
     return {{
         {string.Join(",\n\t\t", initializers.Select(_ => $"{_.Key}: {_.Value}"))},
         ...params

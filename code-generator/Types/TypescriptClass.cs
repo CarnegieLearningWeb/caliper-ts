@@ -121,13 +121,14 @@ namespace CodeGenerator.Types
 
 
         protected Func<string> getClassDeclaration;
-        protected string name;
+
+        public virtual string Name { get; protected set; }
 
         public virtual Type Type { get; protected set; }
 
-        public virtual string Name => InterfaceTypes.FirstOrDefault(_ => _.IsAssignableFrom(Type)) == null ? name : $"I{name}";
-
         public virtual string ImportName => Name;
+
+        public virtual string FactoryFunctionName => $"create{Type.GetTypescriptName()}";
 
         public Dictionary<string, Dictionary<string, object>> Imports { get; protected set; }
 
@@ -143,7 +144,7 @@ namespace CodeGenerator.Types
         protected TypescriptClass(Type type, string name)
         {
             Type = type;
-            this.name = name;
+            this.Name = name;
         }
 
         protected TypescriptClass(Type type, TypescriptClassCollection userTypes) : this(type)
@@ -339,11 +340,11 @@ export interface {Name}{inheritance} {{
 }}
 
 {(!initializers.Any() || Type.IsAbstract ? "" : $@"
-export interface I{Type.GetTypescriptName()}Params {{
+export interface {Type.GetTypescriptName()}Params {{
 {string.Join('\n', options.Values.Select(option => $"\t{option};"))}
 }}
 
-export function {Type.FullName.Split('.').Last().Replace("+", "_")}(params: I{Type.GetTypescriptName()}Params) : {Name} {{
+export function {FactoryFunctionName}(params: {Type.GetTypescriptName()}Params) : {Name} {{
     return {{
         {string.Join(",\n\t\t", initializers.Select(_ => $"{_.Key}: {_.Value}"))},
         ...params

@@ -28,11 +28,11 @@ export interface {Name}{inheritance} {{
 }}
 
 {(!initializers.Any() ? "" : $@"
-export interface I{Type.GetTypescriptName()}Params {{
+export interface {Type.GetTypescriptName()}Params {{
 {string.Join('\n', options.Values.Select(option => $"\t{option};"))}
 }}
 
-export function {Type.FullName.Split('.').Last().Replace("+", "_")}(params: I{Type.GetTypescriptName()}Params) : {Name} {{
+export function {FactoryFunctionName}(params: {Type.GetTypescriptName()}Params) : {Name} {{
     return {{
         id: `urn:domain:${{params.standard.toLocaleUpperCase()}}${{params.code.toLocaleUpperCase()}}`,
         {string.Join(",\n\t\t", initializers.Select(_ => $"{_.Key}: {_.Value}"))},
