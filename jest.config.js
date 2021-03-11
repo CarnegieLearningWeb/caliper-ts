@@ -3,6 +3,7 @@ module.exports = {
 		'<rootDir>/node_modules/',
 		'<rootDir>/src/index.ts',
 		'<rootDir>/src/models/',
+		'<rootDir/src/test/',
 	],
 	moduleNameMapper: {
 		// Need to map to the UMD build of ky for tests, since Jest can't properly handle ES modules
