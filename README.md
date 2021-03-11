@@ -58,8 +58,8 @@ sensor.registerClient(client);
 
 // Set Event property values
 // Note: only actor and object property assignments shown
-const actor = Person({ id: 'https://example.edu/users/554433' });
-const object = Assessment({
+const actor = createPerson({ id: 'https://example.edu/users/554433' });
+const object = createAssessment({
 	id: 'https://example.edu/terms/201801/courses/7/sections/1/assess/1',
 	dateToStartOn: getFormattedDateTime('2018-08-16T05:00:00.000Z'),
 	dateToSubmit: getFormattedDateTime('2018-09-28T11:59:59.000Z'),
@@ -69,15 +69,15 @@ const object = Assessment({
 });
 
 // ... Use the entity factories to mint additional entity values.
-const membership = Membership({
+const membership = createMembership({
 	// ...
 });
-const session = Session({
+const session = createSession({
 	// ...
 });
 
 // Create Event
-const event = sensor.createEvent(AssessmentEvent, {
+const event = sensor.createEvent(createAssessmentEvent, {
 	actor,
 	action: Action.Started,
 	object,
@@ -148,7 +148,7 @@ Creates a new `Envelope` object with the specified options, where the `data` fie
 - `data?: T | T[]`: Object(s) to be transmitted in the envelope, typically an `Event`, `Entity`, or combination.
 
 ```ts
-const data = sensor.createEvent(SessionEvent, {
+const data = sensor.createEvent(createSessionEvent, {
 	// See documentation on creating events
 });
 const envelope = sensor.createEnvelope<SessionEvent>({ data });
@@ -169,7 +169,7 @@ console.log(envelope);
 */
 ```
 
-#### `Sensor.createEvent<TEvent extends IEvent, TParams>(eventFactory: (params: TParams, settings?: CaliperSettings) => TEvent, params: TParams): TEvent
+#### `Sensor.createEvent<TEvent extends Event, TParams>(eventFactory: (params: TParams, settings?: CaliperSettings) => TEvent, params: TParams): TEvent
 
 Creates a new event of type `TEvent` using the provided factory function and the `CaliperSettings` object from the `Sensor` instance.
 
@@ -190,8 +190,8 @@ const sensor = new Sensor(
 	}
 );
 
-const event = sensor.createEvent(AssessmentEvent, {
-	// ... data for IAssessmentEventParams
+const event = sensor.createEvent(createAssessmentEvent, {
+	// ... data for AssessmentEventParams
 });
 console.log(event);
 /* => {
@@ -384,7 +384,7 @@ Caliper entities can be created through factory functions provided by the _calip
 Each factory function takes a single parameters: a delegate, which is an object defining values for properties to be set in the entity (see the [Entity Subtypes section of the Caliper Spec](https://www.imsglobal.org/sites/default/files/caliper/v1p1/caliper-spec-v1p1/caliper-spec-v1p1.html#entities)).
 
 ```ts
-const assessment = Assessment({
+const assessment = createAssessment({
 	dateCreated: '2016-08-01T06:00:00.000Z',
 	dateModified: '2016-09-02T11:30:00.000Z',
 	datePublished: '2016-08-15T09:30:00.000Z',
@@ -447,18 +447,18 @@ console.log(assessment);
 
 ### Event factory functions
 
-Caliper events can be created through factory functions provided by the _caliper-ts-models_ library.
+Caliper events can be created through factory functions.
 Each factory function takes two parameters: 1) a delegate, which is an object defining values for properties to be set in the event (see the [Event Subtypes section of the Caliper Spec](https://www.imsglobal.org/sites/default/files/caliper/v1p1/caliper-spec-v1p1/caliper-spec-v1p1.html#events)), and 2) an optional `CaliperSettings` object to use for populating the `edApp` property in the event.
 
 The recommended way to create events is to use the `createEvent` function on the `Sensor` object.
 This function takes the factory function and delegate object as parameters, and automatically passes the `CaliperSettings` object from the `Sensor` instance to the factory function.
 
 ```ts
-const sessionEvent = sensor.createEvent(SessionEvent, {
+const sessionEvent = sensor.createEvent(createSessionEvent, {
 	action: Action.LoggedIn,
-	actor: CreatePerson({ id: 'https://example.edu/users/554433' }),
-	object: SoftwareApplication({ id: 'https://example.edu', version: 'v2' }),
-	session: Session({
+	actor: createPerson({ id: 'https://example.edu/users/554433' }),
+	object: createSoftwareApplication({ id: 'https://example.edu', version: 'v2' }),
+	session: createSession({
 		dateCreated: '2016-11-15T10:00:00.000Z',
 		id: 'https://example.edu/sessions/1f6442a482de72ea6ad134943812bff564a76259',
 		startedAtTime: '2016-11-15T10:00:00.000Z',
