@@ -1,10 +1,7 @@
 {
 	"extends": ["@imaginelearning/eslint-config/base"],
 	"parserOptions": {
-		"project": [
-			"./tsconfig.json",
-			"./tsconfig.tests.json"
-		]
+		"project": ["./tsconfig.json", "./tsconfig.tests.json"]
 	},
 	"overrides": [
 		{
@@ -15,8 +12,7 @@
 				"@typescript-eslint/naming-convention": [
 					"error",
 					{ "selector": "default", "format": ["camelCase"] },
-					// Generated code is coming from C#, so don't enforce naming conventions for functions
-					{ "selector": "function", "format": null },
+					{ "selector": "function", "format": ["camelCase", "PascalCase"] },
 					{ "selector": "typeLike", "format": ["PascalCase"] },
 					// Allow UPPER_CASE for enums
 					{ "selector": "enumMember", "format": ["PascalCase", "UPPER_CASE"] },
