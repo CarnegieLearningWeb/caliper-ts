@@ -609,7 +609,7 @@ Per Palmer Group guidelines, [always use named exports.](https://github.com/palm
 
 ## Code generation
 
-This repository also contains a [`code-generator` project](code-generator), which is a C# project used to generate TypeScript definitions for events and entities in the `caliper-ts-models` library using the [.NET Caliper Sensor Library](https://github.com/edgenuity/caliper-net).
+This repository also contains a [`code-generator` project](code-generator), which is a C# project used to generate TypeScript definitions for events and entities using the [.NET Caliper Sensor Library](https://github.com/edgenuity/caliper-net).
 
 A **generate-caliper.ps1** script file is also included to execute the code-generator project. Before running this script file, it is recommended to first update the NuGet package for the .NET Caliper Sensor Library.
 
