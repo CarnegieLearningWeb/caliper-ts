@@ -12,9 +12,9 @@ namespace CodeGenerator
     class Program
     {
         static readonly string GENERATED_FILE_HEADER = @"/**
-* DO NOT EDIT!
-* This file was automatically generated.
-*/";
+ * DO NOT EDIT!
+ * This file was automatically generated.
+ */";
 
         static void Main(string[] args)
         {
@@ -104,9 +104,7 @@ export const schemas = {{
             {
                 GENERATED_FILE_HEADER,
                 "",
-                "export { default as Caliper, CaliperDuration, CaliperSettings, CaliperTimestamp } from './caliper';",
                 "export * from './schemas';",
-                "",
             });
             using (var writer = new StreamWriter($"{destination}/index.ts"))
             {
