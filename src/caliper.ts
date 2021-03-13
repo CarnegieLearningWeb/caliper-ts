@@ -18,6 +18,17 @@ export interface CaliperSettings {
 export type CaliperTimestamp = string;
 export type CaliperDuration = string;
 
+export interface URN {
+	/**
+	 * Namespace identifier(s)
+	 */
+	nid: string | string[];
+	/**
+	 * Namespace-specific string(s)
+	 */
+	nss: string | string[];
+}
+
 /**
  * Global settings for Caliper
  */
@@ -32,6 +43,16 @@ const settings: CaliperSettings = {
  */
 function uuid(guid?: string) {
 	return `urn:uuid:${guid ?? v4()}`;
+}
+
+/**
+ * Creates a Caliper compliant URN from the specified namespace identifier(s)
+ * and namespace-specific string(s)
+ */
+function urn({ nid, nss }: URN) {
+	return `urn:${Array.isArray(nid) ? nid.join(':') : nid}:${
+		Array.isArray(nss) ? nss.join(':') : nss
+	}`.toLowerCase();
 }
 
 /**
@@ -78,4 +99,4 @@ function duration(startedAtTime: Date | string, endedAtTime: Date | string): Cal
 	return formatISODuration(intervalToDuration({ start, end }));
 }
 
-export default { settings, uuid, edApp, timestamp, duration };
+export default { settings, uuid, urn, edApp, timestamp, duration };

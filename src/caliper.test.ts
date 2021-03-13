@@ -17,6 +17,24 @@ describe('Caliper module', () => {
 		});
 	});
 
+	describe('Caliper.urn', () => {
+		const expected = 'urn:wne:guid_of_awesomeness';
+
+		it('returns a properly formatted URN', () => {
+			const urn = { nid: 'WNE', nss: 'GUID_OF_AWESOMENESS' };
+			const actual = Caliper.urn(urn);
+			expect(actual).toBe(expected);
+		});
+
+		it('returns properly formatted URN given arrays for `nid` and `nss`', () => {
+			const urn = Caliper.urn({
+				nid: ['WNE', 'IL'],
+				nss: ['GUID_OF_AWESOMENESS', 'ANOTHER_IDENTIFIER'],
+			});
+			expect(urn).toBe('urn:wne:il:guid_of_awesomeness:another_identifier');
+		});
+	});
+
 	describe('Caliper.edApp', () => {
 		it('Caliper.edApp OK', () => {
 			const model = {
