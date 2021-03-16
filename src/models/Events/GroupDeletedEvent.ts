@@ -3,7 +3,7 @@
  * This file was automatically generated.
  */
 
-import Caliper, { CaliperSettings } from '../../caliper';
+import Caliper from '../../caliper';
 import { Class } from '../Entities/Class';
 import { Entity } from '../Entities/Entity';
 import { Group } from '../Entities/Group';
@@ -41,7 +41,7 @@ export interface GroupDeletedEventParams {
 
 export function createGroupDeletedEvent(
 	params: GroupDeletedEventParams,
-	settings?: CaliperSettings
+	edApp?: SoftwareApplication
 ): GroupDeletedEvent {
 	return {
 		'@context': [
@@ -52,7 +52,7 @@ export function createGroupDeletedEvent(
 		action: CaliperAction.Deleted,
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as SoftwareApplication,
+		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
 		...params,
 	};
 }

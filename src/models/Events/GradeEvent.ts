@@ -3,7 +3,7 @@
  * This file was automatically generated.
  */
 
-import Caliper, { CaliperSettings } from '../../caliper';
+import Caliper from '../../caliper';
 import { Agent } from '../Entities/Agent';
 import { Attempt } from '../Entities/Attempt';
 import { Entity } from '../Entities/Entity';
@@ -39,14 +39,17 @@ export interface GradeEventParams {
 	extensions?: Record<string, any>;
 }
 
-export function createGradeEvent(params: GradeEventParams, settings?: CaliperSettings): GradeEvent {
+export function createGradeEvent(
+	params: GradeEventParams,
+	edApp?: SoftwareApplication
+): GradeEvent {
 	return {
 		type: EventType.GradeEvent,
 		action: CaliperAction.None,
 		'@context': ['http://purl.imsglobal.org/ctx/caliper/v1p2'],
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as SoftwareApplication,
+		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
 		...params,
 	};
 }

@@ -3,7 +3,7 @@
  * This file was automatically generated.
  */
 
-import Caliper, { CaliperSettings } from '../../caliper';
+import Caliper from '../../caliper';
 import { Agent } from '../Entities/Agent';
 import { Entity } from '../Entities/Entity';
 import { Instructor } from '../Entities/Instructor';
@@ -40,7 +40,7 @@ export interface IlpRetrievedEventParams {
 
 export function createIlpRetrievedEvent(
 	params: IlpRetrievedEventParams,
-	settings?: CaliperSettings
+	edApp?: SoftwareApplication
 ): IlpRetrievedEvent {
 	return {
 		'@context': [
@@ -51,7 +51,7 @@ export function createIlpRetrievedEvent(
 		type: EventType.IlpEvent,
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as SoftwareApplication,
+		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
 		...params,
 	};
 }

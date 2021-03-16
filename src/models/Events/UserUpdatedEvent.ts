@@ -3,7 +3,7 @@
  * This file was automatically generated.
  */
 
-import Caliper, { CaliperSettings } from '../../caliper';
+import Caliper from '../../caliper';
 import { Entity } from '../Entities/Entity';
 import { Instructor } from '../Entities/Instructor';
 import { LtiSession } from '../Entities/LtiSession';
@@ -43,7 +43,7 @@ export interface UserUpdatedEventParams {
 
 export function createUserUpdatedEvent(
 	params: UserUpdatedEventParams,
-	settings?: CaliperSettings
+	edApp?: SoftwareApplication
 ): UserUpdatedEvent {
 	return {
 		'@context': [
@@ -54,7 +54,7 @@ export function createUserUpdatedEvent(
 		type: EventType.UserEvent,
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as SoftwareApplication,
+		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
 		...params,
 	};
 }

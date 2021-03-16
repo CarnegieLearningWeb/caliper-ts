@@ -3,7 +3,7 @@
  * This file was automatically generated.
  */
 
-import Caliper, { CaliperSettings } from '../../caliper';
+import Caliper from '../../caliper';
 import { DigitalResource } from '../Entities/DigitalResource';
 import { Entity } from '../Entities/Entity';
 import { LtiSession } from '../Entities/LtiSession';
@@ -40,7 +40,7 @@ export interface AssessmentItemEventParams {
 
 export function createAssessmentItemEvent(
 	params: AssessmentItemEventParams,
-	settings?: CaliperSettings
+	edApp?: SoftwareApplication
 ): AssessmentItemEvent {
 	return {
 		type: EventType.AssessmentItemEvent,
@@ -48,7 +48,7 @@ export function createAssessmentItemEvent(
 		'@context': ['http://purl.imsglobal.org/ctx/caliper/v1p2'],
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as SoftwareApplication,
+		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
 		...params,
 	};
 }

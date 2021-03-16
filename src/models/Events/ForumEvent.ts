@@ -3,7 +3,7 @@
  * This file was automatically generated.
  */
 
-import Caliper, { CaliperSettings } from '../../caliper';
+import Caliper from '../../caliper';
 import { Entity } from '../Entities/Entity';
 import { Forum } from '../Entities/Forum';
 import { LtiSession } from '../Entities/LtiSession';
@@ -38,14 +38,17 @@ export interface ForumEventParams {
 	extensions?: Record<string, any>;
 }
 
-export function createForumEvent(params: ForumEventParams, settings?: CaliperSettings): ForumEvent {
+export function createForumEvent(
+	params: ForumEventParams,
+	edApp?: SoftwareApplication
+): ForumEvent {
 	return {
 		type: EventType.ForumEvent,
 		action: CaliperAction.None,
 		'@context': ['http://purl.imsglobal.org/ctx/caliper/v1p2'],
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as SoftwareApplication,
+		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
 		...params,
 	};
 }

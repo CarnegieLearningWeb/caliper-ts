@@ -3,7 +3,7 @@
  * This file was automatically generated.
  */
 
-import Caliper, { CaliperSettings } from '../../caliper';
+import Caliper from '../../caliper';
 import { CredentialType } from '../Entities/CredentialType';
 import { DigitalResource } from '../Entities/DigitalResource';
 import { Entity } from '../Entities/Entity';
@@ -47,7 +47,7 @@ export interface LoginFailedEventParams {
 
 export function createLoginFailedEvent(
 	params: LoginFailedEventParams,
-	settings?: CaliperSettings
+	edApp?: SoftwareApplication
 ): LoginFailedEvent {
 	return {
 		'@context': [
@@ -58,7 +58,7 @@ export function createLoginFailedEvent(
 		type: EventType.SessionEvent,
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as SoftwareApplication,
+		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
 		...params,
 	};
 }

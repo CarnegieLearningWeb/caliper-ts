@@ -3,7 +3,7 @@
  * This file was automatically generated.
  */
 
-import Caliper, { CaliperSettings } from '../../caliper';
+import Caliper from '../../caliper';
 import { Agent } from '../Entities/Agent';
 import { Entity } from '../Entities/Entity';
 import { LtiSession } from '../Entities/LtiSession';
@@ -56,14 +56,14 @@ export interface EventParams {
 	extensions?: Record<string, any>;
 }
 
-export function createEvent(params: EventParams, settings?: CaliperSettings): Event {
+export function createEvent(params: EventParams, edApp?: SoftwareApplication): Event {
 	return {
 		'@context': ['http://purl.imsglobal.org/ctx/caliper/v1p2'],
 		id: Caliper.uuid(),
 		type: EventType.Event,
 		action: CaliperAction.None,
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as SoftwareApplication,
+		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
 		...params,
 	};
 }

@@ -3,7 +3,7 @@
  * This file was automatically generated.
  */
 
-import Caliper, { CaliperSettings } from '../../caliper';
+import Caliper from '../../caliper';
 import { Entity } from '../Entities/Entity';
 import { LtiSession } from '../Entities/LtiSession';
 import { Membership } from '../Entities/Membership';
@@ -37,7 +37,7 @@ export interface ToolUseEventParams {
 
 export function createToolUseEvent(
 	params: ToolUseEventParams,
-	settings?: CaliperSettings
+	edApp?: SoftwareApplication
 ): ToolUseEvent {
 	return {
 		type: EventType.ToolUseEvent,
@@ -45,7 +45,7 @@ export function createToolUseEvent(
 		'@context': ['http://purl.imsglobal.org/ctx/caliper/v1p2'],
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as SoftwareApplication,
+		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
 		...params,
 	};
 }

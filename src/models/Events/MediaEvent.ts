@@ -3,7 +3,7 @@
  * This file was automatically generated.
  */
 
-import Caliper, { CaliperSettings } from '../../caliper';
+import Caliper from '../../caliper';
 import { Entity } from '../Entities/Entity';
 import { LtiSession } from '../Entities/LtiSession';
 import { MediaObject } from '../Entities/MediaObject';
@@ -38,14 +38,17 @@ export interface MediaEventParams {
 	extensions?: Record<string, any>;
 }
 
-export function createMediaEvent(params: MediaEventParams, settings?: CaliperSettings): MediaEvent {
+export function createMediaEvent(
+	params: MediaEventParams,
+	edApp?: SoftwareApplication
+): MediaEvent {
 	return {
 		type: EventType.MediaEvent,
 		action: CaliperAction.None,
 		'@context': ['http://purl.imsglobal.org/ctx/caliper/v1p2'],
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as SoftwareApplication,
+		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
 		...params,
 	};
 }

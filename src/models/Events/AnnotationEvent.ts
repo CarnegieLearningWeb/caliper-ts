@@ -3,7 +3,7 @@
  * This file was automatically generated.
  */
 
-import Caliper, { CaliperSettings } from '../../caliper';
+import Caliper from '../../caliper';
 import { BookmarkAnnotation } from '../Entities/BookmarkAnnotation';
 import { DigitalResource } from '../Entities/DigitalResource';
 import { Entity } from '../Entities/Entity';
@@ -45,7 +45,7 @@ export interface AnnotationEventParams {
 
 export function createAnnotationEvent(
 	params: AnnotationEventParams,
-	settings?: CaliperSettings
+	edApp?: SoftwareApplication
 ): AnnotationEvent {
 	return {
 		type: EventType.AnnotationEvent,
@@ -53,7 +53,7 @@ export function createAnnotationEvent(
 		'@context': ['http://purl.imsglobal.org/ctx/caliper/v1p2'],
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as SoftwareApplication,
+		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
 		...params,
 	};
 }

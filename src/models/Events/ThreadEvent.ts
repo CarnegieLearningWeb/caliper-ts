@@ -3,7 +3,7 @@
  * This file was automatically generated.
  */
 
-import Caliper, { CaliperSettings } from '../../caliper';
+import Caliper from '../../caliper';
 import { Entity } from '../Entities/Entity';
 import { LtiSession } from '../Entities/LtiSession';
 import { Membership } from '../Entities/Membership';
@@ -40,7 +40,7 @@ export interface ThreadEventParams {
 
 export function createThreadEvent(
 	params: ThreadEventParams,
-	settings?: CaliperSettings
+	edApp?: SoftwareApplication
 ): ThreadEvent {
 	return {
 		type: EventType.ThreadEvent,
@@ -48,7 +48,7 @@ export function createThreadEvent(
 		'@context': ['http://purl.imsglobal.org/ctx/caliper/v1p2'],
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as SoftwareApplication,
+		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
 		...params,
 	};
 }

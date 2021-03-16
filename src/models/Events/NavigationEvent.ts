@@ -3,7 +3,7 @@
  * This file was automatically generated.
  */
 
-import Caliper, { CaliperSettings } from '../../caliper';
+import Caliper from '../../caliper';
 import { Entity } from '../Entities/Entity';
 import { Instructor } from '../Entities/Instructor';
 import { LtiSession } from '../Entities/LtiSession';
@@ -43,7 +43,7 @@ export interface NavigationEventParams {
 
 export function createNavigationEvent(
 	params: NavigationEventParams,
-	settings?: CaliperSettings
+	edApp?: SoftwareApplication
 ): NavigationEvent {
 	return {
 		'@context': [
@@ -54,7 +54,7 @@ export function createNavigationEvent(
 		action: CaliperAction.NavigatedTo,
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as SoftwareApplication,
+		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
 		...params,
 	};
 }

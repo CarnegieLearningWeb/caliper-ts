@@ -3,7 +3,7 @@
  * This file was automatically generated.
  */
 
-import Caliper, { CaliperSettings } from '../../caliper';
+import Caliper from '../../caliper';
 import { Attempt } from '../Entities/Attempt';
 import { Entity } from '../Entities/Entity';
 import { LtiSession } from '../Entities/LtiSession';
@@ -39,7 +39,7 @@ export interface LessonStartedEventParams {
 
 export function createLessonStartedEvent(
 	params: LessonStartedEventParams,
-	settings?: CaliperSettings
+	edApp?: SoftwareApplication
 ): LessonStartedEvent {
 	return {
 		'@context': [
@@ -50,7 +50,7 @@ export function createLessonStartedEvent(
 		type: EventType.LessonEvent,
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as SoftwareApplication,
+		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
 		...params,
 	};
 }

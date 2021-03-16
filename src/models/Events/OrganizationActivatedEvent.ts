@@ -3,7 +3,7 @@
  * This file was automatically generated.
  */
 
-import Caliper, { CaliperSettings } from '../../caliper';
+import Caliper from '../../caliper';
 import { District } from '../Entities/District';
 import { Entity } from '../Entities/Entity';
 import { Instructor } from '../Entities/Instructor';
@@ -40,7 +40,7 @@ export interface OrganizationActivatedEventParams {
 
 export function createOrganizationActivatedEvent(
 	params: OrganizationActivatedEventParams,
-	settings?: CaliperSettings
+	edApp?: SoftwareApplication
 ): OrganizationActivatedEvent {
 	return {
 		'@context': [
@@ -51,7 +51,7 @@ export function createOrganizationActivatedEvent(
 		action: CaliperAction.Activated,
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
-		edApp: Caliper.edApp(settings) as SoftwareApplication,
+		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
 		...params,
 	};
 }
