@@ -1,10 +1,10 @@
 export enum JsonLdContextVersion {
-	none = 'none',
-	v1p1 = 'v1p1',
-	v1p2 = 'v1p2'
+	None = 'none',
+	V1P1 = 'v1p1',
+	V2P2 = 'v1p2',
 }
 
-type JsonLdContexts = {
+interface JsonLdContexts {
 	default: string;
 	feedback: string;
 	resourceManagement: string;
@@ -12,7 +12,7 @@ type JsonLdContexts = {
 	survey: string;
 	toolLaunch: string;
 	toolUse: string;
-};
+}
 
 export interface Config {
 	dataFormat: string;
@@ -24,22 +24,23 @@ export interface Config {
 
 export const DEFAULT_CONFIG: Config = {
 	dataFormat: 'JSON-LD',
-	dataVersion: JsonLdContextVersion.v1p1,
+	dataVersion: JsonLdContextVersion.V1P1,
 	dateTimeFormat: 'YYYY-MM-DDTHH:mm:ss.SSSZ',
 	jsonldContext: {
-		[JsonLdContextVersion.none]: undefined,
-		[JsonLdContextVersion.v1p1]: {
+		[JsonLdContextVersion.None]: undefined,
+		[JsonLdContextVersion.V1P1]: {
 			default: 'http://purl.imsglobal.org/ctx/caliper/v1p1',
 			feedback: 'http://purl.imsglobal.org/ctx/caliper/v1p1/FeedbackProfile-extension',
-			resourceManagement: 'http://purl.imsglobal.org/ctx/caliper/v1p1/ResourceManagementProfile-extension',
+			resourceManagement:
+				'http://purl.imsglobal.org/ctx/caliper/v1p1/ResourceManagementProfile-extension',
 			search: 'http://purl.imsglobal.org/ctx/caliper/v1p1/SearchProfile-extension',
 			survey: 'http://purl.imsglobal.org/ctx/caliper/v1p1/SurveyProfile-extension',
 			toolLaunch: 'http://purl.imsglobal.org/ctx/caliper/v1p1/ToolLaunchProfile-extension',
-			toolUse: 'http://purl.imsglobal.org/ctx/caliper/v1p1/ToolUseProfile-extension'
+			toolUse: 'http://purl.imsglobal.org/ctx/caliper/v1p1/ToolUseProfile-extension',
 		},
-		[JsonLdContextVersion.v1p2]: 'http://purl.imsglobal.org/ctx/caliper/v1p2'
+		[JsonLdContextVersion.V2P2]: 'http://purl.imsglobal.org/ctx/caliper/v1p2',
 	},
-	uuidVersion: 4
+	uuidVersion: 4,
 };
 
 export function getJsonLdContext(
@@ -51,14 +52,17 @@ export function getJsonLdContext(
 	return typeof context === 'object' ? context[subVersion] : context;
 }
 
-export function compareJsonLdContextVersions(context1?: JsonLdContextVersion, context2?: JsonLdContextVersion) {
+export function compareJsonLdContextVersions(
+	context1?: JsonLdContextVersion,
+	context2?: JsonLdContextVersion
+) {
 	if (context1 === context2) {
 		return 0;
 	}
 	if (
 		!context1 ||
-		context1 === JsonLdContextVersion.none ||
-		(context1 === JsonLdContextVersion.v1p1 && context2 === JsonLdContextVersion.v1p2)
+		context1 === JsonLdContextVersion.None ||
+		(context1 === JsonLdContextVersion.V1P1 && context2 === JsonLdContextVersion.V2P2)
 	) {
 		return -1;
 	}

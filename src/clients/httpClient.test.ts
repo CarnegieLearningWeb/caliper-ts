@@ -34,7 +34,9 @@ describe('HttpClient', () => {
 			});
 
 			it('throws error if options not specified', () => {
-				expect(() => new HttpClient('id', {} as ClientOptions)).toThrowError(new Error('No options have been provided.'));
+				expect(() => new HttpClient('id', {} as ClientOptions)).toThrowError(
+					new Error('No options have been provided.')
+				);
 			});
 		});
 
@@ -110,12 +112,12 @@ describe('HttpClient', () => {
 
 	describe('httpClient(..)', () => {
 		it('returns instance of HttpClient', () => {
-			const client = httpClient('id', 'https://example.com');
+			client = httpClient('id', 'https://example.com');
 			expect(client).toBeInstanceOf(HttpClient);
 		});
 
 		it('initializes client with bearer token if specified', async () => {
-			const client = httpClient('id', 'https://example.com', 'my-token');
+			client = httpClient('id', 'https://example.com', 'my-token');
 			const envelope = createEnvelope({ data: [{ hello: 'world' }], sensor: 'id' });
 			await client.send(envelope);
 			const { headers } = fetchMock.mock.calls[0][0] as Request;

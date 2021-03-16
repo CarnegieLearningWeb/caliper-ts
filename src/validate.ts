@@ -1,21 +1,22 @@
-import { Validator } from 'jsonschema';
+import { validate as validateSchema } from 'jsonschema';
+import { Event } from './models/Events/Event';
+import { schemas } from './models/schemas';
 
-import { IEvent } from './Events/Event';
-import { schemas } from './schemas';
-
-export function getSchema(event: IEvent) {
-	return schemas[event['@context'][0]];
+function getSchema<T extends Event>(event: T) {
+	const [context] = event['@context'];
+	return schemas[context];
 }
 
-export function validate(event: IEvent, schema?: { [key: string]: any }) {
+export function validate<T extends Event>(
+	event: T,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	schema: Record<string, any> = getSchema(event)
+) {
 	if (!schema) {
-		schema = getSchema(event);
+		return;
 	}
-
-	const result = validator.validate(event, schema);
-	if (!result.valid) {
-		throw result.errors.map(error => error.stack);
+	const { errors, valid } = validateSchema(event, schema);
+	if (!valid) {
+		throw errors.map((error) => error.stack);
 	}
 }
-
-const validator = new Validator();

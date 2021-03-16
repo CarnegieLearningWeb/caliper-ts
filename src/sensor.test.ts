@@ -1,19 +1,38 @@
 import { httpClient } from './clients/httpClient';
 import { DEFAULT_CONFIG, getJsonLdContext } from './config/config';
-import { Sensor, GroupDeletedEvent, User, Group } from './';
-import Caliper from './Caliper';
+import { EntityType } from './models/Entities/EntityType';
+import { createGroup } from './models/Entities/Group';
+import { createSoftwareApplication } from './models/Entities/SoftwareApplication';
+import { createUser } from './models/Entities/User';
+import { createGroupDeletedEvent, GroupDeletedEvent } from './models/Events/GroupDeletedEvent';
+import { Sensor, SensorConfig } from './sensor';
+import { validate } from './validate';
+
+jest.mock('./validate', () => ({
+	validate: jest.fn(),
+}));
 
 describe('Sensor', () => {
-	Caliper.settings.applicationUri = 'https://unit.test';
-	const event = GroupDeletedEvent({
-		actor: User({ id: 'https://foo.bar/user/123' }),
-		object: Group({ id: 'https://foo.bar/group/1' })
-	});
+	let config: SensorConfig;
+	let event: GroupDeletedEvent;
 	let sensor: Sensor;
 
 	beforeEach(() => {
 		jest.resetAllMocks();
-		sensor = new Sensor('id');
+		config = {
+			edApp: createSoftwareApplication({
+				id: 'https://unit.test',
+			}),
+			validationEnabled: false,
+		};
+		event = createGroupDeletedEvent(
+			{
+				actor: createUser({ id: 'https://foo.bar/user/123' }),
+				object: createGroup({ id: 'https://foo.bar/group/1' }),
+			},
+			config.edApp
+		);
+		sensor = new Sensor('id', config);
 	});
 
 	afterEach(() => {
@@ -26,13 +45,17 @@ describe('Sensor', () => {
 		});
 
 		it('throws error on initialization if no ID provided', () => {
-			expect(() => new Sensor('')).toThrowError(new Error('Caliper Sensor identifier (id) has not been provided.'));
+			expect(() => new Sensor('')).toThrowError(
+				new Error('Caliper Sensor identifier (id) has not been provided.')
+			);
 		});
 	});
 
 	describe('createEnvelope(..)', () => {
 		it('throws error if envelope data is undefined', () => {
-			expect(() => sensor.createEnvelope({})).toThrowError(new Error('Caliper Sensor Envelope data has not been provided.'));
+			expect(() => sensor.createEnvelope({})).toThrowError(
+				new Error('Caliper Sensor Envelope data has not been provided.')
+			);
 		});
 
 		it('creates Envelope with supplied options', () => {
@@ -40,7 +63,7 @@ describe('Sensor', () => {
 				sensor: 'sensor-id',
 				data: [event],
 				dataVersion: 'data-version-1',
-				sendTime: 'now'
+				sendTime: 'now',
 			});
 			const { data, dataVersion, sendTime, sensor: id } = envelope;
 			expect(data).toEqual([event]);
@@ -49,19 +72,19 @@ describe('Sensor', () => {
 			expect(id).toBe('sensor-id');
 		});
 
-		// it('converts data to array if it is not already an array', () => {
-		// 	const envelope = sensor.createEnvelope({
-		// 		data: event
-		// 	});
-		// 	const { data } = envelope;
-		// 	expect(data).toEqual([{ hello: 'world' }]);
-		// });
+		it('converts data to array if it is not already an array', () => {
+			const envelope = sensor.createEnvelope({
+				data: event,
+			});
+			const { data } = envelope;
+			expect(data).toEqual([event]);
+		});
 
 		it('create Envelope with default options if not supplied', () => {
 			const date = '2020-08-28T12:00:00.000Z';
 			jest.spyOn(Date, 'now').mockImplementation(() => Date.parse(date));
 			const envelope = sensor.createEnvelope({
-				data: [event]
+				data: [event],
 			});
 			const { dataVersion, sendTime, sensor: id } = envelope;
 			expect(dataVersion).toBe(getJsonLdContext(DEFAULT_CONFIG, DEFAULT_CONFIG.dataVersion));
@@ -70,10 +93,27 @@ describe('Sensor', () => {
 		});
 	});
 
+	describe('createEvent(..)', () => {
+		it('creates event with edApp from sensor', () => {
+			sensor = new Sensor('id', {
+				...config,
+				edApp: createSoftwareApplication({ id: 'https://example.com' }),
+			});
+			const { edApp } = sensor.createEvent(createGroupDeletedEvent, {
+				actor: createUser({ id: 'https://foo.bar/user/123' }),
+				object: createGroup({ id: 'https://foo.bar/group/1' }),
+			});
+			expect(edApp).toEqual({
+				id: 'https://example.com',
+				type: EntityType.SoftwareApplication,
+			});
+		});
+	});
+
 	describe('getClient(..)', () => {
 		it('returns client with specified ID', () => {
 			const client = httpClient('id-1', 'https://example.com');
-			sensor = new Sensor('id', { 'id-1': client });
+			sensor = new Sensor('id', { ...config, clients: { 'id-1': client } });
 			expect(sensor.getClient('id-1')).toBe(client);
 		});
 
@@ -86,7 +126,7 @@ describe('Sensor', () => {
 		it('returns array of clients', () => {
 			const client1 = httpClient('id-1', 'https://example.com/1');
 			const client2 = httpClient('id-2', 'https://example.com/2');
-			sensor = new Sensor('id', { 'id-1': client1, 'id-2': client2 });
+			sensor = new Sensor('id', { ...config, clients: { 'id-1': client1, 'id-2': client2 } });
 			expect(sensor.getClients()).toEqual([client1, client2]);
 		});
 
@@ -98,6 +138,12 @@ describe('Sensor', () => {
 	describe('getId()', () => {
 		it('returns sensor ID', () => {
 			expect(sensor.getId()).toBe('id');
+		});
+	});
+
+	describe('getEdApp()', () => {
+		it('returns current SoftwareApplication object', () => {
+			expect(sensor.getEdApp()).toEqual(createSoftwareApplication({ id: 'https://unit.test' }));
 		});
 	});
 
@@ -139,7 +185,22 @@ describe('Sensor', () => {
 
 		it('throws error if client not registered', () => {
 			const envelope = sensor.createEnvelope({ data: [event] });
-			expect(() => sensor.sendToClient('id', envelope)).toThrowError(new Error('Chosen Client has not been registered.'));
+			expect(() => sensor.sendToClient('id', envelope)).toThrowError(
+				new Error('Chosen Client has not been registered.')
+			);
+		});
+
+		it('validates event before sending', () => {
+			const client = httpClient('id-1', 'https://example.com');
+			jest.spyOn(client, 'send').mockImplementation(() => Promise.resolve());
+			sensor = new Sensor('id', {
+				...config,
+				validationEnabled: true,
+				clients: { 'id-1': client },
+			});
+			const envelope = sensor.createEnvelope({ data: [event] });
+			sensor.sendToClient('id-1', envelope);
+			expect(validate).toHaveBeenCalledWith(event);
 		});
 	});
 
@@ -149,7 +210,7 @@ describe('Sensor', () => {
 			jest.spyOn(client1, 'send').mockImplementation(() => Promise.resolve());
 			const client2 = httpClient('id-2', 'https://example.com/2');
 			jest.spyOn(client2, 'send').mockImplementation(() => Promise.resolve());
-			sensor = new Sensor('id', { 'id-1': client1, 'id-2': client2 });
+			sensor = new Sensor('id', { ...config, clients: { 'id-1': client1, 'id-2': client2 } });
 			const envelope = sensor.createEnvelope({ data: [event] });
 			sensor.sendToClients(envelope);
 			expect(client1.send).toHaveBeenCalledWith(envelope);
@@ -158,14 +219,31 @@ describe('Sensor', () => {
 
 		it('throws error if no clients registered', () => {
 			const envelope = sensor.createEnvelope({ data: [event] });
-			expect(() => sensor.sendToClients(envelope)).toThrowError(new Error('No Clients have been registered.'));
+			expect(() => sensor.sendToClients(envelope)).toThrowError(
+				new Error('No Clients have been registered.')
+			);
+		});
+
+		it('validates event before sending', () => {
+			const client1 = httpClient('id-1', 'https://example.com/1');
+			jest.spyOn(client1, 'send').mockImplementation(() => Promise.resolve());
+			const client2 = httpClient('id-2', 'https://example.com/2');
+			jest.spyOn(client2, 'send').mockImplementation(() => Promise.resolve());
+			sensor = new Sensor('id', {
+				...config,
+				validationEnabled: true,
+				clients: { 'id-1': client1, 'id-2': client2 },
+			});
+			const envelope = sensor.createEnvelope({ data: [event] });
+			sensor.sendToClients(envelope);
+			expect(validate).toHaveBeenCalledWith(event);
 		});
 	});
 
 	describe('unregisterClient(..)', () => {
 		it('removes specified client from clients record', () => {
 			const client = httpClient('id-1', 'https://example.com/1');
-			sensor = new Sensor('id', { 'id-1': client });
+			sensor = new Sensor('id', { ...config, clients: { 'id-1': client } });
 			sensor.unregisterClient('id-1');
 			expect(sensor.getClient('id-1')).toBeUndefined();
 		});

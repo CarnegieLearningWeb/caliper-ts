@@ -18,7 +18,7 @@ namespace CodeGenerator.Types
             Dictionary<string, TypescriptProperty> members
         )
         {
-            IncludeImport(userTypes[typeof(SoftwareApplication)], new[] { typeof(SoftwareApplication).Name });
+            IncludeImport(userTypes[typeof(SoftwareApplication)], new[] { userTypes[typeof(SoftwareApplication)].FactoryFunctionName });
 
             options = new Dictionary<string, TypescriptProperty>(members);
             if (options.ContainsKey("source"))
@@ -38,14 +38,13 @@ export interface {Name}{inheritance} {{
 }}
 
 {(!initializers.Any() ? "" : $@"
-interface I{Type.GetTypescriptName()}Params {{
+export interface {Type.GetTypescriptName()}Params {{
 {string.Join('\n', options.Values.Select(option => $"\t{option};"))}
 }}
 
-export function {Type.FullName.Split('.').Last().Replace("+", "_")}(params: I{Type.GetTypescriptName()}Params) : {Name} {{
-    const source = {typeof(SoftwareApplication).Name}({{id: params.sourceUrl}});
-	const args: any = {{ ...params }}; 
-    delete args.sourceUrl;
+export function {FactoryFunctionName}(params: {Type.GetTypescriptName()}Params) : {Name} {{
+    const {{ sourceUrl, ...args }} = params;
+    const source = {userTypes[typeof(SoftwareApplication)].FactoryFunctionName}({{ id: sourceUrl }});
 
     return {{
         {string.Join(",\n\t\t", initializers.Select(_ => $"{_.Key}: {_.Value}"))},

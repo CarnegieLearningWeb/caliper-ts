@@ -12,7 +12,7 @@ namespace CodeGenerator.Types
                 typeArguments = (type = type.BaseType).GenericTypeArguments;
 
             var typeNames = typeArguments.Select(generic => FromType(generic, userTypes).Name);
-            name = $"Record<{string.Join(", ", typeNames)}>";
+            Name = $"Record<{string.Join(", ", typeNames)}>";
         }
     }
 }
