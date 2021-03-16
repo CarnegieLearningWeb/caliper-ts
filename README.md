@@ -104,36 +104,35 @@ sensor.sendToClient(client, envelope);
 The `Sensor` class manages clients for interacting with a Sensor API,
 as well as providing a helper function for creating properly formatted `Envelope` objects for transmitting Caliper events.
 
-#### Constructor: `new Sensor(id: string, settings?: CaliperSettings, clients?: Record<string, Client>)`
+#### Constructor: `new Sensor(id: string, config?: SensorConfig)`
 
 Creates a new instance of a `Sensor` with the specified ID.
-Optionally takes a `CaliperSettings` object and a `Record` of objects that implement the `Client` interface, as an alternative to using the `Sensor.registerClient` function.
+Optionally takes a `SensorConfig` object which can provide the `SoftwareApplication` to include in events,
+a flag to enable/disable event validation, and a `Record` of objects that implement the `Client` interface,
+as an alternative to using the `Sensor.registerClient` function.
 
 ```ts
 const sensor1 = new Sensor('http://example.org/sensors/1');
 
-// With CaliperSettings
+// With SensorConfig
 const sensor2 = new Sensor('http://example.org/sensors/2', {
-	applicationUrl: 'https://example.org',
-	isValidationEnabled: true,
+	edApp: createSoftwareApplication({ id: 'https://example.org' }),
+	validationEnabled: true,
 });
 
-// With HttpClients
+// With SensorConfig including HttpClients
 const client = httpClient(
 	'http://example.org/sensors/1/clients/2',
 	'https://example.edu/caliper/target/endpoint',
 	'40dI6P62Q_qrWxpTk95z8w'
 );
-const sensor3 = new Sensor(
-	'http://example.org/sensors/3',
-	{
-		applicationUrl: 'https://example.org',
-		isValidationEnabled: true,
-	},
-	{
+const sensor3 = new Sensor('http://example.org/sensors/3', {
+	edApp: createSoftwareApplication({ id: 'https://example.org' }),
+	validationEnabled: true,
+	clients: {
 		[client.getId()]: client,
-	}
-);
+	},
+});
 ```
 
 #### `Sensor.createEnvelope<T>(opts: EnvelopeOptions<T>): Envelope<T>`
@@ -169,9 +168,9 @@ console.log(envelope);
 */
 ```
 
-#### `Sensor.createEvent<TEvent extends Event, TParams>(eventFactory: (params: TParams, settings?: CaliperSettings) => TEvent, params: TParams): TEvent
+#### `Sensor.createEvent<TEvent extends Event, TParams>(eventFactory: (params: TParams, edApp?: SoftwareApplication) => TEvent, params: TParams): TEvent
 
-Creates a new event of type `TEvent` using the provided factory function and the `CaliperSettings` object from the `Sensor` instance.
+Creates a new event of type `TEvent` using the provided factory function and the `SoftwareApplication` object from the `Sensor` instance.
 
 ```ts
 const client = httpClient(
@@ -179,16 +178,13 @@ const client = httpClient(
 	'https://example.edu/caliper/target/endpoint',
 	'40dI6P62Q_qrWxpTk95z8w'
 );
-const sensor = new Sensor(
-	'http://example.org/sensors/1',
-	{
-		applicationUrl: 'https://example.org',
-		isValidationEnabled: true,
-	},
-	{
+const sensor = new Sensor('http://example.org/sensors/1', {
+	edApp: createSoftwareApplication({ id: 'https://example.org' }),
+	validationEnabled: true,
+	clients: {
 		[client.getId()]: client,
-	}
-);
+	},
+});
 
 const event = sensor.createEvent(createAssessmentEvent, {
 	// ... data for AssessmentEventParams
@@ -448,10 +444,10 @@ console.log(assessment);
 ### Event factory functions
 
 Caliper events can be created through factory functions.
-Each factory function takes two parameters: 1) a delegate, which is an object defining values for properties to be set in the event (see the [Event Subtypes section of the Caliper Spec](https://www.imsglobal.org/sites/default/files/caliper/v1p1/caliper-spec-v1p1/caliper-spec-v1p1.html#events)), and 2) an optional `CaliperSettings` object to use for populating the `edApp` property in the event.
+Each factory function takes two parameters: 1) a delegate, which is an object defining values for properties to be set in the event (see the [Event Subtypes section of the Caliper Spec](https://www.imsglobal.org/sites/default/files/caliper/v1p1/caliper-spec-v1p1/caliper-spec-v1p1.html#events)), and 2) an optional `SoftwareApplication` object to use for populating the `edApp` property in the event.
 
 The recommended way to create events is to use the `createEvent` function on the `Sensor` object.
-This function takes the factory function and delegate object as parameters, and automatically passes the `CaliperSettings` object from the `Sensor` instance to the factory function.
+This function takes the factory function and delegate object as parameters, and automatically passes the `SoftwareApplication` object from the `Sensor` instance to the factory function.
 
 ```ts
 const sessionEvent = sensor.createEvent(createSessionEvent, {

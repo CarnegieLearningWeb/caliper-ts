@@ -1,11 +1,11 @@
-import { CaliperSettings } from './caliper';
 import { httpClient } from './clients/httpClient';
 import { DEFAULT_CONFIG, getJsonLdContext } from './config/config';
 import { EntityType } from './models/Entities/EntityType';
 import { createGroup } from './models/Entities/Group';
+import { createSoftwareApplication } from './models/Entities/SoftwareApplication';
 import { createUser } from './models/Entities/User';
 import { createGroupDeletedEvent, GroupDeletedEvent } from './models/Events/GroupDeletedEvent';
-import { Sensor } from './sensor';
+import { Sensor, SensorConfig } from './sensor';
 import { validate } from './validate';
 
 jest.mock('./validate', () => ({
@@ -13,21 +13,26 @@ jest.mock('./validate', () => ({
 }));
 
 describe('Sensor', () => {
+	let config: SensorConfig;
 	let event: GroupDeletedEvent;
 	let sensor: Sensor;
-	let settings: CaliperSettings;
 
 	beforeEach(() => {
 		jest.resetAllMocks();
-		event = createGroupDeletedEvent({
-			actor: createUser({ id: 'https://foo.bar/user/123' }),
-			object: createGroup({ id: 'https://foo.bar/group/1' }),
-		});
-		settings = {
-			applicationUri: 'https://unit.test',
-			isValidationEnabled: false,
+		config = {
+			edApp: createSoftwareApplication({
+				id: 'https://unit.test',
+			}),
+			validationEnabled: false,
 		};
-		sensor = new Sensor('id', settings);
+		event = createGroupDeletedEvent(
+			{
+				actor: createUser({ id: 'https://foo.bar/user/123' }),
+				object: createGroup({ id: 'https://foo.bar/group/1' }),
+			},
+			config.edApp
+		);
+		sensor = new Sensor('id', config);
 	});
 
 	afterEach(() => {
@@ -89,10 +94,10 @@ describe('Sensor', () => {
 	});
 
 	describe('createEvent(..)', () => {
-		it('creates event with CaliperSettings from sensor', () => {
+		it('creates event with edApp from sensor', () => {
 			sensor = new Sensor('id', {
-				applicationUri: 'https://example.com',
-				isValidationEnabled: false,
+				...config,
+				edApp: createSoftwareApplication({ id: 'https://example.com' }),
 			});
 			const { edApp } = sensor.createEvent(createGroupDeletedEvent, {
 				actor: createUser({ id: 'https://foo.bar/user/123' }),
@@ -108,7 +113,7 @@ describe('Sensor', () => {
 	describe('getClient(..)', () => {
 		it('returns client with specified ID', () => {
 			const client = httpClient('id-1', 'https://example.com');
-			sensor = new Sensor('id', settings, { 'id-1': client });
+			sensor = new Sensor('id', { ...config, clients: { 'id-1': client } });
 			expect(sensor.getClient('id-1')).toBe(client);
 		});
 
@@ -121,7 +126,7 @@ describe('Sensor', () => {
 		it('returns array of clients', () => {
 			const client1 = httpClient('id-1', 'https://example.com/1');
 			const client2 = httpClient('id-2', 'https://example.com/2');
-			sensor = new Sensor('id', settings, { 'id-1': client1, 'id-2': client2 });
+			sensor = new Sensor('id', { ...config, clients: { 'id-1': client1, 'id-2': client2 } });
 			expect(sensor.getClients()).toEqual([client1, client2]);
 		});
 
@@ -136,9 +141,9 @@ describe('Sensor', () => {
 		});
 	});
 
-	describe('getSettings()', () => {
-		it('returns current settings object', () => {
-			expect(sensor.getSettings()).toEqual(settings);
+	describe('getEdApp()', () => {
+		it('returns current SoftwareApplication object', () => {
+			expect(sensor.getEdApp()).toEqual(createSoftwareApplication({ id: 'https://unit.test' }));
 		});
 	});
 
@@ -188,7 +193,11 @@ describe('Sensor', () => {
 		it('validates event before sending', () => {
 			const client = httpClient('id-1', 'https://example.com');
 			jest.spyOn(client, 'send').mockImplementation(() => Promise.resolve());
-			sensor = new Sensor('id', { ...settings, isValidationEnabled: true }, { 'id-1': client });
+			sensor = new Sensor('id', {
+				...config,
+				validationEnabled: true,
+				clients: { 'id-1': client },
+			});
 			const envelope = sensor.createEnvelope({ data: [event] });
 			sensor.sendToClient('id-1', envelope);
 			expect(validate).toHaveBeenCalledWith(event);
@@ -201,11 +210,7 @@ describe('Sensor', () => {
 			jest.spyOn(client1, 'send').mockImplementation(() => Promise.resolve());
 			const client2 = httpClient('id-2', 'https://example.com/2');
 			jest.spyOn(client2, 'send').mockImplementation(() => Promise.resolve());
-			sensor = new Sensor(
-				'id',
-				{ ...settings, isValidationEnabled: false },
-				{ 'id-1': client1, 'id-2': client2 }
-			);
+			sensor = new Sensor('id', { ...config, clients: { 'id-1': client1, 'id-2': client2 } });
 			const envelope = sensor.createEnvelope({ data: [event] });
 			sensor.sendToClients(envelope);
 			expect(client1.send).toHaveBeenCalledWith(envelope);
@@ -224,11 +229,11 @@ describe('Sensor', () => {
 			jest.spyOn(client1, 'send').mockImplementation(() => Promise.resolve());
 			const client2 = httpClient('id-2', 'https://example.com/2');
 			jest.spyOn(client2, 'send').mockImplementation(() => Promise.resolve());
-			sensor = new Sensor(
-				'id',
-				{ ...settings, isValidationEnabled: true },
-				{ 'id-1': client1, 'id-2': client2 }
-			);
+			sensor = new Sensor('id', {
+				...config,
+				validationEnabled: true,
+				clients: { 'id-1': client1, 'id-2': client2 },
+			});
 			const envelope = sensor.createEnvelope({ data: [event] });
 			sensor.sendToClients(envelope);
 			expect(validate).toHaveBeenCalledWith(event);
@@ -238,7 +243,7 @@ describe('Sensor', () => {
 	describe('unregisterClient(..)', () => {
 		it('removes specified client from clients record', () => {
 			const client = httpClient('id-1', 'https://example.com/1');
-			sensor = new Sensor('id', settings, { 'id-1': client });
+			sensor = new Sensor('id', { ...config, clients: { 'id-1': client } });
 			sensor.unregisterClient('id-1');
 			expect(sensor.getClient('id-1')).toBeUndefined();
 		});

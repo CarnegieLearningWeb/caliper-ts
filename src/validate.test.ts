@@ -17,7 +17,7 @@ describe('validate(..)', () => {
 	});
 
 	afterEach(() => {
-		Caliper.settings.applicationUri = null;
+		Caliper.settings.applicationUri = undefined;
 	});
 
 	it('passes for valid UserCreatedEvent', () => {

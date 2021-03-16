@@ -1,19 +1,35 @@
-import Caliper, { CaliperSettings } from './caliper';
+import Caliper from './caliper';
 import { Client } from './clients/client';
 import { DEFAULT_CONFIG, getJsonLdContext } from './config/config';
 import { createEnvelope, Envelope, EnvelopeOptions } from './envelope';
+import { SoftwareApplication } from './models/Entities/SoftwareApplication';
 import { Event } from './models/Events/Event';
 import { validate } from './validate';
 
+export interface SensorConfig {
+	edApp?: SoftwareApplication;
+	validationEnabled?: boolean;
+	clients?: Record<string, Client>;
+}
+
 export class Sensor {
+	private edApp?: SoftwareApplication;
+
+	private validationEnabled = true;
+
+	private clients: Record<string, Client> = {};
+
 	constructor(
 		private id: string,
-		private settings = Caliper.settings,
-		private clients: Record<string, Client> = {}
+		{ edApp, validationEnabled = true, clients = {} }: SensorConfig = {}
 	) {
 		if (!id) {
 			throw new Error('Caliper Sensor identifier (id) has not been provided.');
 		}
+
+		this.edApp = edApp;
+		this.clients = clients;
+		this.validationEnabled = validationEnabled;
 	}
 
 	createEnvelope<T extends Event>(options: Partial<EnvelopeOptions<T>>) {
@@ -29,10 +45,10 @@ export class Sensor {
 	}
 
 	createEvent<TEvent extends Event, TParams>(
-		eventFactory: (params: TParams, settings?: CaliperSettings) => TEvent,
+		eventFactory: (params: TParams, edApp?: SoftwareApplication) => TEvent,
 		params: TParams
 	) {
-		return eventFactory(params, this.settings);
+		return eventFactory(params, this.edApp);
 	}
 
 	getClient(id: string) {
@@ -43,12 +59,12 @@ export class Sensor {
 		return Object.values(this.clients);
 	}
 
-	getId() {
-		return this.id;
+	getEdApp() {
+		return this.edApp;
 	}
 
-	getSettings() {
-		return this.settings;
+	getId() {
+		return this.id;
 	}
 
 	registerClient(client: Client) {
@@ -64,7 +80,7 @@ export class Sensor {
 			throw new Error('Chosen Client has not been registered.');
 		}
 
-		if (this.settings.isValidationEnabled) {
+		if (this.validationEnabled) {
 			envelope.data.forEach((event) => {
 				validate(event);
 			});
@@ -79,7 +95,7 @@ export class Sensor {
 			throw new Error('No Clients have been registered.');
 		}
 
-		if (this.settings.isValidationEnabled) {
+		if (this.validationEnabled) {
 			envelope.data.forEach((event) => {
 				validate(event);
 			});

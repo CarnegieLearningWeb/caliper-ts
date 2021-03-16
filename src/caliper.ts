@@ -8,11 +8,7 @@ export interface CaliperSettings {
 	/**
 	 * Publicly accessible URL of current running application/service
 	 */
-	applicationUri: string | null;
-	/**
-	 * Enable or disable validation when sending events to a remote destination
-	 */
-	isValidationEnabled: boolean;
+	applicationUri?: string;
 }
 
 export type CaliperTimestamp = string;
@@ -32,10 +28,7 @@ export interface URN {
 /**
  * Global settings for Caliper
  */
-const settings: CaliperSettings = {
-	applicationUri: null,
-	isValidationEnabled: true,
-};
+const settings: CaliperSettings = {};
 
 /**
  * Format or create an instance of a Caliper compliant UUID
@@ -58,13 +51,13 @@ function urn({ nid, nss }: URN) {
 /**
  * Create a Caliper event.edApp instance using the applicationUri in the global settings
  */
-function edApp({ applicationUri } = settings ?? {}) {
-	if (!applicationUri) {
+function edApp({ applicationUri: id } = settings ?? {}) {
+	if (!id) {
 		return null;
 	}
 
 	return {
-		id: applicationUri,
+		id,
 		type: EntityType.SoftwareApplication,
 	} as SoftwareApplication;
 }

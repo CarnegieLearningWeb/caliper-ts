@@ -7,7 +7,7 @@ describe('Caliper module', () => {
 	});
 
 	afterAll(() => {
-		Caliper.settings.applicationUri = null;
+		Caliper.settings.applicationUri = undefined;
 	});
 
 	describe('Caliper.uuid', () => {
@@ -45,21 +45,36 @@ describe('Caliper module', () => {
 			const value = Caliper.edApp();
 			expect(value).toEqual(model);
 		});
+
+		it('returns null if no ID specified', () => {
+			const value = Caliper.edApp({});
+			expect(value).toBeNull();
+		});
 	});
 
 	describe('Caliper.timestamp', () => {
-		const isoDateRegex = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/;
-
-		it('Caliper.timestamp FromNow_OK', () => {
+		it('formats current timestamp if nothing specified', () => {
+			const now = Date.parse('2021-03-15T00:00:00.000Z');
+			jest.spyOn(Date, 'now').mockImplementation(() => now);
 			const value = Caliper.timestamp();
-			expect(value).toMatch(isoDateRegex);
+			expect(value).toBe('2021-03-15T00:00:00.000Z');
+			(Date.now as jest.Mock).mockRestore();
 		});
 
-		it('Caliper.timestamp FromDate_OK', () => {
-			const now = new Date();
+		it('formats provided Date object', () => {
+			const value = Caliper.timestamp(new Date('2021-03-15T12:00:00.000Z'));
+			expect(value).toBe('2021-03-15T12:00:00.000Z');
+		});
+
+		it('formats provided date string', () => {
+			const value = Caliper.timestamp('2021-03-15T12:00:00.000Z');
+			expect(value).toBe('2021-03-15T12:00:00.000Z');
+		});
+
+		it('formats provided unix timestamp', () => {
+			const now = Date.parse('2021-03-15T00:00:00.000Z');
 			const value = Caliper.timestamp(now);
-			expect(value).toMatch(isoDateRegex);
-			expect(value).toEqual(now.toISOString());
+			expect(value).toBe('2021-03-15T00:00:00.000Z');
 		});
 	});
 
