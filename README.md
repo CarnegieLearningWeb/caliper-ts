@@ -37,9 +37,6 @@ and resources are provided in order to better describe both the relationships es
 participating entities and the contextual elements relevant to the interaction (e.g., `Assessment`,
 `Attempt`, `CourseSection`, `Person`).
 
-_caliper-ts_ is still a work in progress and only implements some profiles described in
-[Caliper Analytics&reg; Specification](https://www.imsglobal.org/caliper/v1p1/caliper-spec-v1p1).
-
 ## Usage
 
 _caliper-ts_ provides a number of classes and factory functions to facilitate working with the Sensor API in a consistent way.
@@ -67,14 +64,11 @@ const object = createAssessment({
 	dateToStartOn: getFormattedDateTime('2018-08-16T05:00:00.000Z'),
 	dateToSubmit: getFormattedDateTime('2018-09-28T11:59:59.000Z'),
 	maxAttempts: 1,
-	maxScore: 25.0
+	maxScore: 25.0,
 	// ... add additional optional property assignments
 });
 
 // ... Use the entity factories to mint additional entity values.
-const edApp = createSoftwareApplication({
-	// ...
-});
 const membership = createMembership({
 	// ...
 });
@@ -83,15 +77,12 @@ const session = createSession({
 });
 
 // Create Event
-const event = createAssessmentEvent({
-	id: getFormattedUrnUuid(),
+const event = sensor.createEvent(createAssessmentEvent, {
 	actor,
 	action: Action.Started,
 	object,
-	eventTime: getFormattedDateTime(),
-	edApp,
 	membership,
-	session
+	session,
 });
 
 // ... Create additional events and/or entity describes.
@@ -99,9 +90,9 @@ const event = createAssessmentEvent({
 // Create envelope with data payload
 const envelope = sensor.createEnvelope({
 	data: [
-		event
+		event,
 		// ... add additional events and/or entity describes
-	]
+	],
 });
 
 // Delegate transmission responsibilities to client
@@ -113,23 +104,34 @@ sensor.sendToClient(client, envelope);
 The `Sensor` class manages clients for interacting with a Sensor API,
 as well as providing a helper function for creating properly formatted `Envelope` objects for transmitting Caliper events.
 
-#### Constructor: `new Sensor(id: string, clients?: Record<string, Client>)`
+#### Constructor: `new Sensor(id: string, config?: SensorConfig)`
 
 Creates a new instance of a `Sensor` with the specified ID.
-Optionally takes a `Record` of objects that implement the `Client` interface, as an alternative to using the `Sensor.registerClient` function.
+Optionally takes a `SensorConfig` object which can provide the `SoftwareApplication` to include in events,
+a flag to enable/disable event validation, and a `Record` of objects that implement the `Client` interface,
+as an alternative to using the `Sensor.registerClient` function.
 
 ```ts
 const sensor1 = new Sensor('http://example.org/sensors/1');
 
-// Or with HttpClients
+// With SensorConfig
+const sensor2 = new Sensor('http://example.org/sensors/2', {
+	edApp: createSoftwareApplication({ id: 'https://example.org' }),
+	validationEnabled: true,
+});
 
+// With SensorConfig including HttpClients
 const client = httpClient(
 	'http://example.org/sensors/1/clients/2',
 	'https://example.edu/caliper/target/endpoint',
 	'40dI6P62Q_qrWxpTk95z8w'
 );
-const sensor2 = new Sensor('http://example.org/sensors/2', {
-	[client.getId()]: client
+const sensor3 = new Sensor('http://example.org/sensors/3', {
+	edApp: createSoftwareApplication({ id: 'https://example.org' }),
+	validationEnabled: true,
+	clients: {
+		[client.getId()]: client,
+	},
 });
 ```
 
@@ -139,13 +141,13 @@ Creates a new `Envelope` object with the specified options, where the `data` fie
 
 `EnvelopeOptions<T>` contains the following properties:
 
--   `sensor: string`: ID of the sensor
--   `sendTime?: string`: ISO 8601 formatted date with time (defaults to current date and time)
--   `dataVersion?: string`: Version of the Caliper context being used (defaults to `http://purl.imsglobal.org/ctx/caliper/v1p1`)
--   `data?: T | T[]`: Object(s) to be transmitted in the envelope, typically an `Event`, `Entity`, or combination.
+- `sensor: string`: ID of the sensor
+- `sendTime?: string`: ISO 8601 formatted date with time (defaults to current date and time)
+- `dataVersion?: string`: Version of the Caliper context being used (defaults to `http://purl.imsglobal.org/ctx/caliper/v1p1`)
+- `data?: T | T[]`: Object(s) to be transmitted in the envelope, typically an `Event`, `Entity`, or combination.
 
 ```ts
-const data = createSessionEvent({
+const data = sensor.createEvent(createSessionEvent, {
 	// See documentation on creating events
 });
 const envelope = sensor.createEnvelope<SessionEvent>({ data });
@@ -162,6 +164,40 @@ console.log(envelope);
       ...
     }
   ]
+}
+*/
+```
+
+#### `Sensor.createEvent<TEvent extends Event, TParams>(eventFactory: (params: TParams, edApp?: SoftwareApplication) => TEvent, params: TParams): TEvent
+
+Creates a new event of type `TEvent` using the provided factory function and the `SoftwareApplication` object from the `Sensor` instance.
+
+```ts
+const client = httpClient(
+	'http://example.org/sensors/1/clients/1',
+	'https://example.edu/caliper/target/endpoint',
+	'40dI6P62Q_qrWxpTk95z8w'
+);
+const sensor = new Sensor('http://example.org/sensors/1', {
+	edApp: createSoftwareApplication({ id: 'https://example.org' }),
+	validationEnabled: true,
+	clients: {
+		[client.getId()]: client,
+	},
+});
+
+const event = sensor.createEvent(createAssessmentEvent, {
+	// ... data for AssessmentEventParams
+});
+console.log(event);
+/* => {
+	type: 'AssessmentEvent',
+	'@context': ['http://purl.imsglobal.org/ctx/caliper/v1p2'],
+	edApp: {
+		id: 'https://example.org,
+		type: 'SoftwareApplication'
+	}
+	...
 }
 */
 ```
@@ -183,7 +219,12 @@ Returns the ID of the current `Sensor` instance.
 Adds the specified `Client` to the `Sensor` instance's collection of registered clients.
 
 ```ts
-sensor.registerClient(httpClient('http://example.org/sensors/1/clients/2', 'https://example.edu/caliper/target/endpoint'));
+sensor.registerClient(
+	httpClient(
+		'http://example.org/sensors/1/clients/2',
+		'https://example.edu/caliper/target/endpoint'
+	)
+);
 ```
 
 #### `Sensor.sendToClient<TEnvelope, TResponse>(client: Client | string, envelope: Envelope<T>): Promise<TResponse>`
@@ -193,23 +234,31 @@ Returns `Promise<TResponse>` that resolves when the HTTP request has completed.
 
 ```ts
 // Register HttpClient with Sensor
-const client = httpClient('http://example.org/sensors/1/clients/2', 'https://example.edu/caliper/target/endpoint');
+const client = httpClient(
+	'http://example.org/sensors/1/clients/2',
+	'https://example.edu/caliper/target/endpoint'
+);
 sensor.registerClient(client);
 
 // Create Envelope
 const envelope = sensor.createEnvelope<SessionEvent>({ data });
 
 // Send via client by reference
-sensor.sendToClient<SessionEvent, { success: boolean }>(client, envelope).then(response => {
+sensor.sendToClient<SessionEvent, { success: boolean }>(client, envelope).then((response) => {
 	console.log(response);
 	// => { success: true }
 });
 
 // Or send via client by ID
-sensor.sendToClient<SessionEvent, { success: boolean }>('http://example.org/sensors/1/clients/2', envelope).then(response => {
-	console.log(response);
-	// => { success: true }
-});
+sensor
+	.sendToClient<SessionEvent, { success: boolean }>(
+		'http://example.org/sensors/1/clients/2',
+		envelope
+	)
+	.then((response) => {
+		console.log(response);
+		// => { success: true }
+	});
 ```
 
 #### `Sensor.sendToClients<TEnvelope, TResponse>(envelope: Envelope<TEnvelope>): Promise<TResponse[]>`
@@ -219,17 +268,23 @@ Returns `Promise<TResponse[]>` that resolves when all HTTP requests have complet
 
 ```ts
 // Register clients
-const client1 = httpClient('http://example.org/sensors/1/clients/1', 'https://example.edu/caliper/target/endpoint1');
+const client1 = httpClient(
+	'http://example.org/sensors/1/clients/1',
+	'https://example.edu/caliper/target/endpoint1'
+);
 sensor.registerClient(client1);
 
-const client2 = httpClient('http://example.org/sensors/1/clients/2', 'https://example.edu/caliper/target/endpoint2');
+const client2 = httpClient(
+	'http://example.org/sensors/1/clients/2',
+	'https://example.edu/caliper/target/endpoint2'
+);
 sensor.registerClient(client2);
 
 // Create Envelope
 const envelope = sensor.createEnvelope<SessionEvent>({ data });
 
 // Sends posts envelope to both endpoints
-sensor.sendToClients<SessionEvent, { success: boolean }>(envelope).then(response => {
+sensor.sendToClients<SessionEvent, { success: boolean }>(envelope).then((response) => {
 	console.log(response);
 	// => [{ success: true }, { success: true }]
 });
@@ -248,8 +303,8 @@ However, using the `Client` interface you can implement your own client using yo
 
 The `Client` interface requires the following functions in the implementing class:
 
--   `getId(): string`: Returns the ID of the client.
--   `send<TEnvelope, TResponse>(envelope: Envelope<TEnvelope>): Promise<TResponse>`: Makes a POST request to a Sensor API endpoint with the specified `Envelope` as the payload. Returns a promise that resolves with the response from the endpoint. This function should also ensure that the appropriate authorization header is included with the request.
+- `getId(): string`: Returns the ID of the client.
+- `send<TEnvelope, TResponse>(envelope: Envelope<TEnvelope>): Promise<TResponse>`: Makes a POST request to a Sensor API endpoint with the specified `Envelope` as the payload. Returns a promise that resolves with the response from the endpoint. This function should also ensure that the appropriate authorization header is included with the request.
 
 ### `HttpClient` class
 
@@ -278,9 +333,10 @@ Returns a new instance of `HttpClient` configured to include the specified beare
 ```ts
 // Create HttpClient that will post to https://example.edu/caliper/target/endpoint
 // and configure to include the header `Authorization: Bearer 40dI6P62Q_qrWxpTk95z8w`
-const client = httpClient('http://example.org/sensors/1/clients/2', 'https://example.edu/caliper/target/endpoint').bearer(
-	'40dI6P62Q_qrWxpTk95z8w'
-);
+const client = httpClient(
+	'http://example.org/sensors/1/clients/2',
+	'https://example.edu/caliper/target/endpoint'
+).bearer('40dI6P62Q_qrWxpTk95z8w');
 ```
 
 #### `HttpClient.getId(): string`
@@ -288,7 +344,10 @@ const client = httpClient('http://example.org/sensors/1/clients/2', 'https://exa
 Returns the ID of the client.
 
 ```ts
-const client = httpClient('http://example.org/sensors/1/clients/2', 'https://example.edu/caliper/target/endpoint');
+const client = httpClient(
+	'http://example.org/sensors/1/clients/2',
+	'https://example.edu/caliper/target/endpoint'
+);
 const id = client.getId();
 console.log(id);
 // => "http://example.org/sensors/1/clients/2"
@@ -302,9 +361,12 @@ Returns a promise that resolves with the parsed JSON response.
 
 ```ts
 const envelope = sensor.createEnvelope<SessionEvent>({ data });
-const client = httpClient('http://example.org/sensors/1/clients/2', 'https://example.edu/caliper/target/endpoint2');
+const client = httpClient(
+	'http://example.org/sensors/1/clients/2',
+	'https://example.edu/caliper/target/endpoint2'
+);
 
-client.send<Envelope<SessionEvent>, { success: boolean }>(envelope).then(result => {
+client.send<Envelope<SessionEvent>, { success: boolean }>(envelope).then((result) => {
 	console.log(result);
 	// => { "success": true }
 });
@@ -314,33 +376,8 @@ _Note: The `send` function is called by the `Sensor` via the `sendToClient` and 
 
 ### Entity factory functions
 
-Caliper entities can be created through factory functions.
-Each factory function takes two parameters: 1) a delegate, which is an object defining values for properties to be set in the entity (see the [Entity Subtypes section of the Caliper Spec](https://www.imsglobal.org/sites/default/files/caliper/v1p1/caliper-spec-v1p1/caliper-spec-v1p1.html#entities)), and 2) an optional `JsonLdContextVersion` to use for constructing the entity object.
-
-The following entity factory functions are available through the _caliper-ts_ library:
-
--   `createAssessment`
--   `createAssessmentItem`
--   `createAssignableDigitalResource`
--   `createAttempt`
--   `createCourseOffering`
--   `createCourseSection`
--   `createDigitalResource`
--   `createDigitalResourceCollection`
--   `createFillinBlankResponse`
--   `createLearningObjective`
--   `createLtiSession`
--   `createMembership`
--   `createMultipleChoiceResponse`
--   `createMultipleResponseResponse`
--   `createOrganization`
--   `createPerson`
--   `createResponse`
--   `createSelectTextResponse`
--   `createSession`
--   `createSoftwareApplication`
--   `createSystemIdentifier`
--   `createTrueFalseResponse`
+Caliper entities can be created through factory functions provided by the _caliper-ts-models_ library.
+Each factory function takes a single parameters: a delegate, which is an object defining values for properties to be set in the entity (see the [Entity Subtypes section of the Caliper Spec](https://www.imsglobal.org/sites/default/files/caliper/v1p1/caliper-spec-v1p1/caliper-spec-v1p1.html#entities)).
 
 ```ts
 const assessment = createAssessment({
@@ -353,15 +390,21 @@ const assessment = createAssessment({
 	dateToSubmit: '2016-09-28T11:59:59.000Z',
 	id: 'https://example.edu/terms/201601/courses/7/sections/1/assess/1',
 	items: [
-		createAssessmentItem({ id: 'https://example.edu/terms/201601/courses/7/sections/1/assess/1/items/1' }),
-		createAssessmentItem({ id: 'https://example.edu/terms/201601/courses/7/sections/1/assess/1/items/2' }),
-		createAssessmentItem({ id: 'https://example.edu/terms/201601/courses/7/sections/1/assess/1/items/3' })
+		AssessmentItem({
+			id: 'https://example.edu/terms/201601/courses/7/sections/1/assess/1/items/1',
+		}),
+		AssessmentItem({
+			id: 'https://example.edu/terms/201601/courses/7/sections/1/assess/1/items/2',
+		}),
+		AssessmentItem({
+			id: 'https://example.edu/terms/201601/courses/7/sections/1/assess/1/items/3',
+		}),
 	],
 	maxAttempts: 2,
 	maxScore: 15,
 	maxSubmits: 2,
 	name: 'Quiz One',
-	version: '1.0'
+	version: '1.0',
 });
 console.log(assessment);
 /* => {
@@ -401,31 +444,22 @@ console.log(assessment);
 ### Event factory functions
 
 Caliper events can be created through factory functions.
-Each factory function takes two parameters: 1) a delegate, which is an object defining values for properties to be set in the event (see the [Event Subtypes section of the Caliper Spec](https://www.imsglobal.org/sites/default/files/caliper/v1p1/caliper-spec-v1p1/caliper-spec-v1p1.html#events)), and 2) an optional `JsonLdContextVersion` to use for constructing the entity object.
+Each factory function takes two parameters: 1) a delegate, which is an object defining values for properties to be set in the event (see the [Event Subtypes section of the Caliper Spec](https://www.imsglobal.org/sites/default/files/caliper/v1p1/caliper-spec-v1p1/caliper-spec-v1p1.html#events)), and 2) an optional `SoftwareApplication` object to use for populating the `edApp` property in the event.
 
-The following event factory functions are available through the _caliper-ts_ library:
-
--   `createAssessmentEvent`
--   `createAssessmentItemEvent`
--   `createSessionEvent`
+The recommended way to create events is to use the `createEvent` function on the `Sensor` object.
+This function takes the factory function and delegate object as parameters, and automatically passes the `SoftwareApplication` object from the `Sensor` instance to the factory function.
 
 ```ts
-const sessionEvent = createSessionEvent({
-	id: 'urn:uuid:fcd495d0-3740-4298-9bec-1154571dc211',
+const sessionEvent = sensor.createEvent(createSessionEvent, {
 	action: Action.LoggedIn,
 	actor: createPerson({ id: 'https://example.edu/users/554433' }),
-	object: createSoftwareApplication({ id: 'https://example.edu', version: 'v2' }, JsonLdContextVersion.none),
-	edApp: 'https://example.edu',
-	eventTime: '2016-11-15T10:15:00.000Z',
-	session: createSession(
-		{
-			dateCreated: '2016-11-15T10:00:00.000Z',
-			id: 'https://example.edu/sessions/1f6442a482de72ea6ad134943812bff564a76259',
-			startedAtTime: '2016-11-15T10:00:00.000Z',
-			user: 'https://example.edu/users/554433'
-		},
-		JsonLdContextVersion.none
-	)
+	object: createSoftwareApplication({ id: 'https://example.edu', version: 'v2' }),
+	session: createSession({
+		dateCreated: '2016-11-15T10:00:00.000Z',
+		id: 'https://example.edu/sessions/1f6442a482de72ea6ad134943812bff564a76259',
+		startedAtTime: '2016-11-15T10:00:00.000Z',
+		user: 'https://example.edu/users/554433',
+	}),
 });
 console.log(sessionEvent);
 /* => {
@@ -443,7 +477,10 @@ console.log(sessionEvent);
     "version": "v2"
   },
   "eventTime": "2016-11-15T10:15:00.000Z",
-  "edApp": "https://example.edu",
+  "edApp": {
+    "id": "https://example.edu",
+    "type": "SoftwareApplication"
+  },
   "session": {
     "id": "https://example.edu/sessions/1f6442a482de72ea6ad134943812bff564a76259",
     "type": "Session",
@@ -500,33 +537,37 @@ console.log(urn);
 // => "urn:uuid:ff9ec22a-fc59-4ae1-ae8d-2c9463ee2f8f"
 ```
 
-## Local development
+## Development
 
-This project was bootstrapped with [TSDX](https://tsdx.io/).
+### Dependencies
+
+Dependencies in this project are managed with [Yarn](https://classic.yarnpkg.com/lang/en/).You can install dependencies by running the following command in the project's root directory:
+
+```bash
+yarn
+```
 
 ### Commands
 
-TSDX scaffolds your new library inside `/src`.
+#### `yarn build`
 
-To run TSDX, use:
+Builds the _caliper-ts_ library.
 
-```bash
-yarn start
-```
+#### `yarn test`
 
-This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
+Runs Jest with the `--watch` flag.
 
-To do a one-off build, use `yarn build`.
+#### `yarn test:ci`
 
-To run tests, use `yarn test`.
+Runs Jest in CI mode.
+
+#### `yarn lint`
+
+Runs ESLint in the project.
 
 ### Configuration
 
-Code quality is set up for you with `prettier`, `husky`, and `lint-staged`.
-
-#### Jest
-
-Jest tests are set up to run with `yarn test`. You can generate a code coverage report with `yarn test:coverage`.
+Code quality is set up for you with `eslint` using the using the [`@imaginelearning/eslint-config/base` configuration](https://github.com/ImagineLearning/typescript/blob/main/packages/eslint-config-imaginelearning/base.js), `prettier` using the [`@imaginelearning/prettier-config` configuration](https://github.com/ImagineLearning/typescript/tree/main/packages/prettier-config), `husky`, and `lint-staged`.
 
 #### Rollup
 
@@ -561,3 +602,15 @@ The appropriate paths are configured in `package.json` and `dist/index.js` accor
 ### Named exports
 
 Per Palmer Group guidelines, [always use named exports.](https://github.com/palmerhq/typescript#exports) Code split inside your app instead of your library.
+
+## Code generation
+
+This repository also contains a [`code-generator` project](code-generator), which is a C# project used to generate TypeScript definitions for events and entities using the [.NET Caliper Sensor Library](https://github.com/edgenuity/caliper-net).
+
+A **generate-caliper.ps1** script file is also included to execute the code-generator project. Before running this script file, it is recommended to first update the NuGet package for the .NET Caliper Sensor Library.
+
+**NOTE**: Executing the above script will require an active feed from MyGet. This can be accomplished by executing the below command (_replace `MY_PREAUTHORIZED_KEY` with your actual account key from MyGet_).
+
+```sh
+dotnet nuget add source https://edgedev.myget.org/F/edgenuity/auth/MY_PREAUTHORIZED_KEY/api/v3/index.json -n edgenuity
+```
