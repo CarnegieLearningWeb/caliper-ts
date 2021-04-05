@@ -12,6 +12,7 @@ import { Organization } from '../Entities/Organization';
 import { Session } from '../Entities/Session';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { User } from '../Entities/User';
+import { UserSession } from '../Entities/UserSession';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
@@ -25,18 +26,19 @@ import {
 export interface UserDeletedEvent extends UserEvent {
 	actor: SoftwareApplication | User | Instructor;
 	object: UserEventUser | UserEventInstructor | UserEventStudent;
+	session?: Session | UserSession;
 }
 
 export interface UserDeletedEventParams {
 	actor: SoftwareApplication | User | Instructor;
 	object: UserEventUser | UserEventInstructor | UserEventStudent;
+	session?: Session | UserSession;
 	profile?: CaliperProfile;
 	target?: Entity;
 	generated?: Entity;
 	group?: Organization;
 	membership?: Membership;
 	federatedSession?: LtiSession;
-	session?: Session;
 	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
@@ -117,6 +119,7 @@ export const UserDeletedEventSchema = {
 								required: [
 									'dateCreated',
 									'dateModified',
+									'name',
 									'firstName',
 									'lastName',
 									'status',
@@ -135,12 +138,13 @@ export const UserDeletedEventSchema = {
 						allOf: [
 							{
 								required: [
-									'type',
 									'dateCreated',
 									'dateModified',
+									'name',
 									'firstName',
 									'lastName',
 									'status',
+									'type',
 									'id',
 								],
 							},
@@ -155,13 +159,14 @@ export const UserDeletedEventSchema = {
 						allOf: [
 							{
 								required: [
-									'type',
-									'gradeLevel',
 									'dateCreated',
 									'dateModified',
+									'name',
 									'firstName',
 									'lastName',
 									'status',
+									'gradeLevel',
+									'type',
 									'id',
 								],
 							},
@@ -258,14 +263,15 @@ export const UserDeletedEventSchema = {
 				],
 			},
 			session: {
-				title: 'Session',
-				allOf: [
-					{
-						required: ['type', 'id'],
-					},
+				required: ['id', 'type'],
+				oneOf: [
 					{
 						title: 'Session',
 						$ref: '#/definitions/Session',
+					},
+					{
+						title: 'UserSession',
+						$ref: '#/definitions/UserSession',
 					},
 				],
 			},
@@ -331,6 +337,10 @@ export const UserDeletedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -401,6 +411,11 @@ export const UserDeletedEventSchema = {
 					'SystemId',
 				],
 			},
+			Status: {
+				type: 'string',
+				title: 'Status',
+				enum: ['Inactive', 'Active'],
+			},
 			User: {
 				title: 'User',
 				type: 'object',
@@ -412,6 +427,9 @@ export const UserDeletedEventSchema = {
 					dateModified: {
 						type: 'string',
 						format: 'date-time',
+					},
+					name: {
+						type: 'string',
 					},
 					firstName: {
 						type: 'string',
@@ -427,9 +445,6 @@ export const UserDeletedEventSchema = {
 						type: 'string',
 						default: 'User',
 						enum: ['User'],
-					},
-					name: {
-						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -459,24 +474,10 @@ export const UserDeletedEventSchema = {
 					},
 				},
 			},
-			Status: {
-				type: 'string',
-				title: 'Status',
-				enum: ['Inactive', 'Active'],
-			},
 			Instructor: {
 				title: 'Instructor',
 				type: 'object',
 				properties: {
-					type: {
-						type: 'string',
-						default: 'Instructor',
-						enum: ['Instructor'],
-					},
-					permissions: {
-						type: 'object',
-						additionalProperties: true,
-					},
 					dateCreated: {
 						type: 'string',
 						format: 'date-time',
@@ -484,6 +485,9 @@ export const UserDeletedEventSchema = {
 					dateModified: {
 						type: 'string',
 						format: 'date-time',
+					},
+					name: {
+						type: 'string',
 					},
 					firstName: {
 						type: 'string',
@@ -495,8 +499,14 @@ export const UserDeletedEventSchema = {
 						title: 'Status',
 						$ref: '#/definitions/Status',
 					},
-					name: {
+					type: {
 						type: 'string',
+						default: 'Instructor',
+						enum: ['Instructor'],
+					},
+					permissions: {
+						type: 'object',
+						additionalProperties: true,
 					},
 					id: {
 						title: 'Uri',
@@ -530,13 +540,34 @@ export const UserDeletedEventSchema = {
 				title: 'Student',
 				type: 'object',
 				properties: {
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					name: {
+						type: 'string',
+					},
+					firstName: {
+						type: 'string',
+					},
+					lastName: {
+						type: 'string',
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					gradeLevel: {
+						type: 'number',
+					},
 					type: {
 						type: 'string',
 						default: 'Student',
 						enum: ['Student'],
-					},
-					gradeLevel: {
-						type: 'number',
 					},
 					individualEducationPlan: {
 						type: 'boolean',
@@ -567,27 +598,6 @@ export const UserDeletedEventSchema = {
 								},
 							},
 						},
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					firstName: {
-						type: 'string',
-					},
-					lastName: {
-						type: 'string',
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					name: {
-						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -656,6 +666,10 @@ export const UserDeletedEventSchema = {
 					dateModified: {
 						type: 'string',
 						format: 'date-time',
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					id: {
 						title: 'Uri',
@@ -739,6 +753,10 @@ export const UserDeletedEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
@@ -803,10 +821,6 @@ export const UserDeletedEventSchema = {
 							$ref: '#/definitions/Role',
 						},
 					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -839,6 +853,10 @@ export const UserDeletedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -888,6 +906,10 @@ export const UserDeletedEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
@@ -902,10 +924,6 @@ export const UserDeletedEventSchema = {
 						type: 'string',
 						default: 'School',
 						enum: ['School'],
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
 					},
 					subOrganizationOf: {
 						title: 'Organization',
@@ -951,6 +969,10 @@ export const UserDeletedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -967,6 +989,12 @@ export const UserDeletedEventSchema = {
 						default: 'Group',
 						enum: ['Group'],
 					},
+					subjects: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
 					subOrganizationOf: {
 						title: 'Organization',
 						allOf: [
@@ -1011,6 +1039,10 @@ export const UserDeletedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1027,9 +1059,14 @@ export const UserDeletedEventSchema = {
 						default: 'Class',
 						enum: ['Class'],
 					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
+					academicTerm: {
+						type: 'string',
+					},
+					subjects: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
 					},
 					subOrganizationOf: {
 						title: 'Organization',
@@ -1075,6 +1112,10 @@ export const UserDeletedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1225,6 +1266,10 @@ export const UserDeletedEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
@@ -1306,11 +1351,156 @@ export const UserDeletedEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
 					},
 				},
+			},
+			UserSession: {
+				title: 'UserSession',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'UserSession',
+						enum: ['UserSession'],
+					},
+					loginType: {
+						title: 'LoginType',
+						$ref: '#/definitions/LoginType',
+					},
+					credentials: {
+						type: 'array',
+						items: {
+							title: 'CredentialType',
+							$ref: '#/definitions/CredentialType',
+						},
+					},
+					scopes: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					userAgent: {
+						type: 'string',
+					},
+					ipAddress: {
+						title: 'IPAddress',
+						$ref: '#/definitions/IPAddress',
+					},
+					localTimestamp: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?[-|\\+]\\d{2}:\\d{2}',
+					},
+					user: {
+						required: ['id', 'type'],
+						oneOf: [
+							{
+								title: 'Person',
+								$ref: '#/definitions/Person',
+							},
+							{
+								title: 'User',
+								$ref: '#/definitions/User',
+							},
+							{
+								title: 'Instructor',
+								$ref: '#/definitions/Instructor',
+							},
+							{
+								title: 'Student',
+								$ref: '#/definitions/Student',
+							},
+						],
+					},
+					startedAtTime: {
+						type: 'string',
+						format: 'date-time',
+					},
+					endedAtTime: {
+						type: 'string',
+						format: 'date-time',
+					},
+					duration: {
+						type: 'string',
+						pattern: '^P(?:\\d+Y)?(?:\\d+M)?(?:\\d+D)?T?(?:\\d+H)?(?:\\d+M)?(?:\\d+S)?',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			LoginType: {
+				type: 'string',
+				title: 'LoginType',
+				enum: [
+					'QRCodeSwipeFromALA',
+					'SAML',
+					'CleverApi',
+					'LtiSSO',
+					'GoogleAuthentication',
+					'ApplicationLoginPage',
+				],
+			},
+			CredentialType: {
+				type: 'string',
+				title: 'CredentialType',
+				enum: ['Username', 'Password', 'QRCode'],
+			},
+			IPAddress: {
+				type: 'string',
+				oneOf: [
+					{
+						pattern: '^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$',
+					},
+					{
+						pattern: '^\\w{1,4}(:\\w{1,4}){7}$',
+					},
+				],
 			},
 		},
 	},

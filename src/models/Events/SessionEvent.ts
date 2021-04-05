@@ -13,6 +13,7 @@ import { Organization } from '../Entities/Organization';
 import { Person } from '../Entities/Person';
 import { Session } from '../Entities/Session';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { UserSession } from '../Entities/UserSession';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { Event } from './Event';
@@ -24,6 +25,7 @@ export interface SessionEvent extends Event {
 	action: CaliperAction;
 	target?: DigitalResource;
 	referrer?: DigitalResource | SoftwareApplication;
+	session?: Session | UserSession;
 }
 
 export interface SessionEventParams {
@@ -32,12 +34,12 @@ export interface SessionEventParams {
 	action?: CaliperAction;
 	target?: DigitalResource;
 	referrer?: DigitalResource | SoftwareApplication;
+	session?: Session | UserSession;
 	profile?: CaliperProfile;
 	generated?: Entity;
 	group?: Organization;
 	membership?: Membership;
 	federatedSession?: LtiSession;
-	session?: Session;
 	extensions?: Record<string, any>;
 }
 

@@ -7,6 +7,7 @@ import { SystemIdentifier } from '../SystemIdentifier';
 import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 import { Lesson } from './Lesson';
+import { Status } from './Status';
 import { Student } from './Student';
 
 export interface IndividualizedLearningPath extends Entity {
@@ -32,6 +33,7 @@ export interface IndividualizedLearningPathParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

@@ -12,6 +12,7 @@ import { Organization } from '../Entities/Organization';
 import { Person } from '../Entities/Person';
 import { Session } from '../Entities/Session';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { UserSession } from '../Entities/UserSession';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
@@ -31,7 +32,7 @@ export interface Event {
 	group?: Organization;
 	membership?: Membership;
 	federatedSession?: LtiSession;
-	session?: Session;
+	session?: Session | UserSession;
 	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
@@ -51,7 +52,7 @@ export interface EventParams {
 	group?: Organization;
 	membership?: Membership;
 	federatedSession?: LtiSession;
-	session?: Session;
+	session?: Session | UserSession;
 	referrer?: Entity;
 	extensions?: Record<string, any>;
 }

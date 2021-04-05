@@ -9,9 +9,11 @@ import { EntityType } from '../../Entities/EntityType';
 import { Instructor } from '../../Entities/Instructor';
 import { Organization } from '../../Entities/Organization';
 import { School } from '../../Entities/School';
+import { Session } from '../../Entities/Session';
 import { SoftwareApplication } from '../../Entities/SoftwareApplication';
 import { Status } from '../../Entities/Status';
 import { User } from '../../Entities/User';
+import { UserSession } from '../../Entities/UserSession';
 import { SystemIdentifier } from '../../SystemIdentifier';
 import { CaliperAction } from '../CaliperAction';
 import { Event } from '../Event';
@@ -20,6 +22,7 @@ export interface OrganizationEvent extends Event {
 	actor: Agent | SoftwareApplication | User | Instructor;
 	object: OrganizationEventOrganization | OrganizationEventDistrict | OrganizationEventSchool;
 	action: CaliperAction;
+	session?: Session | UserSession;
 }
 
 export interface OrganizationEventOrganization extends Organization {

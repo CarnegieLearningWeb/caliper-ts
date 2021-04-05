@@ -17,7 +17,6 @@ export interface Instructor extends User {
 export interface InstructorParams {
 	id: string;
 	permissions?: InstructorPermissions;
-	status?: Status;
 	name?: string;
 	firstName?: string;
 	lastName?: string;
@@ -25,6 +24,7 @@ export interface InstructorParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

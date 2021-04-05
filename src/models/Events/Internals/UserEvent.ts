@@ -7,18 +7,22 @@ import { Agent } from '../../Entities/Agent';
 import { EntityType } from '../../Entities/EntityType';
 import { Instructor } from '../../Entities/Instructor';
 import { InstructorPermissions } from '../../Entities/InstructorPermissions';
+import { Session } from '../../Entities/Session';
 import { SoftwareApplication } from '../../Entities/SoftwareApplication';
 import { Status } from '../../Entities/Status';
+import { Student } from '../../Entities/Student';
 import { StudentProfileSettings } from '../../Entities/StudentProfileSettings';
 import { User } from '../../Entities/User';
+import { UserSession } from '../../Entities/UserSession';
 import { SystemIdentifier } from '../../SystemIdentifier';
 import { CaliperAction } from '../CaliperAction';
 import { Event } from '../Event';
 
 export interface UserEvent extends Event {
 	actor: Agent | SoftwareApplication | User | Instructor;
-	object: UserEventUser | UserEventInstructor | UserEventStudent;
+	object: User | UserEventUser | UserEventInstructor | UserEventStudent;
 	action: CaliperAction;
+	session?: Session | UserSession;
 }
 
 export interface UserEventUser extends User {
@@ -39,7 +43,7 @@ export interface UserEventUserParams {
 	firstName: string;
 	lastName: string;
 	otherIdentifiers?: SystemIdentifier[];
-	name?: string;
+	name: string;
 	description?: string;
 	extensions?: Record<string, any>;
 }
@@ -51,7 +55,7 @@ export function createUserEventUser(params: UserEventUserParams): UserEventUser 
 	};
 }
 
-export interface UserEventInstructor extends UserEventUser {
+export interface UserEventInstructor extends Instructor {
 	id: string;
 	dateCreated: string;
 	dateModified: string;
@@ -71,7 +75,7 @@ export interface UserEventInstructorParams {
 	lastName: string;
 	otherIdentifiers?: SystemIdentifier[];
 	permissions?: InstructorPermissions;
-	name?: string;
+	name: string;
 	description?: string;
 	extensions?: Record<string, any>;
 }
@@ -83,7 +87,7 @@ export function createUserEventInstructor(params: UserEventInstructorParams): Us
 	};
 }
 
-export interface UserEventStudent extends UserEventUser {
+export interface UserEventStudent extends Student {
 	id: string;
 	dateCreated: string;
 	dateModified: string;
@@ -109,7 +113,7 @@ export interface UserEventStudentParams {
 	englishLanguageLearner?: boolean;
 	otherIdentifiers?: SystemIdentifier[];
 	settings?: StudentProfileSettings;
-	name?: string;
+	name: string;
 	description?: string;
 	extensions?: Record<string, any>;
 }

@@ -2,7 +2,6 @@ module.exports = {
 	coveragePathIgnorePatterns: [
 		'<rootDir>/node_modules/',
 		'<rootDir>/src/index.ts',
-		'<rootDir>/src/models/',
 		'<rootDir>/src/test/',
 	],
 	moduleNameMapper: {

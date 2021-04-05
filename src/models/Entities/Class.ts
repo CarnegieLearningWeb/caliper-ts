@@ -11,18 +11,20 @@ import { Status } from './Status';
 
 export interface Class extends Group {
 	id: string;
-	status?: Status;
+	academicTerm?: string;
 }
 
 export interface ClassParams {
 	id: string;
-	status?: Status;
+	academicTerm?: string;
+	subjects?: string[];
 	subOrganizationOf?: Organization;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

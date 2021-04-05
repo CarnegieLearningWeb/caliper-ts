@@ -6,6 +6,7 @@
 import { SystemIdentifier } from '../SystemIdentifier';
 import { Entity } from './Entity';
 import { EntityType } from './EntityType';
+import { Status } from './Status';
 
 export interface Domain extends Entity {
 	standard: string;
@@ -21,12 +22,13 @@ export interface DomainParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 
 export function createDomain(params: DomainParams): Domain {
 	return {
-		id: `urn:domain:${params.standard.toLocaleUpperCase()}${params.code.toLocaleUpperCase()}`,
+		id: `urn:domain:${params.standard.toLocaleUpperCase()}.${params.code.toLocaleUpperCase()}`,
 		type: EntityType.Domain,
 		...params,
 	};

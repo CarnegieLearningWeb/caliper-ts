@@ -4,10 +4,13 @@
  */
 
 import { SystemIdentifier } from '../SystemIdentifier';
+import { Agent } from './Agent';
 import { AssignableDigitalResource } from './AssignableDigitalResource';
 import { Domain } from './Domain';
 import { Entity } from './Entity';
 import { EntityType } from './EntityType';
+import { LearningObjective } from './LearningObjective';
+import { Status } from './Status';
 
 export interface Lesson extends AssignableDigitalResource {
 	id: string;
@@ -30,6 +33,9 @@ export interface LessonParams {
 	maxAttempts?: number;
 	maxSubmits?: number;
 	maxScore?: number;
+	learningObjectives?: LearningObjective[];
+	keywords?: string[];
+	creators?: Agent[];
 	mediaType?: string;
 	isPartOf?: Entity;
 	datePublished?: string;
@@ -39,15 +45,13 @@ export interface LessonParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 
 export function createLesson(params: LessonParams): Lesson {
 	return {
 		type: EntityType.Lesson,
-		learningObjectives: [],
-		keywords: [],
-		creators: [],
 		...params,
 	};
 }

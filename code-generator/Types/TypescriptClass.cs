@@ -304,7 +304,7 @@ namespace CodeGenerator.Types
                     var optionType = memberType.Name;
                     var option = options.ContainsKey(memberName)
                         ? options[memberName]
-                        : options[memberName] = new TypescriptProperty { Name = memberName };
+                        : options[memberName] = new TypescriptProperty { Name = memberName, IsRequired = isRequired };
                     option.AddType(optionType);
                 }
             }

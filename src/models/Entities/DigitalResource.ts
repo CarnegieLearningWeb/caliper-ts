@@ -8,6 +8,7 @@ import { Agent } from './Agent';
 import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 import { LearningObjective } from './LearningObjective';
+import { Status } from './Status';
 
 export interface DigitalResource extends Entity {
 	id: string;
@@ -34,15 +35,13 @@ export interface DigitalResourceParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 
 export function createDigitalResource(params: DigitalResourceParams): DigitalResource {
 	return {
 		type: EntityType.DigitalResource,
-		learningObjectives: [],
-		keywords: [],
-		creators: [],
 		...params,
 	};
 }

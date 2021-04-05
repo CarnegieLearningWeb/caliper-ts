@@ -16,6 +16,7 @@ import { Session } from '../Entities/Session';
 import { SharedAnnotation } from '../Entities/SharedAnnotation';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { TagAnnotation } from '../Entities/TagAnnotation';
+import { UserSession } from '../Entities/UserSession';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { Event } from './Event';
@@ -26,6 +27,7 @@ export interface AnnotationEvent extends Event {
 	object: DigitalResource;
 	generated: BookmarkAnnotation | HighlightAnnotation | SharedAnnotation | TagAnnotation;
 	action: CaliperAction;
+	session?: Session | UserSession;
 }
 
 export interface AnnotationEventParams {
@@ -33,12 +35,12 @@ export interface AnnotationEventParams {
 	object: DigitalResource;
 	generated: BookmarkAnnotation | HighlightAnnotation | SharedAnnotation | TagAnnotation;
 	action?: CaliperAction;
+	session?: Session | UserSession;
 	profile?: CaliperProfile;
 	target?: Entity;
 	group?: Organization;
 	membership?: Membership;
 	federatedSession?: LtiSession;
-	session?: Session;
 	referrer?: Entity;
 	extensions?: Record<string, any>;
 }

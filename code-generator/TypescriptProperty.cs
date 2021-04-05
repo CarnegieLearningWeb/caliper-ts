@@ -11,7 +11,6 @@ namespace CodeGenerator
 
         public bool IsRequired { get; set; }
 
-
         HashSet<string> typeNames = new HashSet<string>();
 
         public void AddType(string typeName)

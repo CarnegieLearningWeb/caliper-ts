@@ -14,6 +14,7 @@ import { Person } from '../Entities/Person';
 import { Score } from '../Entities/Score';
 import { Session } from '../Entities/Session';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { UserSession } from '../Entities/UserSession';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { Event } from './Event';
@@ -23,18 +24,19 @@ export interface GradeEvent extends Event {
 	actor: Agent | Person | SoftwareApplication | Organization;
 	object: Attempt;
 	generated: Score;
+	session?: Session | UserSession;
 }
 
 export interface GradeEventParams {
 	actor: Agent | Person | SoftwareApplication | Organization;
 	object: Attempt;
 	generated: Score;
+	session?: Session | UserSession;
 	profile?: CaliperProfile;
 	target?: Entity;
 	group?: Organization;
 	membership?: Membership;
 	federatedSession?: LtiSession;
-	session?: Session;
 	referrer?: Entity;
 	extensions?: Record<string, any>;
 }

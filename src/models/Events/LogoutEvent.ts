@@ -262,10 +262,6 @@ export const LogoutEventSchema = {
 						default: 'User',
 						enum: ['User'],
 					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
 					name: {
 						type: 'string',
 					},
@@ -305,16 +301,15 @@ export const LogoutEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
 					},
 				},
-			},
-			Status: {
-				type: 'string',
-				title: 'Status',
-				enum: ['Inactive', 'Active'],
 			},
 			Uri: {
 				type: 'string',
@@ -424,11 +419,20 @@ export const LogoutEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
 					},
 				},
+			},
+			Status: {
+				type: 'string',
+				title: 'Status',
+				enum: ['Inactive', 'Active'],
 			},
 			Instructor: {
 				title: 'Instructor',
@@ -442,10 +446,6 @@ export const LogoutEventSchema = {
 					permissions: {
 						type: 'object',
 						additionalProperties: true,
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
 					},
 					name: {
 						type: 'string',
@@ -485,6 +485,10 @@ export const LogoutEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -534,10 +538,6 @@ export const LogoutEventSchema = {
 							},
 						},
 					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
 					name: {
 						type: 'string',
 					},
@@ -576,6 +576,10 @@ export const LogoutEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -686,6 +690,10 @@ export const LogoutEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
@@ -761,6 +769,10 @@ export const LogoutEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -868,6 +880,10 @@ export const LogoutEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
@@ -915,6 +931,10 @@ export const LogoutEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -964,6 +984,10 @@ export const LogoutEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
@@ -1011,6 +1035,10 @@ export const LogoutEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1092,6 +1120,10 @@ export const LogoutEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
@@ -1156,10 +1188,6 @@ export const LogoutEventSchema = {
 							$ref: '#/definitions/Role',
 						},
 					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1192,6 +1220,10 @@ export const LogoutEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1208,10 +1240,6 @@ export const LogoutEventSchema = {
 						default: 'School',
 						enum: ['School'],
 					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
 					subOrganizationOf: {
 						title: 'Organization',
 						allOf: [
@@ -1256,6 +1284,10 @@ export const LogoutEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1272,6 +1304,12 @@ export const LogoutEventSchema = {
 						default: 'Group',
 						enum: ['Group'],
 					},
+					subjects: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
 					subOrganizationOf: {
 						title: 'Organization',
 						allOf: [
@@ -1316,6 +1354,10 @@ export const LogoutEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1332,9 +1374,14 @@ export const LogoutEventSchema = {
 						default: 'Class',
 						enum: ['Class'],
 					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
+					academicTerm: {
+						type: 'string',
+					},
+					subjects: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
 					},
 					subOrganizationOf: {
 						title: 'Organization',
@@ -1380,6 +1427,10 @@ export const LogoutEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1529,6 +1580,10 @@ export const LogoutEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',

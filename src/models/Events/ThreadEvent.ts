@@ -12,6 +12,7 @@ import { Person } from '../Entities/Person';
 import { Session } from '../Entities/Session';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { Thread } from '../Entities/Thread';
+import { UserSession } from '../Entities/UserSession';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { Event } from './Event';
@@ -21,19 +22,20 @@ export interface ThreadEvent extends Event {
 	actor: Person | SoftwareApplication | Organization;
 	object: Thread;
 	action: CaliperAction;
+	session?: Session | UserSession;
 }
 
 export interface ThreadEventParams {
 	actor: Person | SoftwareApplication | Organization;
 	object: Thread;
 	action?: CaliperAction;
+	session?: Session | UserSession;
 	profile?: CaliperProfile;
 	target?: Entity;
 	generated?: Entity;
 	group?: Organization;
 	membership?: Membership;
 	federatedSession?: LtiSession;
-	session?: Session;
 	referrer?: Entity;
 	extensions?: Record<string, any>;
 }

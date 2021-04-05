@@ -7,6 +7,7 @@ import { SystemIdentifier } from '../SystemIdentifier';
 import { CourseOffering } from './CourseOffering';
 import { EntityType } from './EntityType';
 import { Organization } from './Organization';
+import { Status } from './Status';
 
 export interface CourseSection extends CourseOffering {
 	id: string;
@@ -24,6 +25,7 @@ export interface CourseSectionParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

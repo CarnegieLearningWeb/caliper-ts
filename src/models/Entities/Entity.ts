@@ -5,6 +5,7 @@
 
 import { SystemIdentifier } from '../SystemIdentifier';
 import { EntityType } from './EntityType';
+import { Status } from './Status';
 
 export interface Entity {
 	id: string;
@@ -14,6 +15,7 @@ export interface Entity {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 
@@ -25,6 +27,7 @@ export interface EntityParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

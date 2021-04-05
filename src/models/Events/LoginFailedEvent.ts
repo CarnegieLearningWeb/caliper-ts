@@ -15,6 +15,7 @@ import { Membership } from '../Entities/Membership';
 import { Organization } from '../Entities/Organization';
 import { Person } from '../Entities/Person';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { Status } from '../Entities/Status';
 import { Student } from '../Entities/Student';
 import { User } from '../Entities/User';
 import { SystemIdentifier } from '../SystemIdentifier';
@@ -92,6 +93,7 @@ export interface LoginFailedEventUserSessionParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 
@@ -309,10 +311,6 @@ export const LoginFailedEventSchema = {
 						default: 'User',
 						enum: ['User'],
 					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
 					name: {
 						type: 'string',
 					},
@@ -352,16 +350,15 @@ export const LoginFailedEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
 					},
 				},
-			},
-			Status: {
-				type: 'string',
-				title: 'Status',
-				enum: ['Inactive', 'Active'],
 			},
 			Uri: {
 				type: 'string',
@@ -471,11 +468,20 @@ export const LoginFailedEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
 					},
 				},
+			},
+			Status: {
+				type: 'string',
+				title: 'Status',
+				enum: ['Inactive', 'Active'],
 			},
 			Instructor: {
 				title: 'Instructor',
@@ -489,10 +495,6 @@ export const LoginFailedEventSchema = {
 					permissions: {
 						type: 'object',
 						additionalProperties: true,
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
 					},
 					name: {
 						type: 'string',
@@ -532,6 +534,10 @@ export const LoginFailedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -581,10 +587,6 @@ export const LoginFailedEventSchema = {
 							},
 						},
 					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
 					name: {
 						type: 'string',
 					},
@@ -623,6 +625,10 @@ export const LoginFailedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -733,6 +739,10 @@ export const LoginFailedEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
@@ -808,6 +818,10 @@ export const LoginFailedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -915,6 +929,10 @@ export const LoginFailedEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
@@ -962,6 +980,10 @@ export const LoginFailedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1011,6 +1033,10 @@ export const LoginFailedEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
@@ -1058,6 +1084,10 @@ export const LoginFailedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1139,6 +1169,10 @@ export const LoginFailedEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
@@ -1203,10 +1237,6 @@ export const LoginFailedEventSchema = {
 							$ref: '#/definitions/Role',
 						},
 					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1239,6 +1269,10 @@ export const LoginFailedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1255,10 +1289,6 @@ export const LoginFailedEventSchema = {
 						default: 'School',
 						enum: ['School'],
 					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
 					subOrganizationOf: {
 						title: 'Organization',
 						allOf: [
@@ -1303,6 +1333,10 @@ export const LoginFailedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1319,6 +1353,12 @@ export const LoginFailedEventSchema = {
 						default: 'Group',
 						enum: ['Group'],
 					},
+					subjects: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
 					subOrganizationOf: {
 						title: 'Organization',
 						allOf: [
@@ -1363,6 +1403,10 @@ export const LoginFailedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1379,9 +1423,14 @@ export const LoginFailedEventSchema = {
 						default: 'Class',
 						enum: ['Class'],
 					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
+					academicTerm: {
+						type: 'string',
+					},
+					subjects: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
 					},
 					subOrganizationOf: {
 						title: 'Organization',
@@ -1427,6 +1476,10 @@ export const LoginFailedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1576,6 +1629,10 @@ export const LoginFailedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',

@@ -22,7 +22,6 @@ export interface Membership extends Entity {
 	member?: Person | User | Instructor | Student;
 	organization?: Organization | School | Group | Class;
 	roles?: Role[];
-	status?: Status;
 }
 
 export interface MembershipParams {
@@ -30,12 +29,12 @@ export interface MembershipParams {
 	member?: Person | User | Instructor | Student;
 	organization?: Organization | School | Group | Class;
 	roles?: Role[];
-	status?: Status;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

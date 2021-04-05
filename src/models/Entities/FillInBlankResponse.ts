@@ -7,6 +7,7 @@ import { SystemIdentifier } from '../SystemIdentifier';
 import { Attempt } from './Attempt';
 import { EntityType } from './EntityType';
 import { Response } from './Response';
+import { Status } from './Status';
 
 export interface FillInBlankResponse extends Response {
 	id: string;
@@ -25,6 +26,7 @@ export interface FillInBlankResponseParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

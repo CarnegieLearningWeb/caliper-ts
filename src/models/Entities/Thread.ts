@@ -4,10 +4,13 @@
  */
 
 import { SystemIdentifier } from '../SystemIdentifier';
+import { Agent } from './Agent';
 import { DigitalResourceCollection } from './DigitalResourceCollection';
 import { Entity } from './Entity';
 import { EntityType } from './EntityType';
+import { LearningObjective } from './LearningObjective';
 import { Message } from './Message';
+import { Status } from './Status';
 
 export interface Thread extends DigitalResourceCollection {
 	id: string;
@@ -17,6 +20,9 @@ export interface Thread extends DigitalResourceCollection {
 export interface ThreadParams {
 	id: string;
 	items?: Message[];
+	learningObjectives?: LearningObjective[];
+	keywords?: string[];
+	creators?: Agent[];
 	mediaType?: string;
 	isPartOf?: Entity;
 	datePublished?: string;
@@ -26,15 +32,13 @@ export interface ThreadParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 
 export function createThread(params: ThreadParams): Thread {
 	return {
 		type: EntityType.Thread,
-		learningObjectives: [],
-		keywords: [],
-		creators: [],
 		...params,
 	};
 }

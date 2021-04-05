@@ -10,6 +10,7 @@ import { Instructor } from '../../Entities/Instructor';
 import { LoginType } from '../../Entities/LoginType';
 import { Person } from '../../Entities/Person';
 import { SoftwareApplication } from '../../Entities/SoftwareApplication';
+import { Status } from '../../Entities/Status';
 import { Student } from '../../Entities/Student';
 import { User } from '../../Entities/User';
 import { UserSession } from '../../Entities/UserSession';
@@ -54,6 +55,7 @@ export interface LoginEventUserSessionParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

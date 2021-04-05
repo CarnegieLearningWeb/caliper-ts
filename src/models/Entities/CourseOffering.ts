@@ -6,6 +6,7 @@
 import { SystemIdentifier } from '../SystemIdentifier';
 import { EntityType } from './EntityType';
 import { Organization } from './Organization';
+import { Status } from './Status';
 
 export interface CourseOffering extends Organization {
 	id: string;
@@ -23,6 +24,7 @@ export interface CourseOfferingParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

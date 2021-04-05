@@ -13,6 +13,7 @@ import { Session } from '../Entities/Session';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { Student } from '../Entities/Student';
 import { User } from '../Entities/User';
+import { UserSession } from '../Entities/UserSession';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
@@ -21,18 +22,19 @@ import { GroupEvent, GroupEventClass, GroupEventGroup } from './Internals/GroupE
 export interface GroupCreatedEvent extends GroupEvent {
 	actor: SoftwareApplication | User | Instructor | Student;
 	object: GroupEventGroup | GroupEventClass;
+	session?: Session | UserSession;
 }
 
 export interface GroupCreatedEventParams {
 	actor: SoftwareApplication | User | Instructor | Student;
 	object: GroupEventGroup | GroupEventClass;
+	session?: Session | UserSession;
 	profile?: CaliperProfile;
 	target?: Entity;
 	generated?: Entity;
 	group?: Organization;
 	membership?: Membership;
 	federatedSession?: LtiSession;
-	session?: Session;
 	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
@@ -109,15 +111,47 @@ export const GroupCreatedEventSchema = {
 				],
 			},
 			object: {
-				required: ['dateCreated', 'dateModified', 'id', 'name', 'status', 'subjects', 'type'],
 				oneOf: [
 					{
 						title: 'Group',
-						$ref: '#/definitions/Group',
+						allOf: [
+							{
+								required: [
+									'dateCreated',
+									'dateModified',
+									'name',
+									'subjects',
+									'status',
+									'type',
+									'id',
+								],
+							},
+							{
+								title: 'Group',
+								$ref: '#/definitions/Group',
+							},
+						],
 					},
 					{
 						title: 'Class',
-						$ref: '#/definitions/Class',
+						allOf: [
+							{
+								required: [
+									'dateCreated',
+									'dateModified',
+									'name',
+									'subjects',
+									'academicTerm',
+									'status',
+									'type',
+									'id',
+								],
+							},
+							{
+								title: 'Class',
+								$ref: '#/definitions/Class',
+							},
+						],
 					},
 				],
 			},
@@ -149,7 +183,7 @@ export const GroupCreatedEventSchema = {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['id', 'type'],
+						required: ['type', 'id'],
 					},
 					{
 						title: 'Entity',
@@ -161,7 +195,7 @@ export const GroupCreatedEventSchema = {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['id', 'type'],
+						required: ['type', 'id'],
 					},
 					{
 						title: 'Entity',
@@ -206,14 +240,15 @@ export const GroupCreatedEventSchema = {
 				],
 			},
 			session: {
-				title: 'Session',
-				allOf: [
-					{
-						required: ['type', 'id'],
-					},
+				required: ['id', 'type'],
+				oneOf: [
 					{
 						title: 'Session',
 						$ref: '#/definitions/Session',
+					},
+					{
+						title: 'UserSession',
+						$ref: '#/definitions/UserSession',
 					},
 				],
 			},
@@ -221,7 +256,7 @@ export const GroupCreatedEventSchema = {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['id', 'type'],
+						required: ['type', 'id'],
 					},
 					{
 						title: 'Entity',
@@ -279,6 +314,10 @@ export const GroupCreatedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -349,6 +388,11 @@ export const GroupCreatedEventSchema = {
 					'SystemId',
 				],
 			},
+			Status: {
+				type: 'string',
+				title: 'Status',
+				enum: ['Inactive', 'Active'],
+			},
 			User: {
 				title: 'User',
 				type: 'object',
@@ -357,10 +401,6 @@ export const GroupCreatedEventSchema = {
 						type: 'string',
 						default: 'User',
 						enum: ['User'],
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
 					},
 					name: {
 						type: 'string',
@@ -401,16 +441,15 @@ export const GroupCreatedEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
 					},
 				},
-			},
-			Status: {
-				type: 'string',
-				title: 'Status',
-				enum: ['Inactive', 'Active'],
 			},
 			Instructor: {
 				title: 'Instructor',
@@ -425,10 +464,6 @@ export const GroupCreatedEventSchema = {
 						type: 'object',
 						additionalProperties: true,
 					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
 					name: {
 						type: 'string',
 					},
@@ -467,6 +502,10 @@ export const GroupCreatedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -516,10 +555,6 @@ export const GroupCreatedEventSchema = {
 							},
 						},
 					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
 					name: {
 						type: 'string',
 					},
@@ -558,6 +593,10 @@ export const GroupCreatedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -631,12 +670,13 @@ export const GroupCreatedEventSchema = {
 								allOf: [
 									{
 										required: [
-											'type',
 											'dateCreated',
 											'dateModified',
 											'name',
 											'subjects',
+											'academicTerm',
 											'status',
+											'type',
 											'id',
 										],
 									},
@@ -745,6 +785,10 @@ export const GroupCreatedEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
@@ -759,10 +803,6 @@ export const GroupCreatedEventSchema = {
 						type: 'string',
 						default: 'School',
 						enum: ['School'],
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
 					},
 					subOrganizationOf: {
 						title: 'Organization',
@@ -809,6 +849,10 @@ export const GroupCreatedEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
@@ -819,11 +863,6 @@ export const GroupCreatedEventSchema = {
 				title: 'Class',
 				type: 'object',
 				properties: {
-					type: {
-						type: 'string',
-						default: 'Class',
-						enum: ['Class'],
-					},
 					dateCreated: {
 						type: 'string',
 						format: 'date-time',
@@ -886,12 +925,13 @@ export const GroupCreatedEventSchema = {
 								allOf: [
 									{
 										required: [
-											'type',
 											'dateCreated',
 											'dateModified',
 											'name',
 											'subjects',
+											'academicTerm',
 											'status',
+											'type',
 											'id',
 										],
 									},
@@ -909,9 +949,17 @@ export const GroupCreatedEventSchema = {
 							type: 'string',
 						},
 					},
+					academicTerm: {
+						type: 'string',
+					},
 					status: {
 						title: 'Status',
 						$ref: '#/definitions/Status',
+					},
+					type: {
+						type: 'string',
+						default: 'Class',
+						enum: ['Class'],
 					},
 					id: {
 						title: 'Uri',
@@ -965,10 +1013,6 @@ export const GroupCreatedEventSchema = {
 				title: 'Entity',
 				type: 'object',
 				properties: {
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
 					type: {
 						type: 'string',
 						default: 'Entity',
@@ -976,6 +1020,10 @@ export const GroupCreatedEventSchema = {
 					},
 					name: {
 						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
 					},
 					description: {
 						type: 'string',
@@ -1002,6 +1050,10 @@ export const GroupCreatedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1067,10 +1119,6 @@ export const GroupCreatedEventSchema = {
 							$ref: '#/definitions/Role',
 						},
 					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1103,6 +1151,10 @@ export const GroupCreatedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1151,6 +1203,10 @@ export const GroupCreatedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1301,6 +1357,10 @@ export const GroupCreatedEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
@@ -1382,11 +1442,156 @@ export const GroupCreatedEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
 					},
 				},
+			},
+			UserSession: {
+				title: 'UserSession',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'UserSession',
+						enum: ['UserSession'],
+					},
+					loginType: {
+						title: 'LoginType',
+						$ref: '#/definitions/LoginType',
+					},
+					credentials: {
+						type: 'array',
+						items: {
+							title: 'CredentialType',
+							$ref: '#/definitions/CredentialType',
+						},
+					},
+					scopes: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					userAgent: {
+						type: 'string',
+					},
+					ipAddress: {
+						title: 'IPAddress',
+						$ref: '#/definitions/IPAddress',
+					},
+					localTimestamp: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?[-|\\+]\\d{2}:\\d{2}',
+					},
+					user: {
+						required: ['id', 'type'],
+						oneOf: [
+							{
+								title: 'Person',
+								$ref: '#/definitions/Person',
+							},
+							{
+								title: 'User',
+								$ref: '#/definitions/User',
+							},
+							{
+								title: 'Instructor',
+								$ref: '#/definitions/Instructor',
+							},
+							{
+								title: 'Student',
+								$ref: '#/definitions/Student',
+							},
+						],
+					},
+					startedAtTime: {
+						type: 'string',
+						format: 'date-time',
+					},
+					endedAtTime: {
+						type: 'string',
+						format: 'date-time',
+					},
+					duration: {
+						type: 'string',
+						pattern: '^P(?:\\d+Y)?(?:\\d+M)?(?:\\d+D)?T?(?:\\d+H)?(?:\\d+M)?(?:\\d+S)?',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			LoginType: {
+				type: 'string',
+				title: 'LoginType',
+				enum: [
+					'QRCodeSwipeFromALA',
+					'SAML',
+					'CleverApi',
+					'LtiSSO',
+					'GoogleAuthentication',
+					'ApplicationLoginPage',
+				],
+			},
+			CredentialType: {
+				type: 'string',
+				title: 'CredentialType',
+				enum: ['Username', 'Password', 'QRCode'],
+			},
+			IPAddress: {
+				type: 'string',
+				oneOf: [
+					{
+						pattern: '^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$',
+					},
+					{
+						pattern: '^\\w{1,4}(:\\w{1,4}){7}$',
+					},
+				],
 			},
 		},
 	},

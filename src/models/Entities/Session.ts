@@ -8,6 +8,7 @@ import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 import { Instructor } from './Instructor';
 import { Person } from './Person';
+import { Status } from './Status';
 import { Student } from './Student';
 import { User } from './User';
 
@@ -30,6 +31,7 @@ export interface SessionParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

@@ -10,14 +10,17 @@ import { Entity } from '../../Entities/Entity';
 import { EntityType } from '../../Entities/EntityType';
 import { IndividualizedLearningPath } from '../../Entities/IndividualizedLearningPath';
 import { Instructor } from '../../Entities/Instructor';
+import { LearningObjective } from '../../Entities/LearningObjective';
 import { Lesson } from '../../Entities/Lesson';
 import { LtiSession } from '../../Entities/LtiSession';
 import { Membership } from '../../Entities/Membership';
 import { Organization } from '../../Entities/Organization';
 import { Session } from '../../Entities/Session';
 import { SoftwareApplication } from '../../Entities/SoftwareApplication';
+import { Status } from '../../Entities/Status';
 import { Student } from '../../Entities/Student';
 import { User } from '../../Entities/User';
+import { UserSession } from '../../Entities/UserSession';
 import { SystemIdentifier } from '../../SystemIdentifier';
 import { CaliperAction } from '../CaliperAction';
 import { CaliperProfile } from '../CaliperProfile';
@@ -28,19 +31,20 @@ export interface IlpEvent extends Event {
 	actor: Agent | SoftwareApplication | User | Instructor | Student;
 	object: IlpEventIndividualizedLearningPath;
 	action: CaliperAction;
+	session?: Session | UserSession;
 }
 
 export interface IlpEventParams {
 	actor: Agent | SoftwareApplication | User | Instructor | Student;
 	object: IlpEventIndividualizedLearningPath;
 	action?: CaliperAction;
+	session?: Session | UserSession;
 	profile?: CaliperProfile;
 	target?: Entity;
 	generated?: Entity;
 	group?: Organization;
 	membership?: Membership;
 	federatedSession?: LtiSession;
-	session?: Session;
 	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
@@ -80,6 +84,7 @@ export interface IlpEventIndividualizedLearningPathParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 
@@ -113,6 +118,9 @@ export interface IlpEventLessonParams {
 	maxAttempts?: number;
 	maxSubmits?: number;
 	maxScore?: number;
+	learningObjectives?: LearningObjective[];
+	keywords?: string[];
+	creators?: Agent[];
 	mediaType?: string;
 	isPartOf?: Entity;
 	datePublished?: string;
@@ -122,15 +130,13 @@ export interface IlpEventLessonParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 
 export function createIlpEventLesson(params: IlpEventLessonParams): IlpEventLesson {
 	return {
 		type: EntityType.Lesson,
-		learningObjectives: [],
-		keywords: [],
-		creators: [],
 		...params,
 	};
 }

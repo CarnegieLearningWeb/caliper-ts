@@ -4,9 +4,12 @@
  */
 
 import { SystemIdentifier } from '../SystemIdentifier';
+import { Agent } from './Agent';
 import { DigitalResource } from './DigitalResource';
 import { Entity } from './Entity';
 import { EntityType } from './EntityType';
+import { LearningObjective } from './LearningObjective';
+import { Status } from './Status';
 
 export interface MediaLocation extends DigitalResource {
 	id: string;
@@ -16,6 +19,9 @@ export interface MediaLocation extends DigitalResource {
 export interface MediaLocationParams {
 	id: string;
 	currentTime?: string;
+	learningObjectives?: LearningObjective[];
+	keywords?: string[];
+	creators?: Agent[];
 	mediaType?: string;
 	isPartOf?: Entity;
 	datePublished?: string;
@@ -25,15 +31,13 @@ export interface MediaLocationParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 
 export function createMediaLocation(params: MediaLocationParams): MediaLocation {
 	return {
 		type: EntityType.MediaLocation,
-		learningObjectives: [],
-		keywords: [],
-		creators: [],
 		...params,
 	};
 }

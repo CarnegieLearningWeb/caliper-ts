@@ -8,6 +8,7 @@ import { Agent } from './Agent';
 import { Attempt } from './Attempt';
 import { Entity } from './Entity';
 import { EntityType } from './EntityType';
+import { Status } from './Status';
 
 export interface Result extends Entity {
 	id: string;
@@ -30,6 +31,7 @@ export interface ResultParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

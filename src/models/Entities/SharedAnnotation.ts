@@ -9,6 +9,7 @@ import { Annotation } from './Annotation';
 import { DigitalResource } from './DigitalResource';
 import { EntityType } from './EntityType';
 import { Person } from './Person';
+import { Status } from './Status';
 
 export interface SharedAnnotation extends Annotation {
 	id: string;
@@ -25,6 +26,7 @@ export interface SharedAnnotationParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

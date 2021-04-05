@@ -8,6 +8,7 @@ import { Annotation } from './Annotation';
 import { DigitalResource } from './DigitalResource';
 import { EntityType } from './EntityType';
 import { Person } from './Person';
+import { Status } from './Status';
 
 export interface BookmarkAnnotation extends Annotation {
 	id: string;
@@ -24,6 +25,7 @@ export interface BookmarkAnnotationParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

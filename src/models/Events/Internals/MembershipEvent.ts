@@ -12,10 +12,12 @@ import { Membership } from '../../Entities/Membership';
 import { Organization } from '../../Entities/Organization';
 import { Role } from '../../Entities/Role';
 import { School } from '../../Entities/School';
+import { Session } from '../../Entities/Session';
 import { SoftwareApplication } from '../../Entities/SoftwareApplication';
 import { Status } from '../../Entities/Status';
 import { Student } from '../../Entities/Student';
 import { User } from '../../Entities/User';
+import { UserSession } from '../../Entities/UserSession';
 import { SystemIdentifier } from '../../SystemIdentifier';
 import { CaliperAction } from '../CaliperAction';
 import { Event } from '../Event';
@@ -24,6 +26,7 @@ export interface MembershipEvent extends Event {
 	actor: Agent | SoftwareApplication | User | Instructor;
 	object: MembershipEventMembership;
 	action: CaliperAction;
+	session?: Session | UserSession;
 }
 
 export interface MembershipEventMembership extends Membership {
@@ -50,10 +53,10 @@ export interface MembershipEventMembershipParams {
 	dateCreated: string;
 	dateModified: string;
 	roles: Role[];
-	status?: Status;
 	name?: string;
 	description?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 
@@ -80,6 +83,7 @@ export interface MembershipEventOrganizationParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 
@@ -102,11 +106,11 @@ export interface MembershipEventSchoolParams {
 	id: string;
 	name: string;
 	subOrganizationOf?: Organization | School | Group | Class;
-	status?: Status;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 
@@ -129,10 +133,12 @@ export interface MembershipEventGroupParams {
 	id: string;
 	name: string;
 	subOrganizationOf?: Organization | School | Group | Class;
+	subjects?: string[];
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 
@@ -155,11 +161,13 @@ export interface MembershipEventClassParams {
 	id: string;
 	name: string;
 	subOrganizationOf?: Organization | School | Group | Class;
-	status?: Status;
+	academicTerm?: string;
+	subjects?: string[];
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

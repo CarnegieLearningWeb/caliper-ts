@@ -10,18 +10,17 @@ import { Status } from './Status';
 
 export interface School extends Organization {
 	id: string;
-	status?: Status;
 }
 
 export interface SchoolParams {
 	id: string;
-	status?: Status;
 	subOrganizationOf?: Organization;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

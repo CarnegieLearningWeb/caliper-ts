@@ -3,6 +3,7 @@
  * This file was automatically generated.
  */
 
+import { BenchmarkEventSchema } from './Events/BenchmarkEvent';
 import { GroupCreatedEventSchema } from './Events/GroupCreatedEvent';
 import { GroupDeletedEventSchema } from './Events/GroupDeletedEvent';
 import { GroupUpdatedEventSchema } from './Events/GroupUpdatedEvent';
@@ -20,11 +21,14 @@ import { MembershipCreatedEventSchema } from './Events/MembershipCreatedEvent';
 import { MembershipDeletedEventSchema } from './Events/MembershipDeletedEvent';
 import { MembershipUpdatedEventSchema } from './Events/MembershipUpdatedEvent';
 import { NavigationEventSchema } from './Events/NavigationEvent';
+import { NWEABenchmarkEventSchema } from './Events/NWEABenchmarkEvent';
 import { OrganizationActivatedEventSchema } from './Events/OrganizationActivatedEvent';
 import { OrganizationCreatedEventSchema } from './Events/OrganizationCreatedEvent';
 import { OrganizationDeactivatedEventSchema } from './Events/OrganizationDeactivatedEvent';
 import { OrganizationDeletedEventSchema } from './Events/OrganizationDeletedEvent';
 import { OrganizationUpdatedEventSchema } from './Events/OrganizationUpdatedEvent';
+import { PlacementEventSchema } from './Events/PlacementEvent';
+import { RenaissanceBenchmarkEventSchema } from './Events/RenaissanceBenchmarkEvent';
 import { UserActivatedEventSchema } from './Events/UserActivatedEvent';
 import { UserCreatedEventSchema } from './Events/UserCreatedEvent';
 import { UserDeactivatedEventSchema } from './Events/UserDeactivatedEvent';
@@ -32,6 +36,9 @@ import { UserDeletedEventSchema } from './Events/UserDeletedEvent';
 import { UserUpdatedEventSchema } from './Events/UserUpdatedEvent';
 
 export const schemas = {
+	[NWEABenchmarkEventSchema.context]: NWEABenchmarkEventSchema.schema,
+	[BenchmarkEventSchema.context]: BenchmarkEventSchema.schema,
+	[RenaissanceBenchmarkEventSchema.context]: RenaissanceBenchmarkEventSchema.schema,
 	[GroupCreatedEventSchema.context]: GroupCreatedEventSchema.schema,
 	[GroupUpdatedEventSchema.context]: GroupUpdatedEventSchema.schema,
 	[GroupDeletedEventSchema.context]: GroupDeletedEventSchema.schema,
@@ -54,6 +61,7 @@ export const schemas = {
 	[OrganizationDeletedEventSchema.context]: OrganizationDeletedEventSchema.schema,
 	[OrganizationActivatedEventSchema.context]: OrganizationActivatedEventSchema.schema,
 	[OrganizationDeactivatedEventSchema.context]: OrganizationDeactivatedEventSchema.schema,
+	[PlacementEventSchema.context]: PlacementEventSchema.schema,
 	[UserCreatedEventSchema.context]: UserCreatedEventSchema.schema,
 	[UserUpdatedEventSchema.context]: UserUpdatedEventSchema.schema,
 	[UserDeletedEventSchema.context]: UserDeletedEventSchema.schema,

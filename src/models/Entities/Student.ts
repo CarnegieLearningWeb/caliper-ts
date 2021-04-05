@@ -23,7 +23,6 @@ export interface StudentParams {
 	individualEducationPlan?: boolean;
 	englishLanguageLearner?: boolean;
 	settings?: StudentProfileSettings;
-	status?: Status;
 	name?: string;
 	firstName?: string;
 	lastName?: string;
@@ -31,6 +30,7 @@ export interface StudentParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

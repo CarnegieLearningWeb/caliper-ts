@@ -6,6 +6,7 @@
 import { SystemIdentifier } from '../SystemIdentifier';
 import { Entity } from './Entity';
 import { EntityType } from './EntityType';
+import { Status } from './Status';
 
 export interface LearningObjective extends Entity {
 	id: string;
@@ -18,6 +19,7 @@ export interface LearningObjectiveParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

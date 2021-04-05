@@ -1,15 +1,17 @@
 import Caliper from './caliper';
-import { createInstructor } from './models/Entities/Instructor';
-import { createOrganization } from './models/Entities/Organization';
-import { Status } from './models/Entities/Status';
-import { createUser } from './models/Entities/User';
-import { CaliperAction } from './models/Events/CaliperAction';
-import { createUserEventStudent } from './models/Events/Internals/UserEvent';
-import { createOrganizationActivatedEvent } from './models/Events/OrganizationActivatedEvent';
-import { createUserCreatedEvent } from './models/Events/UserCreatedEvent';
-import { createSystemIdentifier } from './models/SystemIdentifier';
-import { SystemIdentifierType } from './models/SystemIdentifierType';
 import { validate } from './validate';
+import {
+	createInstructor,
+	createOrganization,
+	Status,
+	createUser,
+	CaliperAction,
+	createUserEventStudent,
+	createOrganizationActivatedEvent,
+	createUserCreatedEvent,
+	createSystemIdentifier,
+	SystemIdentifierType,
+} from './models';
 
 describe('validate(..)', () => {
 	beforeEach(() => {
@@ -30,6 +32,7 @@ describe('validate(..)', () => {
 				dateModified: timestamp,
 				firstName: 'Marc',
 				lastName: 'Lim',
+				name: 'Marc Lim',
 				status: Status.Active,
 				gradeLevel: 1,
 				englishLanguageLearner: true,
@@ -74,14 +77,36 @@ describe('validate(..)', () => {
 		expect(() => validate(event)).not.toThrowError();
 	});
 
-	it('throws error for invalid ID', () => {
-		const event = createOrganizationActivatedEvent({
-			actor: createUser({ id: 'https://foo.bar/user/1' }),
-			object: createOrganization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') }),
-		});
-		event.id = 'this-is-not-a-valid-event-id';
+	describe('event.id', () => {
+		it('passes for guid in urn format', () => {
+			const event = createOrganizationActivatedEvent({
+				actor: createUser({ id: 'https://foo.bar/user/1' }),
+				object: createOrganization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') }),
+			});
+			event.id = Caliper.uuid('a1d5c07b-688c-41aa-b492-30c67084c8cc');
 
-		expect(() => validate(event)).toThrowError();
+			expect(event.id).toEqual('urn:uuid:a1d5c07b-688c-41aa-b492-30c67084c8cc');
+		});
+
+		it('throws error for non-guid', () => {
+			const event = createOrganizationActivatedEvent({
+				actor: createUser({ id: 'https://foo.bar/user/1' }),
+				object: createOrganization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') }),
+			});
+			event.id = 'this-is-not-a-valid-event-id';
+
+			expect(() => validate(event)).toThrowError();
+		});
+
+		it('throws error for guid not in urn format', () => {
+			const event = createOrganizationActivatedEvent({
+				actor: createUser({ id: 'https://foo.bar/user/1' }),
+				object: createOrganization({ id: Caliper.uuid('cab85afa-de4f-4ee0-bce3-66030d906c25') }),
+			});
+			event.id = 'a1d5c07b-688c-41aa-b492-30c67084c8cc'; // must use Caliper.uuid(..)
+
+			expect(() => validate(event)).toThrowError();
+		});
 	});
 
 	it('throws error for invalid event action', () => {

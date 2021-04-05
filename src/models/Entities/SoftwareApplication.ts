@@ -6,6 +6,7 @@
 import { SystemIdentifier } from '../SystemIdentifier';
 import { Agent } from './Agent';
 import { EntityType } from './EntityType';
+import { Status } from './Status';
 
 export interface SoftwareApplication extends Agent {
 	id: string;
@@ -20,6 +21,7 @@ export interface SoftwareApplicationParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

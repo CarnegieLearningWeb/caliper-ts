@@ -8,6 +8,7 @@ import { Annotation } from './Annotation';
 import { DigitalResource } from './DigitalResource';
 import { EntityType } from './EntityType';
 import { Person } from './Person';
+import { Status } from './Status';
 import { TextPositionSelector } from './TextPositionSelector';
 
 export interface HighlightAnnotation extends Annotation {
@@ -27,6 +28,7 @@ export interface HighlightAnnotationParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

@@ -9,6 +9,7 @@ import { Attempt } from './Attempt';
 import { EntityType } from './EntityType';
 import { LessonStatus } from './LessonStatus';
 import { Score } from './Score';
+import { Status } from './Status';
 
 export interface MasteryScore extends Score {
 	id: string;
@@ -30,6 +31,7 @@ export interface MasteryScoreParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

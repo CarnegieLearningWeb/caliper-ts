@@ -8,6 +8,7 @@ import { EntityType } from './EntityType';
 import { Instructor } from './Instructor';
 import { Person } from './Person';
 import { Session } from './Session';
+import { Status } from './Status';
 import { Student } from './Student';
 import { User } from './User';
 
@@ -29,6 +30,7 @@ export interface LtiSessionParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

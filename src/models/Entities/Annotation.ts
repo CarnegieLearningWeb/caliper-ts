@@ -8,6 +8,7 @@ import { DigitalResource } from './DigitalResource';
 import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 import { Person } from './Person';
+import { Status } from './Status';
 
 export interface Annotation extends Entity {
 	id: string;
@@ -24,6 +25,7 @@ export interface AnnotationParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

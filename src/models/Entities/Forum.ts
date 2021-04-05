@@ -4,9 +4,12 @@
  */
 
 import { SystemIdentifier } from '../SystemIdentifier';
+import { Agent } from './Agent';
 import { DigitalResourceCollection } from './DigitalResourceCollection';
 import { Entity } from './Entity';
 import { EntityType } from './EntityType';
+import { LearningObjective } from './LearningObjective';
+import { Status } from './Status';
 import { Thread } from './Thread';
 
 export interface Forum extends DigitalResourceCollection {
@@ -17,6 +20,9 @@ export interface Forum extends DigitalResourceCollection {
 export interface ForumParams {
 	id: string;
 	items?: Thread[];
+	learningObjectives?: LearningObjective[];
+	keywords?: string[];
+	creators?: Agent[];
 	mediaType?: string;
 	isPartOf?: Entity;
 	datePublished?: string;
@@ -26,15 +32,13 @@ export interface ForumParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 
 export function createForum(params: ForumParams): Forum {
 	return {
 		type: EntityType.Forum,
-		learningObjectives: [],
-		keywords: [],
-		creators: [],
 		...params,
 	};
 }

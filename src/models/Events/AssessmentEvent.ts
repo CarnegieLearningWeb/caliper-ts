@@ -13,6 +13,7 @@ import { Organization } from '../Entities/Organization';
 import { Person } from '../Entities/Person';
 import { Session } from '../Entities/Session';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { UserSession } from '../Entities/UserSession';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { Event } from './Event';
@@ -23,6 +24,7 @@ export interface AssessmentEvent extends Event {
 	object: Assessment;
 	action: CaliperAction;
 	generated: Attempt;
+	session?: Session | UserSession;
 }
 
 export interface AssessmentEventParams {
@@ -30,12 +32,12 @@ export interface AssessmentEventParams {
 	object: Assessment;
 	action?: CaliperAction;
 	generated: Attempt;
+	session?: Session | UserSession;
 	profile?: CaliperProfile;
 	target?: Entity;
 	group?: Organization;
 	membership?: Membership;
 	federatedSession?: LtiSession;
-	session?: Session;
 	referrer?: Entity;
 	extensions?: Record<string, any>;
 }

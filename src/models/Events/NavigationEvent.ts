@@ -4,16 +4,26 @@
  */
 
 import Caliper from '../../caliper';
+import { AssignableDigitalResource } from '../Entities/AssignableDigitalResource';
+import { Chapter } from '../Entities/Chapter';
+import { DigitalResource } from '../Entities/DigitalResource';
+import { DigitalResourceCollection } from '../Entities/DigitalResourceCollection';
+import { Document } from '../Entities/Document';
 import { Entity } from '../Entities/Entity';
+import { Frame } from '../Entities/Frame';
 import { Instructor } from '../Entities/Instructor';
 import { LtiSession } from '../Entities/LtiSession';
+import { MediaLocation } from '../Entities/MediaLocation';
+import { MediaObject } from '../Entities/MediaObject';
 import { Membership } from '../Entities/Membership';
+import { Message } from '../Entities/Message';
 import { Organization } from '../Entities/Organization';
-import { Person } from '../Entities/Person';
+import { Page } from '../Entities/Page';
 import { Session } from '../Entities/Session';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { Student } from '../Entities/Student';
 import { User } from '../Entities/User';
+import { UserSession } from '../Entities/UserSession';
 import { WebPage } from '../Entities/WebPage';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
@@ -21,19 +31,90 @@ import { Event } from './Event';
 import { EventType } from './EventType';
 
 export interface NavigationEvent extends Event {
-	actor: Person | User | Student | Instructor | SoftwareApplication | Organization;
-	object: WebPage;
-	session: Session;
-	referrer: SoftwareApplication | WebPage;
+	actor: User | Student | Instructor;
+	object:
+		| WebPage
+		| SoftwareApplication
+		| DigitalResource
+		| DigitalResourceCollection
+		| AssignableDigitalResource
+		| Document
+		| Chapter
+		| Frame
+		| MediaLocation
+		| MediaObject
+		| Message
+		| Page;
+	target?:
+		| DigitalResource
+		| DigitalResourceCollection
+		| AssignableDigitalResource
+		| Document
+		| Chapter
+		| Frame
+		| MediaLocation
+		| MediaObject
+		| Message
+		| WebPage
+		| Page;
+	referrer?:
+		| SoftwareApplication
+		| DigitalResource
+		| DigitalResourceCollection
+		| AssignableDigitalResource
+		| Document
+		| Chapter
+		| Frame
+		| MediaLocation
+		| MediaObject
+		| Message
+		| WebPage
+		| Page;
+	session?: Session | UserSession;
 }
 
 export interface NavigationEventParams {
-	actor: Person | User | Student | Instructor | SoftwareApplication | Organization;
-	object: WebPage;
-	session: Session;
-	referrer: SoftwareApplication | WebPage;
+	actor: User | Student | Instructor;
+	object:
+		| WebPage
+		| SoftwareApplication
+		| DigitalResource
+		| DigitalResourceCollection
+		| AssignableDigitalResource
+		| Document
+		| Chapter
+		| Frame
+		| MediaLocation
+		| MediaObject
+		| Message
+		| Page;
+	target?:
+		| DigitalResource
+		| DigitalResourceCollection
+		| AssignableDigitalResource
+		| Document
+		| Chapter
+		| Frame
+		| MediaLocation
+		| MediaObject
+		| Message
+		| WebPage
+		| Page;
+	referrer?:
+		| SoftwareApplication
+		| DigitalResource
+		| DigitalResourceCollection
+		| AssignableDigitalResource
+		| Document
+		| Chapter
+		| Frame
+		| MediaLocation
+		| MediaObject
+		| Message
+		| WebPage
+		| Page;
+	session?: Session | UserSession;
 	profile?: CaliperProfile;
-	target?: Entity;
 	generated?: Entity;
 	group?: Organization;
 	membership?: Membership;
@@ -64,7 +145,7 @@ export const NavigationEventSchema = {
 	schema: {
 		title: 'NavigationEvent',
 		type: 'object',
-		required: ['@context', 'type', 'action', 'id', 'eventTime', 'edApp', 'actor', 'object'],
+		required: ['@context', 'type', 'action', 'actor', 'object', 'id', 'eventTime', 'edApp'],
 		properties: {
 			'@context': {
 				type: 'array',
@@ -91,6 +172,178 @@ export const NavigationEventSchema = {
 				default: 'NavigatedTo',
 				enum: ['NavigatedTo'],
 			},
+			actor: {
+				required: ['id', 'type'],
+				oneOf: [
+					{
+						title: 'User',
+						$ref: '#/definitions/User',
+					},
+					{
+						title: 'Instructor',
+						$ref: '#/definitions/Instructor',
+					},
+					{
+						title: 'Student',
+						$ref: '#/definitions/Student',
+					},
+				],
+			},
+			object: {
+				required: ['id', 'type'],
+				oneOf: [
+					{
+						title: 'SoftwareApplication',
+						$ref: '#/definitions/SoftwareApplication',
+					},
+					{
+						title: 'DigitalResource',
+						$ref: '#/definitions/DigitalResource',
+					},
+					{
+						title: 'DigitalResourceCollection',
+						$ref: '#/definitions/DigitalResourceCollection',
+					},
+					{
+						title: 'AssignableDigitalResource',
+						$ref: '#/definitions/AssignableDigitalResource',
+					},
+					{
+						title: 'Document',
+						$ref: '#/definitions/Document',
+					},
+					{
+						title: 'Chapter',
+						$ref: '#/definitions/Chapter',
+					},
+					{
+						title: 'Frame',
+						$ref: '#/definitions/Frame',
+					},
+					{
+						title: 'MediaLocation',
+						$ref: '#/definitions/MediaLocation',
+					},
+					{
+						title: 'MediaObject',
+						$ref: '#/definitions/MediaObject',
+					},
+					{
+						title: 'Message',
+						$ref: '#/definitions/Message',
+					},
+					{
+						title: 'WebPage',
+						$ref: '#/definitions/WebPage',
+					},
+					{
+						title: 'Page',
+						$ref: '#/definitions/Page',
+					},
+				],
+			},
+			target: {
+				required: ['id', 'type'],
+				oneOf: [
+					{
+						title: 'DigitalResource',
+						$ref: '#/definitions/DigitalResource',
+					},
+					{
+						title: 'DigitalResourceCollection',
+						$ref: '#/definitions/DigitalResourceCollection',
+					},
+					{
+						title: 'AssignableDigitalResource',
+						$ref: '#/definitions/AssignableDigitalResource',
+					},
+					{
+						title: 'Document',
+						$ref: '#/definitions/Document',
+					},
+					{
+						title: 'Chapter',
+						$ref: '#/definitions/Chapter',
+					},
+					{
+						title: 'Frame',
+						$ref: '#/definitions/Frame',
+					},
+					{
+						title: 'MediaLocation',
+						$ref: '#/definitions/MediaLocation',
+					},
+					{
+						title: 'MediaObject',
+						$ref: '#/definitions/MediaObject',
+					},
+					{
+						title: 'Message',
+						$ref: '#/definitions/Message',
+					},
+					{
+						title: 'WebPage',
+						$ref: '#/definitions/WebPage',
+					},
+					{
+						title: 'Page',
+						$ref: '#/definitions/Page',
+					},
+				],
+			},
+			referrer: {
+				required: ['id', 'type'],
+				oneOf: [
+					{
+						title: 'SoftwareApplication',
+						$ref: '#/definitions/SoftwareApplication',
+					},
+					{
+						title: 'DigitalResource',
+						$ref: '#/definitions/DigitalResource',
+					},
+					{
+						title: 'DigitalResourceCollection',
+						$ref: '#/definitions/DigitalResourceCollection',
+					},
+					{
+						title: 'AssignableDigitalResource',
+						$ref: '#/definitions/AssignableDigitalResource',
+					},
+					{
+						title: 'Document',
+						$ref: '#/definitions/Document',
+					},
+					{
+						title: 'Chapter',
+						$ref: '#/definitions/Chapter',
+					},
+					{
+						title: 'Frame',
+						$ref: '#/definitions/Frame',
+					},
+					{
+						title: 'MediaLocation',
+						$ref: '#/definitions/MediaLocation',
+					},
+					{
+						title: 'MediaObject',
+						$ref: '#/definitions/MediaObject',
+					},
+					{
+						title: 'Message',
+						$ref: '#/definitions/Message',
+					},
+					{
+						title: 'WebPage',
+						$ref: '#/definitions/WebPage',
+					},
+					{
+						title: 'Page',
+						$ref: '#/definitions/Page',
+					},
+				],
+			},
 			id: {
 				type: 'string',
 				pattern: 'urn\\:uuid\\:\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}',
@@ -111,196 +364,9 @@ export const NavigationEventSchema = {
 					},
 				],
 			},
-			actor: {
-				oneOf: [
-					{
-						title: 'Person',
-						type: 'object',
-						properties: {
-							type: {
-								type: 'string',
-								default: 'Person',
-								enum: ['Person'],
-							},
-							id: {
-								title: 'Uri',
-								$ref: '#/definitions/Uri',
-							},
-							name: {
-								type: 'string',
-							},
-							description: {
-								type: 'string',
-							},
-							dateCreated: {
-								type: 'string',
-								format: 'date-time',
-							},
-							dateModified: {
-								type: 'string',
-								format: 'date-time',
-							},
-							otherIdentifiers: {
-								type: 'array',
-								items: {
-									title: 'SystemIdentifier',
-									allOf: [
-										{
-											required: ['type', 'identifierType', 'identifier', 'source'],
-										},
-										{
-											title: 'SystemIdentifier',
-											$ref: '#/definitions/SystemIdentifier',
-										},
-									],
-								},
-							},
-							extensions: {
-								type: 'object',
-								additionalProperties: true,
-							},
-						},
-					},
-					{
-						title: 'SoftwareApplication',
-						type: 'object',
-						properties: {
-							type: {
-								type: 'string',
-								default: 'SoftwareApplication',
-								enum: ['SoftwareApplication'],
-							},
-							version: {
-								type: 'string',
-							},
-							id: {
-								title: 'Uri',
-								$ref: '#/definitions/Uri',
-							},
-							name: {
-								type: 'string',
-							},
-							description: {
-								type: 'string',
-							},
-							dateCreated: {
-								type: 'string',
-								format: 'date-time',
-							},
-							dateModified: {
-								type: 'string',
-								format: 'date-time',
-							},
-							otherIdentifiers: {
-								type: 'array',
-								items: {
-									title: 'SystemIdentifier',
-									allOf: [
-										{
-											required: ['type', 'identifierType', 'identifier', 'source'],
-										},
-										{
-											title: 'SystemIdentifier',
-											$ref: '#/definitions/SystemIdentifier',
-										},
-									],
-								},
-							},
-							extensions: {
-								type: 'object',
-								additionalProperties: true,
-							},
-						},
-					},
-					{
-						title: 'Organization',
-						type: 'object',
-						properties: {
-							type: {
-								type: 'string',
-								default: 'Organization',
-								enum: ['Organization'],
-							},
-							subOrganizationOf: {
-								title: 'Organization',
-								allOf: [
-									{
-										required: ['type', 'id'],
-									},
-									{
-										title: 'Organization',
-										$ref: '#/definitions/Organization',
-									},
-								],
-							},
-							id: {
-								title: 'Uri',
-								$ref: '#/definitions/Uri',
-							},
-							name: {
-								type: 'string',
-							},
-							description: {
-								type: 'string',
-							},
-							dateCreated: {
-								type: 'string',
-								format: 'date-time',
-							},
-							dateModified: {
-								type: 'string',
-								format: 'date-time',
-							},
-							otherIdentifiers: {
-								type: 'array',
-								items: {
-									title: 'SystemIdentifier',
-									allOf: [
-										{
-											required: ['type', 'identifierType', 'identifier', 'source'],
-										},
-										{
-											title: 'SystemIdentifier',
-											$ref: '#/definitions/SystemIdentifier',
-										},
-									],
-								},
-							},
-							extensions: {
-								type: 'object',
-								additionalProperties: true,
-							},
-						},
-					},
-				],
-			},
-			object: {
-				title: 'Entity',
-				allOf: [
-					{
-						required: ['type', 'id'],
-					},
-					{
-						title: 'Entity',
-						$ref: '#/definitions/Entity',
-					},
-				],
-			},
 			profile: {
 				title: 'CaliperProfile',
 				$ref: '#/definitions/CaliperProfile',
-			},
-			target: {
-				title: 'Entity',
-				allOf: [
-					{
-						required: ['type', 'id'],
-					},
-					{
-						title: 'Entity',
-						$ref: '#/definitions/Entity',
-					},
-				],
 			},
 			generated: {
 				title: 'Entity',
@@ -351,26 +417,15 @@ export const NavigationEventSchema = {
 				],
 			},
 			session: {
-				title: 'Session',
-				allOf: [
-					{
-						required: ['type', 'id'],
-					},
+				required: ['id', 'type'],
+				oneOf: [
 					{
 						title: 'Session',
 						$ref: '#/definitions/Session',
 					},
-				],
-			},
-			referrer: {
-				title: 'Entity',
-				allOf: [
 					{
-						required: ['type', 'id'],
-					},
-					{
-						title: 'Entity',
-						$ref: '#/definitions/Entity',
+						title: 'UserSession',
+						$ref: '#/definitions/UserSession',
 					},
 				],
 			},
@@ -380,24 +435,27 @@ export const NavigationEventSchema = {
 			},
 		},
 		definitions: {
-			SoftwareApplication: {
-				title: 'SoftwareApplication',
+			User: {
+				title: 'User',
 				type: 'object',
 				properties: {
 					type: {
 						type: 'string',
-						default: 'SoftwareApplication',
-						enum: ['SoftwareApplication'],
+						default: 'User',
+						enum: ['User'],
 					},
-					version: {
+					name: {
+						type: 'string',
+					},
+					firstName: {
+						type: 'string',
+					},
+					lastName: {
 						type: 'string',
 					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
 					},
 					description: {
 						type: 'string',
@@ -424,6 +482,10 @@ export const NavigationEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -494,14 +556,17 @@ export const NavigationEventSchema = {
 					'SystemId',
 				],
 			},
-			Entity: {
-				title: 'Entity',
+			SoftwareApplication: {
+				title: 'SoftwareApplication',
 				type: 'object',
 				properties: {
 					type: {
 						type: 'string',
-						default: 'Entity',
-						enum: ['Entity'],
+						default: 'SoftwareApplication',
+						enum: ['SoftwareApplication'],
+					},
+					version: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -535,6 +600,1615 @@ export const NavigationEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Status: {
+				type: 'string',
+				title: 'Status',
+				enum: ['Inactive', 'Active'],
+			},
+			Instructor: {
+				title: 'Instructor',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Instructor',
+						enum: ['Instructor'],
+					},
+					permissions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+					name: {
+						type: 'string',
+					},
+					firstName: {
+						type: 'string',
+					},
+					lastName: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Student: {
+				title: 'Student',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Student',
+						enum: ['Student'],
+					},
+					gradeLevel: {
+						type: 'number',
+					},
+					individualEducationPlan: {
+						type: 'boolean',
+					},
+					englishLanguageLearner: {
+						type: 'boolean',
+					},
+					settings: {
+						type: 'object',
+						additionalProperties: true,
+						properties: {
+							spanishLanguage: {
+								type: 'array',
+								items: {
+									type: 'string',
+								},
+							},
+							textToSpeech: {
+								type: 'array',
+								items: {
+									type: 'string',
+								},
+							},
+							languageTranslationTools: {
+								type: 'array',
+								items: {
+									type: 'string',
+								},
+							},
+						},
+					},
+					name: {
+						type: 'string',
+					},
+					firstName: {
+						type: 'string',
+					},
+					lastName: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			DigitalResource: {
+				title: 'DigitalResource',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'DigitalResource',
+						enum: ['DigitalResource'],
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
+					datePublished: {
+						type: 'string',
+						format: 'date-time',
+					},
+					version: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			LearningObjective: {
+				title: 'LearningObjective',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'LearningObjective',
+						enum: ['LearningObjective'],
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Agent: {
+				title: 'Agent',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Agent',
+						enum: ['Agent'],
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Entity: {
+				title: 'Entity',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Entity',
+						enum: ['Entity'],
+					},
+					name: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			DigitalResourceCollection: {
+				title: 'DigitalResourceCollection',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'DigitalResourceCollection',
+						enum: ['DigitalResourceCollection'],
+					},
+					items: {
+						type: 'array',
+						items: {
+							title: 'DigitalResource',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'DigitalResource',
+									$ref: '#/definitions/DigitalResource',
+								},
+							],
+						},
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
+					datePublished: {
+						type: 'string',
+						format: 'date-time',
+					},
+					version: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			AssignableDigitalResource: {
+				title: 'AssignableDigitalResource',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'AssignableDigitalResource',
+						enum: ['AssignableDigitalResource'],
+					},
+					dateToActivate: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateToShow: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateToStartOn: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateToSubmit: {
+						type: 'string',
+						format: 'date-time',
+					},
+					maxAttempts: {
+						type: 'number',
+					},
+					maxSubmits: {
+						type: 'number',
+					},
+					maxScore: {
+						type: 'integer',
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
+					datePublished: {
+						type: 'string',
+						format: 'date-time',
+					},
+					version: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Document: {
+				title: 'Document',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Document',
+						enum: ['Document'],
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
+					datePublished: {
+						type: 'string',
+						format: 'date-time',
+					},
+					version: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Chapter: {
+				title: 'Chapter',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Chapter',
+						enum: ['Chapter'],
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
+					datePublished: {
+						type: 'string',
+						format: 'date-time',
+					},
+					version: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Frame: {
+				title: 'Frame',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Frame',
+						enum: ['Frame'],
+					},
+					index: {
+						type: 'number',
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
+					datePublished: {
+						type: 'string',
+						format: 'date-time',
+					},
+					version: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			MediaLocation: {
+				title: 'MediaLocation',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'MediaLocation',
+						enum: ['MediaLocation'],
+					},
+					currentTime: {
+						type: 'string',
+						pattern: '^P(?:\\d+Y)?(?:\\d+M)?(?:\\d+D)?T?(?:\\d+H)?(?:\\d+M)?(?:\\d+S)?',
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
+					datePublished: {
+						type: 'string',
+						format: 'date-time',
+					},
+					version: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			MediaObject: {
+				title: 'MediaObject',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'MediaObject',
+						enum: ['MediaObject'],
+					},
+					duration: {
+						type: 'string',
+						pattern: '^P(?:\\d+Y)?(?:\\d+M)?(?:\\d+D)?T?(?:\\d+H)?(?:\\d+M)?(?:\\d+S)?',
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
+					datePublished: {
+						type: 'string',
+						format: 'date-time',
+					},
+					version: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Message: {
+				title: 'Message',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Message',
+						enum: ['Message'],
+					},
+					replyTo: {
+						title: 'Message',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Message',
+								$ref: '#/definitions/Message',
+							},
+						],
+					},
+					body: {
+						type: 'string',
+					},
+					attachments: {
+						type: 'array',
+						items: {
+							title: 'DigitalResource',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'DigitalResource',
+									$ref: '#/definitions/DigitalResource',
+								},
+							],
+						},
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
+					datePublished: {
+						type: 'string',
+						format: 'date-time',
+					},
+					version: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			WebPage: {
+				title: 'WebPage',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'WebPage',
+						enum: ['WebPage'],
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
+					datePublished: {
+						type: 'string',
+						format: 'date-time',
+					},
+					version: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Page: {
+				title: 'Page',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Page',
+						enum: ['Page'],
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
+					datePublished: {
+						type: 'string',
+						format: 'date-time',
+					},
+					version: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -616,6 +2290,10 @@ export const NavigationEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
@@ -680,10 +2358,6 @@ export const NavigationEventSchema = {
 							$ref: '#/definitions/Role',
 						},
 					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -716,6 +2390,10 @@ export const NavigationEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -765,221 +2443,9 @@ export const NavigationEventSchema = {
 							],
 						},
 					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			User: {
-				title: 'User',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'User',
-						enum: ['User'],
-					},
 					status: {
 						title: 'Status',
 						$ref: '#/definitions/Status',
-					},
-					name: {
-						type: 'string',
-					},
-					firstName: {
-						type: 'string',
-					},
-					lastName: {
-						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Status: {
-				type: 'string',
-				title: 'Status',
-				enum: ['Inactive', 'Active'],
-			},
-			Instructor: {
-				title: 'Instructor',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Instructor',
-						enum: ['Instructor'],
-					},
-					permissions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					name: {
-						type: 'string',
-					},
-					firstName: {
-						type: 'string',
-					},
-					lastName: {
-						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Student: {
-				title: 'Student',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Student',
-						enum: ['Student'],
-					},
-					gradeLevel: {
-						type: 'number',
-					},
-					individualEducationPlan: {
-						type: 'boolean',
-					},
-					englishLanguageLearner: {
-						type: 'boolean',
-					},
-					settings: {
-						type: 'object',
-						additionalProperties: true,
-						properties: {
-							spanishLanguage: {
-								type: 'array',
-								items: {
-									type: 'string',
-								},
-							},
-							textToSpeech: {
-								type: 'array',
-								items: {
-									type: 'string',
-								},
-							},
-							languageTranslationTools: {
-								type: 'array',
-								items: {
-									type: 'string',
-								},
-							},
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					name: {
-						type: 'string',
-					},
-					firstName: {
-						type: 'string',
-					},
-					lastName: {
-						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
 					},
 					extensions: {
 						type: 'object',
@@ -996,10 +2462,6 @@ export const NavigationEventSchema = {
 						default: 'School',
 						enum: ['School'],
 					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
 					subOrganizationOf: {
 						title: 'Organization',
 						allOf: [
@@ -1044,6 +2506,10 @@ export const NavigationEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1060,6 +2526,12 @@ export const NavigationEventSchema = {
 						default: 'Group',
 						enum: ['Group'],
 					},
+					subjects: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
 					subOrganizationOf: {
 						title: 'Organization',
 						allOf: [
@@ -1104,6 +2576,10 @@ export const NavigationEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1120,9 +2596,14 @@ export const NavigationEventSchema = {
 						default: 'Class',
 						enum: ['Class'],
 					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
+					academicTerm: {
+						type: 'string',
+					},
+					subjects: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
 					},
 					subOrganizationOf: {
 						title: 'Organization',
@@ -1168,6 +2649,10 @@ export const NavigationEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1318,6 +2803,10 @@ export const NavigationEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
@@ -1399,11 +2888,156 @@ export const NavigationEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
 					},
 				},
+			},
+			UserSession: {
+				title: 'UserSession',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'UserSession',
+						enum: ['UserSession'],
+					},
+					loginType: {
+						title: 'LoginType',
+						$ref: '#/definitions/LoginType',
+					},
+					credentials: {
+						type: 'array',
+						items: {
+							title: 'CredentialType',
+							$ref: '#/definitions/CredentialType',
+						},
+					},
+					scopes: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					userAgent: {
+						type: 'string',
+					},
+					ipAddress: {
+						title: 'IPAddress',
+						$ref: '#/definitions/IPAddress',
+					},
+					localTimestamp: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?[-|\\+]\\d{2}:\\d{2}',
+					},
+					user: {
+						required: ['id', 'type'],
+						oneOf: [
+							{
+								title: 'Person',
+								$ref: '#/definitions/Person',
+							},
+							{
+								title: 'User',
+								$ref: '#/definitions/User',
+							},
+							{
+								title: 'Instructor',
+								$ref: '#/definitions/Instructor',
+							},
+							{
+								title: 'Student',
+								$ref: '#/definitions/Student',
+							},
+						],
+					},
+					startedAtTime: {
+						type: 'string',
+						format: 'date-time',
+					},
+					endedAtTime: {
+						type: 'string',
+						format: 'date-time',
+					},
+					duration: {
+						type: 'string',
+						pattern: '^P(?:\\d+Y)?(?:\\d+M)?(?:\\d+D)?T?(?:\\d+H)?(?:\\d+M)?(?:\\d+S)?',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						format: 'date-time',
+					},
+					dateModified: {
+						type: 'string',
+						format: 'date-time',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			LoginType: {
+				type: 'string',
+				title: 'LoginType',
+				enum: [
+					'QRCodeSwipeFromALA',
+					'SAML',
+					'CleverApi',
+					'LtiSSO',
+					'GoogleAuthentication',
+					'ApplicationLoginPage',
+				],
+			},
+			CredentialType: {
+				type: 'string',
+				title: 'CredentialType',
+				enum: ['Username', 'Password', 'QRCode'],
+			},
+			IPAddress: {
+				type: 'string',
+				oneOf: [
+					{
+						pattern: '^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$',
+					},
+					{
+						pattern: '^\\w{1,4}(:\\w{1,4}){7}$',
+					},
+				],
 			},
 		},
 	},

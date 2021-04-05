@@ -34,7 +34,7 @@ export interface {Type.GetTypescriptName()}Params {{
 
 export function {FactoryFunctionName}(params: {Type.GetTypescriptName()}Params) : {Name} {{
     return {{
-        id: `urn:domain:${{params.standard.toLocaleUpperCase()}}${{params.code.toLocaleUpperCase()}}`,
+        id: `urn:domain:${{params.standard.toLocaleUpperCase()}}.${{params.code.toLocaleUpperCase()}}`,
         {string.Join(",\n\t\t", initializers.Select(_ => $"{_.Key}: {_.Value}"))},
         ...params
     }};

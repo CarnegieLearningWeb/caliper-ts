@@ -10,14 +10,12 @@ import { Status } from './Status';
 
 export interface User extends Person {
 	id: string;
-	status?: Status;
 	firstName?: string;
 	lastName?: string;
 }
 
 export interface UserParams {
 	id: string;
-	status?: Status;
 	firstName?: string;
 	lastName?: string;
 	name?: string;
@@ -25,6 +23,7 @@ export interface UserParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 

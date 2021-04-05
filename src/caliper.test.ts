@@ -79,7 +79,7 @@ describe('Caliper module', () => {
 	});
 
 	describe('Caliper.duration', () => {
-		const expectedDuration = 'P0Y0M1DT14H58M0S';
+		const expectedDuration = 'P1DT14H58M';
 		const durationRegex = /^P(?:\d+Y)?(?:\d+M)?(?:\d+D)?T?(?:\d+H)?(?:\d+M)?(?:\d+S)?/;
 
 		it('returns the ISO8601 duration from two date objects', () => {
@@ -97,6 +97,22 @@ describe('Caliper module', () => {
 
 			const duration = Caliper.duration(start, end);
 			expect(duration).toBe(expectedDuration);
+			expect(duration).toMatch(durationRegex);
+		});
+	});
+
+	describe('Caliper.durationMilliseconds', () => {
+		const durationRegex = /^P(?:\d+Y)?(?:\d+M)?(?:\d+D)?T?(?:\d+H)?(?:\d+M)?(?:\d+S)?/;
+		const cases: [number, string][] = [
+			[2500, 'PT2.5S'],
+			[2041801, 'PT34M1.801S'],
+			[86550000, 'P1DT2M30S'],
+			[97350000, 'P1DT3H2M30S'],
+		];
+
+		test.each(cases)('%p => %p', (milliseconds, expected) => {
+			const duration = Caliper.durationMilliseconds(milliseconds);
+			expect(duration).toBe(expected);
 			expect(duration).toMatch(durationRegex);
 		});
 	});

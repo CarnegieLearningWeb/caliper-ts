@@ -10,6 +10,7 @@ import { Domain } from '../../Entities/Domain';
 import { Entity } from '../../Entities/Entity';
 import { EntityType } from '../../Entities/EntityType';
 import { IndividualizedLearningPath } from '../../Entities/IndividualizedLearningPath';
+import { LearningObjective } from '../../Entities/LearningObjective';
 import { Lesson } from '../../Entities/Lesson';
 import { LessonStatus } from '../../Entities/LessonStatus';
 import { LtiSession } from '../../Entities/LtiSession';
@@ -19,7 +20,9 @@ import { Organization } from '../../Entities/Organization';
 import { Person } from '../../Entities/Person';
 import { Session } from '../../Entities/Session';
 import { SoftwareApplication } from '../../Entities/SoftwareApplication';
+import { Status } from '../../Entities/Status';
 import { Student } from '../../Entities/Student';
+import { UserSession } from '../../Entities/UserSession';
 import { SystemIdentifier } from '../../SystemIdentifier';
 import { CaliperAction } from '../CaliperAction';
 import { CaliperProfile } from '../CaliperProfile';
@@ -30,19 +33,20 @@ export interface LessonEvent extends Event {
 	actor: Agent | Person | SoftwareApplication | Organization;
 	object: LessonEventLesson;
 	action: CaliperAction;
+	session?: Session | UserSession;
 }
 
 export interface LessonEventParams {
 	actor: Agent | Person | SoftwareApplication | Organization;
 	object: LessonEventLesson;
 	action?: CaliperAction;
+	session?: Session | UserSession;
 	profile?: CaliperProfile;
 	target?: Entity;
 	generated?: Entity;
 	group?: Organization;
 	membership?: Membership;
 	federatedSession?: LtiSession;
-	session?: Session;
 	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
@@ -81,6 +85,9 @@ export interface LessonEventLessonParams {
 	maxAttempts?: number;
 	maxSubmits?: number;
 	maxScore?: number;
+	learningObjectives?: LearningObjective[];
+	keywords?: string[];
+	creators?: Agent[];
 	mediaType?: string;
 	datePublished?: string;
 	version?: string;
@@ -89,15 +96,13 @@ export interface LessonEventLessonParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 
 export function createLessonEventLesson(params: LessonEventLessonParams): LessonEventLesson {
 	return {
 		type: EntityType.Lesson,
-		learningObjectives: [],
-		keywords: [],
-		creators: [],
 		...params,
 	};
 }
@@ -122,6 +127,7 @@ export interface LessonEventIndividualizedLearningPathParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 
@@ -156,6 +162,7 @@ export interface LessonEventMasteryScoreParams {
 	dateCreated?: string;
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
 	extensions?: Record<string, any>;
 }
 
