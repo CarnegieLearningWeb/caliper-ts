@@ -1,4 +1,4 @@
-import ky from 'ky';
+import ky from 'ky-universal';
 import { Envelope } from '../envelope';
 import { Client } from './client';
 
