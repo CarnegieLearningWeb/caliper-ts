@@ -1,11 +1,4 @@
-import {
-	createLogoutEvent,
-	createLoginEventUserSession,
-	createSoftwareApplication,
-	createUser,
-	CredentialType,
-	LoginType,
-} from '..';
+import { createLogoutEvent, createSoftwareApplication, createStudent, createUserSession } from '..';
 import Caliper from '../../caliper';
 import { validate } from '../../validate';
 
@@ -20,7 +13,7 @@ describe('LogoutEvent', () => {
 
 	const expected = {
 		'@context': [
-			'http://edgenuity.com/events/logout/0-0-2',
+			'http://edgenuity.com/events/logout/0-1-0',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
 		id: 'urn:uuid:cf32353c-dbd3-42d5-90a4-02830409c2bd',
@@ -32,38 +25,24 @@ describe('LogoutEvent', () => {
 			type: 'SoftwareApplication',
 		},
 		actor: {
-			id: 'https://app.edgenuity.com/user/12345',
-			type: 'User',
+			id: 'urn:uuid:22c9865c-7252-4cf7-9580-f56476f24df6',
+			type: 'Student',
 		},
 		object: {
 			id: 'https://app.edgenuity.com',
 			type: 'SoftwareApplication',
 		},
 		session: {
-			id: 'https://identity.edgenuity.com/session/12345',
+			id: 'urn:uuid:31e1ab8e-f7d2-4656-a4bb-719a823ebd2b',
 			type: 'UserSession',
-			loginType: 'LtiSSO',
-			credentials: ['Username', 'Password'],
-			scopes: ['edgenuity-app', 'edgenuity-reports'],
-			userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0',
-			ipAddress: '192.168.0.1',
-			localTimestamp: '2020-09-22T22:31:28-07:00',
 		},
 	};
 
 	it('OK', () => {
 		const model = createLogoutEvent({
-			actor: createUser({ id: 'https://app.edgenuity.com/user/12345' }),
+			actor: createStudent({ id: Caliper.uuid('22c9865c-7252-4cf7-9580-f56476f24df6') }),
 			object: createSoftwareApplication({ id: 'https://app.edgenuity.com' }),
-			session: createLoginEventUserSession({
-				id: 'https://identity.edgenuity.com/session/12345',
-				loginType: LoginType.LtiSSO,
-				credentials: [CredentialType.Username, CredentialType.Password],
-				scopes: ['edgenuity-app', 'edgenuity-reports'],
-				userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0', //window.navigator.userAgent,
-				ipAddress: '192.168.0.1',
-				localTimestamp: '2020-09-22T22:31:28-07:00',
-			}),
+			session: createUserSession({ id: Caliper.uuid('31e1ab8e-f7d2-4656-a4bb-719a823ebd2b') }),
 		});
 		validate(model);
 

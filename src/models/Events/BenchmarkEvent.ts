@@ -7,6 +7,7 @@ import Caliper from '../../caliper';
 import { Agent } from '../Entities/Agent';
 import { Assessment } from '../Entities/Assessment';
 import { Attempt } from '../Entities/Attempt';
+import { CourseOffering } from '../Entities/CourseOffering';
 import { DigitalResource } from '../Entities/DigitalResource';
 import { Entity } from '../Entities/Entity';
 import { EntityType } from '../Entities/EntityType';
@@ -103,11 +104,13 @@ export function createBenchmarkEventAttempt(
 export interface BenchmarkEventAssessment extends Assessment {
 	id: string;
 	subject: string;
+	isPartOf?: CourseOffering;
 }
 
 export interface BenchmarkEventAssessmentParams {
 	id: string;
 	subject: string;
+	isPartOf?: CourseOffering;
 	items?: DigitalResource[];
 	dateToActivate?: string;
 	dateToShow?: string;
@@ -120,7 +123,6 @@ export interface BenchmarkEventAssessmentParams {
 	keywords?: string[];
 	creators?: Agent[];
 	mediaType?: string;
-	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;
@@ -212,10 +214,10 @@ export const BenchmarkEventSchema = {
 		required: [
 			'@context',
 			'type',
+			'action',
 			'actor',
 			'object',
 			'generated',
-			'action',
 			'id',
 			'eventTime',
 			'edApp',
@@ -240,6 +242,11 @@ export const BenchmarkEventSchema = {
 				type: 'string',
 				default: 'BenchmarkEvent',
 				enum: ['BenchmarkEvent'],
+			},
+			action: {
+				type: 'string',
+				default: 'Graded',
+				enum: ['Graded'],
 			},
 			actor: {
 				title: 'SoftwareApplication',
@@ -277,17 +284,13 @@ export const BenchmarkEventSchema = {
 					},
 				],
 			},
-			action: {
-				type: 'string',
-				enum: ['Graded'],
-			},
 			id: {
 				type: 'string',
 				pattern: 'urn\\:uuid\\:\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}',
 			},
 			eventTime: {
 				type: 'string',
-				format: 'date-time',
+				pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 			},
 			edApp: {
 				title: 'SoftwareApplication',
@@ -393,6 +396,16 @@ export const BenchmarkEventSchema = {
 						default: 'SoftwareApplication',
 						enum: ['SoftwareApplication'],
 					},
+					host: {
+						type: 'string',
+					},
+					ipAddress: {
+						title: 'IPAddress',
+						$ref: '#/definitions/IPAddress',
+					},
+					userAgent: {
+						type: 'string',
+					},
 					version: {
 						type: 'string',
 					},
@@ -408,11 +421,11 @@ export const BenchmarkEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -438,6 +451,17 @@ export const BenchmarkEventSchema = {
 						additionalProperties: true,
 					},
 				},
+			},
+			IPAddress: {
+				type: 'string',
+				oneOf: [
+					{
+						pattern: '^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$',
+					},
+					{
+						pattern: '^\\w{1,4}(:\\w{1,4}){7}$',
+					},
+				],
 			},
 			Uri: {
 				type: 'string',
@@ -545,11 +569,11 @@ export const BenchmarkEventSchema = {
 					},
 					startedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					endedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					duration: {
 						type: 'string',
@@ -579,11 +603,11 @@ export const BenchmarkEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -639,19 +663,19 @@ export const BenchmarkEventSchema = {
 					},
 					dateToActivate: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateToShow: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateToStartOn: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateToSubmit: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					maxAttempts: {
 						type: 'number',
@@ -661,6 +685,18 @@ export const BenchmarkEventSchema = {
 					},
 					maxScore: {
 						type: 'integer',
+					},
+					isPartOf: {
+						title: 'CourseOffering',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'CourseOffering',
+								$ref: '#/definitions/CourseOffering',
+							},
+						],
 					},
 					learningObjectives: {
 						type: 'array',
@@ -701,21 +737,9 @@ export const BenchmarkEventSchema = {
 					mediaType: {
 						type: 'string',
 					},
-					isPartOf: {
-						title: 'Entity',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Entity',
-								$ref: '#/definitions/Entity',
-							},
-						],
-					},
 					datePublished: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					version: {
 						type: 'string',
@@ -732,11 +756,11 @@ export const BenchmarkEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -825,7 +849,7 @@ export const BenchmarkEventSchema = {
 					},
 					datePublished: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					version: {
 						type: 'string',
@@ -842,11 +866,11 @@ export const BenchmarkEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -894,11 +918,11 @@ export const BenchmarkEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -946,11 +970,11 @@ export const BenchmarkEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -986,6 +1010,76 @@ export const BenchmarkEventSchema = {
 						default: 'Entity',
 						enum: ['Entity'],
 					},
+					name: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			CourseOffering: {
+				title: 'CourseOffering',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'CourseOffering',
+						enum: ['CourseOffering'],
+					},
+					courseNumber: {
+						type: 'string',
+					},
+					academicSession: {
+						type: 'string',
+					},
+					subOrganizationOf: {
+						title: 'Organization',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Organization',
+								$ref: '#/definitions/Organization',
+							},
+						],
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -998,11 +1092,75 @@ export const BenchmarkEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Organization: {
+				title: 'Organization',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Organization',
+						enum: ['Organization'],
+					},
+					subOrganizationOf: {
+						title: 'Organization',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Organization',
+								$ref: '#/definitions/Organization',
+							},
+						],
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1104,11 +1262,11 @@ export const BenchmarkEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					status: {
 						title: 'Status',
@@ -1181,11 +1339,11 @@ export const BenchmarkEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1227,70 +1385,6 @@ export const BenchmarkEventSchema = {
 					'ToolLaunchProfile',
 					'ToolUseProfile',
 				],
-			},
-			Organization: {
-				title: 'Organization',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Organization',
-						enum: ['Organization'],
-					},
-					subOrganizationOf: {
-						title: 'Organization',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Organization',
-								$ref: '#/definitions/Organization',
-							},
-						],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
 			},
 			Membership: {
 				title: 'Membership',
@@ -1362,11 +1456,11 @@ export const BenchmarkEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1414,11 +1508,11 @@ export const BenchmarkEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1472,11 +1566,11 @@ export const BenchmarkEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1534,11 +1628,11 @@ export const BenchmarkEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1598,11 +1692,11 @@ export const BenchmarkEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1668,11 +1762,11 @@ export const BenchmarkEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1741,11 +1835,11 @@ export const BenchmarkEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1870,13 +1964,25 @@ export const BenchmarkEventSchema = {
 							},
 						],
 					},
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
+							},
+						],
+					},
 					startedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					endedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					duration: {
 						type: 'string',
@@ -1894,11 +2000,11 @@ export const BenchmarkEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1955,13 +2061,25 @@ export const BenchmarkEventSchema = {
 							},
 						],
 					},
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
+							},
+						],
+					},
 					startedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					endedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					duration: {
 						type: 'string',
@@ -1979,11 +2097,11 @@ export const BenchmarkEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -2019,41 +2137,9 @@ export const BenchmarkEventSchema = {
 						default: 'UserSession',
 						enum: ['UserSession'],
 					},
-					loginType: {
-						title: 'LoginType',
-						$ref: '#/definitions/LoginType',
-					},
-					credentials: {
-						type: 'array',
-						items: {
-							title: 'CredentialType',
-							$ref: '#/definitions/CredentialType',
-						},
-					},
-					scopes: {
-						type: 'array',
-						items: {
-							type: 'string',
-						},
-					},
-					userAgent: {
-						type: 'string',
-					},
-					ipAddress: {
-						title: 'IPAddress',
-						$ref: '#/definitions/IPAddress',
-					},
-					localTimestamp: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?[-|\\+]\\d{2}:\\d{2}',
-					},
 					user: {
 						required: ['id', 'type'],
 						oneOf: [
-							{
-								title: 'Person',
-								$ref: '#/definitions/Person',
-							},
 							{
 								title: 'User',
 								$ref: '#/definitions/User',
@@ -2068,13 +2154,29 @@ export const BenchmarkEventSchema = {
 							},
 						],
 					},
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
+							},
+						],
+					},
+					login: {
+						title: 'AuthorizationClaims',
+						$ref: '#/definitions/AuthorizationClaims',
+					},
 					startedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					endedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					duration: {
 						type: 'string',
@@ -2092,11 +2194,11 @@ export const BenchmarkEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -2123,6 +2225,33 @@ export const BenchmarkEventSchema = {
 					},
 				},
 			},
+			AuthorizationClaims: {
+				title: 'AuthorizationClaims',
+				type: 'object',
+				properties: {
+					localTimestamp: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?[-|\\+]\\d{2}:\\d{2}$',
+					},
+					loginType: {
+						title: 'LoginType',
+						$ref: '#/definitions/LoginType',
+					},
+					credentialTypes: {
+						type: 'array',
+						items: {
+							title: 'CredentialType',
+							$ref: '#/definitions/CredentialType',
+						},
+					},
+					scopes: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+				},
+			},
 			LoginType: {
 				type: 'string',
 				title: 'LoginType',
@@ -2139,17 +2268,6 @@ export const BenchmarkEventSchema = {
 				type: 'string',
 				title: 'CredentialType',
 				enum: ['Username', 'Password', 'QRCode'],
-			},
-			IPAddress: {
-				type: 'string',
-				oneOf: [
-					{
-						pattern: '^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$',
-					},
-					{
-						pattern: '^\\w{1,4}(:\\w{1,4}){7}$',
-					},
-				],
 			},
 		},
 	},

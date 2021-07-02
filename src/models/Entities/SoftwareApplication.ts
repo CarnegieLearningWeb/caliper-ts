@@ -10,11 +10,17 @@ import { Status } from './Status';
 
 export interface SoftwareApplication extends Agent {
 	id: string;
+	host?: string;
+	ipAddress?: string;
+	userAgent?: string;
 	version?: string;
 }
 
 export interface SoftwareApplicationParams {
 	id: string;
+	host?: string;
+	ipAddress?: string;
+	userAgent?: string;
 	version?: string;
 	name?: string;
 	description?: string;

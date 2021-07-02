@@ -131,7 +131,7 @@ export const GroupDeletedEventSchema = {
 			},
 			eventTime: {
 				type: 'string',
-				format: 'date-time',
+				pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 			},
 			edApp: {
 				title: 'SoftwareApplication',
@@ -249,6 +249,16 @@ export const GroupDeletedEventSchema = {
 						default: 'SoftwareApplication',
 						enum: ['SoftwareApplication'],
 					},
+					host: {
+						type: 'string',
+					},
+					ipAddress: {
+						title: 'IPAddress',
+						$ref: '#/definitions/IPAddress',
+					},
+					userAgent: {
+						type: 'string',
+					},
 					version: {
 						type: 'string',
 					},
@@ -264,11 +274,11 @@ export const GroupDeletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -294,6 +304,17 @@ export const GroupDeletedEventSchema = {
 						additionalProperties: true,
 					},
 				},
+			},
+			IPAddress: {
+				type: 'string',
+				oneOf: [
+					{
+						pattern: '^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$',
+					},
+					{
+						pattern: '^\\w{1,4}(:\\w{1,4}){7}$',
+					},
+				],
 			},
 			Uri: {
 				type: 'string',
@@ -390,11 +411,11 @@ export const GroupDeletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -452,11 +473,11 @@ export const GroupDeletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -543,11 +564,11 @@ export const GroupDeletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -613,11 +634,11 @@ export const GroupDeletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -677,11 +698,11 @@ export const GroupDeletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -750,11 +771,11 @@ export const GroupDeletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -822,11 +843,11 @@ export const GroupDeletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -923,11 +944,11 @@ export const GroupDeletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -975,11 +996,11 @@ export const GroupDeletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1039,11 +1060,11 @@ export const GroupDeletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1168,13 +1189,25 @@ export const GroupDeletedEventSchema = {
 							},
 						],
 					},
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
+							},
+						],
+					},
 					startedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					endedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					duration: {
 						type: 'string',
@@ -1192,11 +1225,11 @@ export const GroupDeletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1253,13 +1286,25 @@ export const GroupDeletedEventSchema = {
 							},
 						],
 					},
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
+							},
+						],
+					},
 					startedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					endedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					duration: {
 						type: 'string',
@@ -1277,11 +1322,11 @@ export const GroupDeletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1317,41 +1362,9 @@ export const GroupDeletedEventSchema = {
 						default: 'UserSession',
 						enum: ['UserSession'],
 					},
-					loginType: {
-						title: 'LoginType',
-						$ref: '#/definitions/LoginType',
-					},
-					credentials: {
-						type: 'array',
-						items: {
-							title: 'CredentialType',
-							$ref: '#/definitions/CredentialType',
-						},
-					},
-					scopes: {
-						type: 'array',
-						items: {
-							type: 'string',
-						},
-					},
-					userAgent: {
-						type: 'string',
-					},
-					ipAddress: {
-						title: 'IPAddress',
-						$ref: '#/definitions/IPAddress',
-					},
-					localTimestamp: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?[-|\\+]\\d{2}:\\d{2}',
-					},
 					user: {
 						required: ['id', 'type'],
 						oneOf: [
-							{
-								title: 'Person',
-								$ref: '#/definitions/Person',
-							},
 							{
 								title: 'User',
 								$ref: '#/definitions/User',
@@ -1366,13 +1379,29 @@ export const GroupDeletedEventSchema = {
 							},
 						],
 					},
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
+							},
+						],
+					},
+					login: {
+						title: 'AuthorizationClaims',
+						$ref: '#/definitions/AuthorizationClaims',
+					},
 					startedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					endedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					duration: {
 						type: 'string',
@@ -1390,11 +1419,11 @@ export const GroupDeletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1421,6 +1450,33 @@ export const GroupDeletedEventSchema = {
 					},
 				},
 			},
+			AuthorizationClaims: {
+				title: 'AuthorizationClaims',
+				type: 'object',
+				properties: {
+					localTimestamp: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?[-|\\+]\\d{2}:\\d{2}$',
+					},
+					loginType: {
+						title: 'LoginType',
+						$ref: '#/definitions/LoginType',
+					},
+					credentialTypes: {
+						type: 'array',
+						items: {
+							title: 'CredentialType',
+							$ref: '#/definitions/CredentialType',
+						},
+					},
+					scopes: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+				},
+			},
 			LoginType: {
 				type: 'string',
 				title: 'LoginType',
@@ -1437,17 +1493,6 @@ export const GroupDeletedEventSchema = {
 				type: 'string',
 				title: 'CredentialType',
 				enum: ['Username', 'Password', 'QRCode'],
-			},
-			IPAddress: {
-				type: 'string',
-				oneOf: [
-					{
-						pattern: '^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$',
-					},
-					{
-						pattern: '^\\w{1,4}(:\\w{1,4}){7}$',
-					},
-				],
 			},
 		},
 	},

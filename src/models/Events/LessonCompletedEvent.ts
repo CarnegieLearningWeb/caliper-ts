@@ -5,6 +5,7 @@
 
 import Caliper from '../../caliper';
 import { Entity } from '../Entities/Entity';
+import { Instructor } from '../Entities/Instructor';
 import { LtiSession } from '../Entities/LtiSession';
 import { Membership } from '../Entities/Membership';
 import { Organization } from '../Entities/Organization';
@@ -18,13 +19,13 @@ import { EventType } from './EventType';
 import { LessonEvent, LessonEventLesson } from './Internals/LessonEvent';
 
 export interface LessonCompletedEvent extends LessonEvent {
-	actor: Student;
+	actor: Student | Instructor;
 	object: LessonEventLesson;
 	session?: Session | UserSession;
 }
 
 export interface LessonCompletedEventParams {
-	actor: Student;
+	actor: Student | Instructor;
 	object: LessonEventLesson;
 	session?: Session | UserSession;
 	profile?: CaliperProfile;
@@ -83,10 +84,11 @@ export const LessonCompletedEventSchema = {
 				enum: ['Completed'],
 			},
 			actor: {
-				title: 'Student',
-				allOf: [
+				required: ['id', 'type'],
+				oneOf: [
 					{
-						required: ['type', 'id'],
+						title: 'Instructor',
+						$ref: '#/definitions/Instructor',
 					},
 					{
 						title: 'Student',
@@ -117,7 +119,7 @@ export const LessonCompletedEventSchema = {
 			},
 			eventTime: {
 				type: 'string',
-				format: 'date-time',
+				pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 			},
 			edApp: {
 				title: 'SoftwareApplication',
@@ -226,47 +228,18 @@ export const LessonCompletedEventSchema = {
 			},
 		},
 		definitions: {
-			Student: {
-				title: 'Student',
+			Instructor: {
+				title: 'Instructor',
 				type: 'object',
 				properties: {
 					type: {
 						type: 'string',
-						default: 'Student',
-						enum: ['Student'],
+						default: 'Instructor',
+						enum: ['Instructor'],
 					},
-					gradeLevel: {
-						type: 'number',
-					},
-					individualEducationPlan: {
-						type: 'boolean',
-					},
-					englishLanguageLearner: {
-						type: 'boolean',
-					},
-					settings: {
+					permissions: {
 						type: 'object',
 						additionalProperties: true,
-						properties: {
-							spanishLanguage: {
-								type: 'array',
-								items: {
-									type: 'string',
-								},
-							},
-							textToSpeech: {
-								type: 'array',
-								items: {
-									type: 'string',
-								},
-							},
-							languageTranslationTools: {
-								type: 'array',
-								items: {
-									type: 'string',
-								},
-							},
-						},
 					},
 					name: {
 						type: 'string',
@@ -286,11 +259,11 @@ export const LessonCompletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -389,6 +362,16 @@ export const LessonCompletedEventSchema = {
 						default: 'SoftwareApplication',
 						enum: ['SoftwareApplication'],
 					},
+					host: {
+						type: 'string',
+					},
+					ipAddress: {
+						title: 'IPAddress',
+						$ref: '#/definitions/IPAddress',
+					},
+					userAgent: {
+						type: 'string',
+					},
 					version: {
 						type: 'string',
 					},
@@ -404,11 +387,11 @@ export const LessonCompletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -435,10 +418,112 @@ export const LessonCompletedEventSchema = {
 					},
 				},
 			},
+			IPAddress: {
+				type: 'string',
+				oneOf: [
+					{
+						pattern: '^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$',
+					},
+					{
+						pattern: '^\\w{1,4}(:\\w{1,4}){7}$',
+					},
+				],
+			},
 			Status: {
 				type: 'string',
 				title: 'Status',
 				enum: ['Inactive', 'Active'],
+			},
+			Student: {
+				title: 'Student',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Student',
+						enum: ['Student'],
+					},
+					gradeLevel: {
+						type: 'number',
+					},
+					individualEducationPlan: {
+						type: 'boolean',
+					},
+					englishLanguageLearner: {
+						type: 'boolean',
+					},
+					settings: {
+						type: 'object',
+						additionalProperties: true,
+						properties: {
+							spanishLanguage: {
+								type: 'array',
+								items: {
+									type: 'string',
+								},
+							},
+							textToSpeech: {
+								type: 'array',
+								items: {
+									type: 'string',
+								},
+							},
+							languageTranslationTools: {
+								type: 'array',
+								items: {
+									type: 'string',
+								},
+							},
+						},
+					},
+					name: {
+						type: 'string',
+					},
+					firstName: {
+						type: 'string',
+					},
+					lastName: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
 			},
 			Lesson: {
 				title: 'Lesson',
@@ -482,21 +567,27 @@ export const LessonCompletedEventSchema = {
 					lessonOrder: {
 						type: 'number',
 					},
+					isAssigned: {
+						type: 'boolean',
+					},
+					language: {
+						type: 'string',
+					},
 					dateToActivate: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateToShow: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateToStartOn: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateToSubmit: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					maxAttempts: {
 						type: 'number',
@@ -548,7 +639,7 @@ export const LessonCompletedEventSchema = {
 					},
 					datePublished: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					version: {
 						type: 'string',
@@ -565,11 +656,11 @@ export const LessonCompletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -656,11 +747,11 @@ export const LessonCompletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -714,11 +805,11 @@ export const LessonCompletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -766,11 +857,11 @@ export const LessonCompletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -818,11 +909,11 @@ export const LessonCompletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -878,23 +969,23 @@ export const LessonCompletedEventSchema = {
 						default: 'Entity',
 						enum: ['Entity'],
 					},
+					name: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
 					},
 					description: {
 						type: 'string',
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -954,11 +1045,11 @@ export const LessonCompletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1055,11 +1146,11 @@ export const LessonCompletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1107,11 +1198,11 @@ export const LessonCompletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1165,73 +1256,11 @@ export const LessonCompletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Instructor: {
-				title: 'Instructor',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Instructor',
-						enum: ['Instructor'],
-					},
-					permissions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-					name: {
-						type: 'string',
-					},
-					firstName: {
-						type: 'string',
-					},
-					lastName: {
-						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1291,11 +1320,11 @@ export const LessonCompletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1361,11 +1390,11 @@ export const LessonCompletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1434,11 +1463,11 @@ export const LessonCompletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1563,13 +1592,25 @@ export const LessonCompletedEventSchema = {
 							},
 						],
 					},
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
+							},
+						],
+					},
 					startedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					endedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					duration: {
 						type: 'string',
@@ -1587,11 +1628,11 @@ export const LessonCompletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1648,13 +1689,25 @@ export const LessonCompletedEventSchema = {
 							},
 						],
 					},
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
+							},
+						],
+					},
 					startedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					endedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					duration: {
 						type: 'string',
@@ -1672,11 +1725,11 @@ export const LessonCompletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1712,41 +1765,9 @@ export const LessonCompletedEventSchema = {
 						default: 'UserSession',
 						enum: ['UserSession'],
 					},
-					loginType: {
-						title: 'LoginType',
-						$ref: '#/definitions/LoginType',
-					},
-					credentials: {
-						type: 'array',
-						items: {
-							title: 'CredentialType',
-							$ref: '#/definitions/CredentialType',
-						},
-					},
-					scopes: {
-						type: 'array',
-						items: {
-							type: 'string',
-						},
-					},
-					userAgent: {
-						type: 'string',
-					},
-					ipAddress: {
-						title: 'IPAddress',
-						$ref: '#/definitions/IPAddress',
-					},
-					localTimestamp: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?[-|\\+]\\d{2}:\\d{2}',
-					},
 					user: {
 						required: ['id', 'type'],
 						oneOf: [
-							{
-								title: 'Person',
-								$ref: '#/definitions/Person',
-							},
 							{
 								title: 'User',
 								$ref: '#/definitions/User',
@@ -1761,13 +1782,29 @@ export const LessonCompletedEventSchema = {
 							},
 						],
 					},
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
+							},
+						],
+					},
+					login: {
+						title: 'AuthorizationClaims',
+						$ref: '#/definitions/AuthorizationClaims',
+					},
 					startedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					endedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					duration: {
 						type: 'string',
@@ -1785,11 +1822,11 @@ export const LessonCompletedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1816,6 +1853,33 @@ export const LessonCompletedEventSchema = {
 					},
 				},
 			},
+			AuthorizationClaims: {
+				title: 'AuthorizationClaims',
+				type: 'object',
+				properties: {
+					localTimestamp: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?[-|\\+]\\d{2}:\\d{2}$',
+					},
+					loginType: {
+						title: 'LoginType',
+						$ref: '#/definitions/LoginType',
+					},
+					credentialTypes: {
+						type: 'array',
+						items: {
+							title: 'CredentialType',
+							$ref: '#/definitions/CredentialType',
+						},
+					},
+					scopes: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+				},
+			},
 			LoginType: {
 				type: 'string',
 				title: 'LoginType',
@@ -1832,17 +1896,6 @@ export const LessonCompletedEventSchema = {
 				type: 'string',
 				title: 'CredentialType',
 				enum: ['Username', 'Password', 'QRCode'],
-			},
-			IPAddress: {
-				type: 'string',
-				oneOf: [
-					{
-						pattern: '^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$',
-					},
-					{
-						pattern: '^\\w{1,4}(:\\w{1,4}){7}$',
-					},
-				],
 			},
 		},
 	},

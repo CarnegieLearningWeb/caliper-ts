@@ -13,15 +13,16 @@ import { Organization } from '../Entities/Organization';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { Student } from '../Entities/Student';
 import { User } from '../Entities/User';
+import { UserSession } from '../Entities/UserSession';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
-import { LoginEvent, LoginEventUserSession } from './Internals/LoginEvent';
+import { SessionEvent } from './Internals/SessionEvent';
 
-export interface LogoutEvent extends LoginEvent {
+export interface LogoutEvent extends SessionEvent {
 	actor: User | Instructor | Student;
 	object: SoftwareApplication;
-	session: LoginEventUserSession;
+	session: UserSession;
 	target?: DigitalResource;
 	referrer?: DigitalResource | SoftwareApplication;
 }
@@ -29,7 +30,7 @@ export interface LogoutEvent extends LoginEvent {
 export interface LogoutEventParams {
 	actor: User | Instructor | Student;
 	object: SoftwareApplication;
-	session: LoginEventUserSession;
+	session: UserSession;
 	target?: DigitalResource;
 	referrer?: DigitalResource | SoftwareApplication;
 	profile?: CaliperProfile;
@@ -46,7 +47,7 @@ export function createLogoutEvent(
 ): LogoutEvent {
 	return {
 		'@context': [
-			'http://edgenuity.com/events/logout/0-0-2',
+			'http://edgenuity.com/events/logout/0-1-0',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
 		action: CaliperAction.LoggedOut,
@@ -59,7 +60,7 @@ export function createLogoutEvent(
 }
 
 export const LogoutEventSchema = {
-	context: 'http://edgenuity.com/events/logout/0-0-2',
+	context: 'http://edgenuity.com/events/logout/0-1-0',
 	schema: {
 		title: 'LogoutEvent',
 		type: 'object',
@@ -80,8 +81,8 @@ export const LogoutEventSchema = {
 				items: [
 					{
 						type: 'string',
-						default: 'http://edgenuity.com/events/logout/0-0-2',
-						enum: ['http://edgenuity.com/events/logout/0-0-2'],
+						default: 'http://edgenuity.com/events/logout/0-1-0',
+						enum: ['http://edgenuity.com/events/logout/0-1-0'],
 					},
 					{
 						type: 'string',
@@ -128,16 +129,7 @@ export const LogoutEventSchema = {
 				title: 'UserSession',
 				allOf: [
 					{
-						required: [
-							'loginType',
-							'credentials',
-							'scopes',
-							'userAgent',
-							'ipAddress',
-							'localTimestamp',
-							'type',
-							'id',
-						],
+						required: ['type', 'id'],
 					},
 					{
 						title: 'UserSession',
@@ -181,7 +173,7 @@ export const LogoutEventSchema = {
 			},
 			eventTime: {
 				type: 'string',
-				format: 'date-time',
+				pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 			},
 			edApp: {
 				title: 'SoftwareApplication',
@@ -280,11 +272,11 @@ export const LogoutEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -383,6 +375,16 @@ export const LogoutEventSchema = {
 						default: 'SoftwareApplication',
 						enum: ['SoftwareApplication'],
 					},
+					host: {
+						type: 'string',
+					},
+					ipAddress: {
+						title: 'IPAddress',
+						$ref: '#/definitions/IPAddress',
+					},
+					userAgent: {
+						type: 'string',
+					},
 					version: {
 						type: 'string',
 					},
@@ -398,11 +400,11 @@ export const LogoutEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -428,6 +430,17 @@ export const LogoutEventSchema = {
 						additionalProperties: true,
 					},
 				},
+			},
+			IPAddress: {
+				type: 'string',
+				oneOf: [
+					{
+						pattern: '^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$',
+					},
+					{
+						pattern: '^\\w{1,4}(:\\w{1,4}){7}$',
+					},
+				],
 			},
 			Status: {
 				type: 'string',
@@ -465,11 +478,11 @@ export const LogoutEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -556,11 +569,11 @@ export const LogoutEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -591,34 +604,6 @@ export const LogoutEventSchema = {
 				title: 'UserSession',
 				type: 'object',
 				properties: {
-					loginType: {
-						title: 'LoginType',
-						$ref: '#/definitions/LoginType',
-					},
-					credentials: {
-						type: 'array',
-						items: {
-							title: 'CredentialType',
-							$ref: '#/definitions/CredentialType',
-						},
-					},
-					scopes: {
-						type: 'array',
-						items: {
-							type: 'string',
-						},
-					},
-					userAgent: {
-						type: 'string',
-					},
-					ipAddress: {
-						title: 'IPAddress',
-						$ref: '#/definitions/IPAddress',
-					},
-					localTimestamp: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?[-|\\+]\\d{2}:\\d{2}',
-					},
 					type: {
 						type: 'string',
 						default: 'UserSession',
@@ -627,10 +612,6 @@ export const LogoutEventSchema = {
 					user: {
 						required: ['id', 'type'],
 						oneOf: [
-							{
-								title: 'Person',
-								$ref: '#/definitions/Person',
-							},
 							{
 								title: 'User',
 								$ref: '#/definitions/User',
@@ -645,13 +626,29 @@ export const LogoutEventSchema = {
 							},
 						],
 					},
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
+							},
+						],
+					},
+					login: {
+						title: 'AuthorizationClaims',
+						$ref: '#/definitions/AuthorizationClaims',
+					},
 					startedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					endedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					duration: {
 						type: 'string',
@@ -669,11 +666,11 @@ export const LogoutEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -697,6 +694,33 @@ export const LogoutEventSchema = {
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
+					},
+				},
+			},
+			AuthorizationClaims: {
+				title: 'AuthorizationClaims',
+				type: 'object',
+				properties: {
+					localTimestamp: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?[-|\\+]\\d{2}:\\d{2}$',
+					},
+					loginType: {
+						title: 'LoginType',
+						$ref: '#/definitions/LoginType',
+					},
+					credentialTypes: {
+						type: 'array',
+						items: {
+							title: 'CredentialType',
+							$ref: '#/definitions/CredentialType',
+						},
+					},
+					scopes: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
 					},
 				},
 			},
@@ -716,69 +740,6 @@ export const LogoutEventSchema = {
 				type: 'string',
 				title: 'CredentialType',
 				enum: ['Username', 'Password', 'QRCode'],
-			},
-			IPAddress: {
-				type: 'string',
-				oneOf: [
-					{
-						pattern: '^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$',
-					},
-					{
-						pattern: '^\\w{1,4}(:\\w{1,4}){7}$',
-					},
-				],
-			},
-			Person: {
-				title: 'Person',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Person',
-						enum: ['Person'],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
 			},
 			DigitalResource: {
 				title: 'DigitalResource',
@@ -842,7 +803,7 @@ export const LogoutEventSchema = {
 					},
 					datePublished: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					version: {
 						type: 'string',
@@ -859,11 +820,11 @@ export const LogoutEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -911,11 +872,11 @@ export const LogoutEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -963,11 +924,11 @@ export const LogoutEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1015,11 +976,11 @@ export const LogoutEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1099,11 +1060,11 @@ export const LogoutEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1200,11 +1161,63 @@ export const LogoutEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Person: {
+				title: 'Person',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Person',
+						enum: ['Person'],
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1264,11 +1277,11 @@ export const LogoutEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1334,11 +1347,11 @@ export const LogoutEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1407,11 +1420,11 @@ export const LogoutEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1536,13 +1549,25 @@ export const LogoutEventSchema = {
 							},
 						],
 					},
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
+							},
+						],
+					},
 					startedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					endedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					duration: {
 						type: 'string',
@@ -1560,11 +1585,11 @@ export const LogoutEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',

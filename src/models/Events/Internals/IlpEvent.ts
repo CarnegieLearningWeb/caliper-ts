@@ -5,6 +5,7 @@
 
 import Caliper from '../../../caliper';
 import { Agent } from '../../Entities/Agent';
+import { CourseOffering } from '../../Entities/CourseOffering';
 import { Domain } from '../../Entities/Domain';
 import { Entity } from '../../Entities/Entity';
 import { EntityType } from '../../Entities/EntityType';
@@ -29,14 +30,14 @@ import { EventType } from '../EventType';
 
 export interface IlpEvent extends Event {
 	actor: Agent | SoftwareApplication | User | Instructor | Student;
-	object: IlpEventIndividualizedLearningPath;
+	object: IndividualizedLearningPath | IlpEventIndividualizedLearningPath;
 	action: CaliperAction;
 	session?: Session | UserSession;
 }
 
 export interface IlpEventParams {
 	actor: Agent | SoftwareApplication | User | Instructor | Student;
-	object: IlpEventIndividualizedLearningPath;
+	object: IndividualizedLearningPath | IlpEventIndividualizedLearningPath;
 	action?: CaliperAction;
 	session?: Session | UserSession;
 	profile?: CaliperProfile;
@@ -102,7 +103,9 @@ export interface IlpEventLesson extends Lesson {
 	gradeLevel: number;
 	domainOrder: number;
 	lessonOrder: number;
+	isAssigned: boolean;
 	domain: Domain;
+	isPartOf?: CourseOffering;
 }
 
 export interface IlpEventLessonParams {
@@ -110,7 +113,10 @@ export interface IlpEventLessonParams {
 	gradeLevel: number;
 	domainOrder: number;
 	lessonOrder: number;
+	isAssigned: boolean;
 	domain: Domain;
+	isPartOf?: CourseOffering;
+	language?: string;
 	dateToActivate?: string;
 	dateToShow?: string;
 	dateToStartOn?: string;
@@ -122,7 +128,6 @@ export interface IlpEventLessonParams {
 	keywords?: string[];
 	creators?: Agent[];
 	mediaType?: string;
-	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;

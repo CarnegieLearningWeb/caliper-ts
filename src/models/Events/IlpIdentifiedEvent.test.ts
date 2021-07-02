@@ -20,7 +20,7 @@ describe('IlpIdentifiedEvent', () => {
 
 	const expected = {
 		'@context': [
-			'http://edgenuity.com/events/ilp-identified/0-0-2',
+			'http://edgenuity.com/events/ilp-identified/0-0-3',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
 		id: 'urn:uuid:e251d4a0-b93c-4a0e-86cc-8b14c8db6787',
@@ -36,7 +36,7 @@ describe('IlpIdentifiedEvent', () => {
 			type: 'SoftwareApplication',
 		},
 		object: {
-			id: 'https://app.edgenuity.com/ilp/12345',
+			id: 'urn:uuid:6ff6e776-b749-4a48-a421-eb2785d22a3a',
 			type: 'ILP',
 			dateCreated: '2020-09-22T12:00:00.000Z',
 			dateModified: '2020-09-22T12:00:00.000Z',
@@ -45,18 +45,19 @@ describe('IlpIdentifiedEvent', () => {
 			highestGradeLevel: 5,
 			lowestPlacementGrade: 3,
 			student: {
-				id: 'https://foo.bar/user/6789',
+				id: 'urn:uuid:6df6e776-b749-4a48-a421-eb2785d6a68a',
 				type: 'Student',
 			},
 			lessons: [
 				{
-					id: 'http://whatever.com/lesson/12187',
+					id: 'urn:pathid:12345#234',
 					type: 'Lesson',
 					name: 'Add/Subtract Numbers (with Regrouping)',
-					version: '31',
+					version: '234',
 					gradeLevel: 3,
 					domainOrder: 1,
 					lessonOrder: 4,
+					isAssigned: true,
 					domain: {
 						id: 'urn:domain:CCSS.NBT',
 						code: 'nbt',
@@ -66,13 +67,14 @@ describe('IlpIdentifiedEvent', () => {
 					},
 				},
 				{
-					id: 'http://whatever.com/lesson/11852',
+					id: 'urn:pathid:12350#255',
 					type: 'Lesson',
 					name: 'Find a Missing Number (Multiply)',
-					version: '25',
+					version: '255',
 					gradeLevel: 3,
 					domainOrder: 2,
 					lessonOrder: 9,
+					isAssigned: true,
 					domain: {
 						id: 'urn:domain:CCSS.NBT',
 						code: 'nbt',
@@ -82,13 +84,14 @@ describe('IlpIdentifiedEvent', () => {
 					},
 				},
 				{
-					id: 'http://whatever.com/lesson/40000',
+					id: 'urn:pathid:12355#260',
 					type: 'Lesson',
 					name: 'Some unassigned lesson',
-					version: '25',
+					version: '260',
 					gradeLevel: 3,
 					domainOrder: 2,
 					lessonOrder: 9,
+					isAssigned: false,
 					domain: {
 						id: 'urn:domain:CCSS.NBT',
 						code: 'nbt',
@@ -98,13 +101,14 @@ describe('IlpIdentifiedEvent', () => {
 					},
 				},
 				{
-					id: 'http://whatever.com/lesson/40001',
+					id: 'urn:pathid:12385#25',
 					type: 'Lesson',
 					name: 'Another unassigned lesson',
 					version: '25',
 					gradeLevel: 3,
 					domainOrder: 2,
 					lessonOrder: 9,
+					isAssigned: false,
 					domain: {
 						id: 'urn:domain:CCSS.NBT',
 						code: 'nbt',
@@ -121,15 +125,15 @@ describe('IlpIdentifiedEvent', () => {
 		const model = createIlpIdentifiedEvent({
 			actor: createSoftwareApplication({ id: 'https://whatever.edu/mpng/ilp-sequencer' }),
 			object: createIlpEventIndividualizedLearningPath({
-				id: 'https://app.edgenuity.com/ilp/12345',
-				student: createStudent({ id: 'https://foo.bar/user/6789' }),
+				id: Caliper.uuid('6ff6e776-b749-4a48-a421-eb2785d22a3a'),
+				student: createStudent({ id: Caliper.uuid('6df6e776-b749-4a48-a421-eb2785d6a68a') }),
 				subject: 'Math',
 				state: 'Arizona',
 				highestGradeLevel: 5,
 				lowestPlacementGrade: 3,
 				lessons: [
 					createIlpEventLesson({
-						id: 'http://whatever.com/lesson/12187',
+						id: 'urn:pathid:12345#234',
 						gradeLevel: 3,
 						domainOrder: 1,
 						lessonOrder: 4,
@@ -138,11 +142,12 @@ describe('IlpIdentifiedEvent', () => {
 							code: 'nbt',
 							name: 'Number & Operations in Base Ten',
 						}),
+						isAssigned: true,
 						name: 'Add/Subtract Numbers (with Regrouping)',
-						version: '31',
+						version: '234',
 					}),
 					createIlpEventLesson({
-						id: 'http://whatever.com/lesson/11852',
+						id: 'urn:pathid:12350#255',
 						gradeLevel: 3,
 						domainOrder: 2,
 						lessonOrder: 9,
@@ -151,11 +156,12 @@ describe('IlpIdentifiedEvent', () => {
 							code: 'nbt',
 							name: 'Number & Operations in Base Ten',
 						}),
+						isAssigned: true,
 						name: 'Find a Missing Number (Multiply)',
-						version: '25',
+						version: '255',
 					}),
 					createIlpEventLesson({
-						id: 'http://whatever.com/lesson/40000',
+						id: 'urn:pathid:12355#260',
 						gradeLevel: 3,
 						domainOrder: 2,
 						lessonOrder: 9,
@@ -164,11 +170,12 @@ describe('IlpIdentifiedEvent', () => {
 							code: 'nbt',
 							name: 'Number & Operations in Base Ten',
 						}),
+						isAssigned: false,
 						name: 'Some unassigned lesson',
-						version: '25',
+						version: '260',
 					}),
 					createIlpEventLesson({
-						id: 'http://whatever.com/lesson/40001',
+						id: 'urn:pathid:12385#25',
 						gradeLevel: 3,
 						domainOrder: 2,
 						lessonOrder: 9,
@@ -177,6 +184,7 @@ describe('IlpIdentifiedEvent', () => {
 							code: 'nbt',
 							name: 'Number & Operations in Base Ten',
 						}),
+						isAssigned: false,
 						name: 'Another unassigned lesson',
 						version: '25',
 					}),

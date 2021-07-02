@@ -8,6 +8,7 @@ import { EntityType } from './EntityType';
 import { Instructor } from './Instructor';
 import { Person } from './Person';
 import { Session } from './Session';
+import { SoftwareApplication } from './SoftwareApplication';
 import { Status } from './Status';
 import { Student } from './Student';
 import { User } from './User';
@@ -16,12 +17,14 @@ export interface LtiSession extends Session {
 	id: string;
 	messageParameters?: Record<string, any>;
 	user?: Person | User | Instructor | Student;
+	client?: SoftwareApplication;
 }
 
 export interface LtiSessionParams {
 	id: string;
 	messageParameters?: Record<string, any>;
 	user?: Person | User | Instructor | Student;
+	client?: SoftwareApplication;
 	startedAtTime?: string;
 	endedAtTime?: string;
 	duration?: string;

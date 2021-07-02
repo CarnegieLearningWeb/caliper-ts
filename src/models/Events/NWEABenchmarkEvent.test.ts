@@ -1,12 +1,12 @@
 import {
-	createNWEABenchmarkEvent,
-	createBenchmarkEventAttempt,
 	createBenchmarkEventAssessment,
+	createBenchmarkEventAttempt,
+	createBenchmarkEventScore,
 	createBenchmarkEventStudent,
+	createNWEABenchmarkEvent,
+	createSoftwareApplication,
 	createSystemIdentifier,
 	SystemIdentifierType,
-	createBenchmarkEventScore,
-	createSoftwareApplication,
 } from '..';
 import Caliper from '../../caliper';
 import { validate } from '../../validate';

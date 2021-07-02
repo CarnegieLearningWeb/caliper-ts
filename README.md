@@ -5,6 +5,12 @@ Caliper also defines an application programming interface (the Sensor API™) fo
 
 _caliper-ts_ is a reference implementation of the Sensor API&trade; written in TypeScript, based on the [_caliper-js_](https://github.com/IMSGlobal/caliper-js) library.
 
+> **NOTE**: See this page for the different RAD Tailpipe service receiver endpoints https://weldnorthed.atlassian.net/wiki/spaces/TECH/pages/1242202248/RAD+Tailpipe+Endpoints
+
+> **NOTE**: See this page for the different Deadletter service receiver endpoints https://weldnorthed.atlassian.net/wiki/spaces/TECH/pages/131270774660/RAD+Pipeline+Service+Endpoints
+
+> **NOTE**: See this page for the official Caliper Specification from IMS Global https://www.imsglobal.org/spec/caliper/v1p2
+
 ## Installation
 
 The _caliper-ts_ package is available on [GitHub Package Registry](https://github.com/ImagineLearning/caliper-ts/packages).
@@ -52,7 +58,8 @@ const sensor = new Sensor('http://example.org/sensors/1');
 const client = httpClient(
 	'http://example.org/sensors/1/clients/2',
 	'https://example.edu/caliper/target/endpoint',
-	'40dI6P62Q_qrWxpTk95z8w'
+	'40dI6P62Q_qrWxpTk95z8w',
+	'https://dlq.rad.dev.edgenuityapp.com/api/DeadletterMessage'
 );
 sensor.registerClient(client);
 
@@ -124,7 +131,8 @@ const sensor2 = new Sensor('http://example.org/sensors/2', {
 const client = httpClient(
 	'http://example.org/sensors/1/clients/2',
 	'https://example.edu/caliper/target/endpoint',
-	'40dI6P62Q_qrWxpTk95z8w'
+	'40dI6P62Q_qrWxpTk95z8w',
+	'https://dlq.rad.dev.edgenuityapp.com/api/DeadletterMessage'
 );
 const sensor3 = new Sensor('http://example.org/sensors/3', {
 	edApp: createSoftwareApplication({ id: 'https://example.org' }),
@@ -176,7 +184,8 @@ Creates a new event of type `TEvent` using the provided factory function and the
 const client = httpClient(
 	'http://example.org/sensors/1/clients/1',
 	'https://example.edu/caliper/target/endpoint',
-	'40dI6P62Q_qrWxpTk95z8w'
+	'40dI6P62Q_qrWxpTk95z8w',
+	'https://dlq.rad.dev.edgenuityapp.com/api/DeadletterMessage'
 );
 const sensor = new Sensor('http://example.org/sensors/1', {
 	edApp: createSoftwareApplication({ id: 'https://example.org' }),

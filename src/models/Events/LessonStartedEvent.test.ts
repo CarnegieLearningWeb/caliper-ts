@@ -1,10 +1,10 @@
 import {
+	createLessonStartedEvent,
+	createLessonStartedEventLesson,
+	createLessonEventIndividualizedLearningPath,
+	createStudent,
 	createAttempt,
 	createDomain,
-	createLessonEventIndividualizedLearningPath,
-	createLessonEventLesson,
-	createLessonStartedEvent,
-	createStudent,
 } from '..';
 import Caliper from '../../caliper';
 import { validate } from '../../validate';
@@ -20,7 +20,7 @@ describe('LessonStartedEvent', () => {
 
 	const expected = {
 		'@context': [
-			'http://edgenuity.com/events/lesson-started/0-0-2',
+			'http://edgenuity.com/events/lesson-started/0-1-0',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
 		id: 'urn:uuid:e251d4a0-b93c-4a0e-86cc-8b14c8db6787',
@@ -32,12 +32,13 @@ describe('LessonStartedEvent', () => {
 			type: 'SoftwareApplication',
 		},
 		actor: {
-			id: 'https://foo.bar/user/10000',
+			id: 'urn:uuid:6df6e776-b749-4a48-a421-eb2785d6a68a',
 			type: 'Student',
 		},
 		object: {
-			id: 'https://app.edgenuity.com/lesson/12345',
+			id: 'urn:pathid:12345#234',
 			type: 'Lesson',
+			language: 'English',
 			dateCreated: '2020-09-22T12:00:00.000Z',
 			dateModified: '2020-09-22T15:00:00.000Z',
 			domain: {
@@ -48,29 +49,30 @@ describe('LessonStartedEvent', () => {
 				name: 'Number & Operations in Base Ten',
 			},
 			isPartOf: {
-				id: 'https://app.edgenuity.com/ilp/12345',
+				id: 'urn:uuid:6ff6e776-b749-4a48-a421-eb2785d22a3a',
 				type: 'ILP',
 				student: {
-					id: 'https://foo.bar/user/10000',
+					id: 'urn:uuid:6df6e776-b749-4a48-a421-eb2785d6a68a',
 					type: 'Student',
 				},
 			},
 		},
 		generated: {
-			id: 'https://app.edgenuity.com/lesson/12345',
 			type: 'Attempt',
 			count: 1,
+			id: 'urn:uuid:ee26e776-b749-4a48-a421-eb2785d22ff2',
 		},
 	};
 
 	it('OK', () => {
-		const student = createStudent({ id: 'https://foo.bar/user/10000' });
+		const student = createStudent({ id: Caliper.uuid('6df6e776-b749-4a48-a421-eb2785d6a68a') });
 		const model = createLessonStartedEvent({
 			actor: student,
-			object: createLessonEventLesson({
-				id: 'https://app.edgenuity.com/lesson/12345',
+			object: createLessonStartedEventLesson({
+				id: 'urn:pathid:12345#234',
+				language: 'English',
 				isPartOf: createLessonEventIndividualizedLearningPath({
-					id: 'https://app.edgenuity.com/ilp/12345',
+					id: Caliper.uuid('6ff6e776-b749-4a48-a421-eb2785d22a3a'),
 					student,
 				}),
 				dateCreated: Caliper.timestamp('2020-09-22T12:00:00Z'),
@@ -81,7 +83,10 @@ describe('LessonStartedEvent', () => {
 					name: 'Number & Operations in Base Ten',
 				}),
 			}),
-			generated: createAttempt({ id: 'https://app.edgenuity.com/lesson/12345', count: 1 }),
+			generated: createAttempt({
+				id: Caliper.uuid('ee26e776-b749-4a48-a421-eb2785d22ff2'),
+				count: 1,
+			}),
 		});
 		validate(model);
 

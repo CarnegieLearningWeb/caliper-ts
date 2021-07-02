@@ -35,4 +35,5 @@ export enum EventType {
 	LessonEvent = 'LessonEvent',
 	MembershipEvent = 'MembershipEvent',
 	BenchmarkEvent = 'BenchmarkEvent',
+	ConfigurationEvent = 'ConfigurationEvent',
 }

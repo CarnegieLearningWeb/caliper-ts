@@ -8,6 +8,7 @@ import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 import { Instructor } from './Instructor';
 import { Person } from './Person';
+import { SoftwareApplication } from './SoftwareApplication';
 import { Status } from './Status';
 import { Student } from './Student';
 import { User } from './User';
@@ -15,6 +16,7 @@ import { User } from './User';
 export interface Session extends Entity {
 	id: string;
 	user?: Person | User | Instructor | Student;
+	client?: SoftwareApplication;
 	startedAtTime?: string;
 	endedAtTime?: string;
 	duration?: string;
@@ -23,6 +25,7 @@ export interface Session extends Entity {
 export interface SessionParams {
 	id: string;
 	user?: Person | User | Instructor | Student;
+	client?: SoftwareApplication;
 	startedAtTime?: string;
 	endedAtTime?: string;
 	duration?: string;

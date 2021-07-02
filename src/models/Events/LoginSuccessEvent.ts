@@ -8,7 +8,6 @@ import { DigitalResource } from '../Entities/DigitalResource';
 import { Entity } from '../Entities/Entity';
 import { Instructor } from '../Entities/Instructor';
 import { LtiSession } from '../Entities/LtiSession';
-import { Membership } from '../Entities/Membership';
 import { Organization } from '../Entities/Organization';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { Student } from '../Entities/Student';
@@ -17,10 +16,12 @@ import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
 import { LoginEvent, LoginEventUserSession } from './Internals/LoginEvent';
+import { LoginMembership } from './LoginMembership';
 
 export interface LoginSuccessEvent extends LoginEvent {
 	actor: User | Instructor | Student;
 	object: SoftwareApplication;
+	membership: LoginMembership;
 	session: LoginEventUserSession;
 	target?: DigitalResource;
 	referrer?: DigitalResource | SoftwareApplication;
@@ -29,13 +30,13 @@ export interface LoginSuccessEvent extends LoginEvent {
 export interface LoginSuccessEventParams {
 	actor: User | Instructor | Student;
 	object: SoftwareApplication;
+	membership: LoginMembership;
 	session: LoginEventUserSession;
 	target?: DigitalResource;
 	referrer?: DigitalResource | SoftwareApplication;
 	profile?: CaliperProfile;
 	generated?: Entity;
 	group?: Organization;
-	membership?: Membership;
 	federatedSession?: LtiSession;
 	extensions?: Record<string, any>;
 }
@@ -46,7 +47,7 @@ export function createLoginSuccessEvent(
 ): LoginSuccessEvent {
 	return {
 		'@context': [
-			'http://edgenuity.com/events/login-success/0-0-2',
+			'http://edgenuity.com/events/login-success/0-1-0',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
 		action: CaliperAction.LoggedIn,
@@ -59,13 +60,14 @@ export function createLoginSuccessEvent(
 }
 
 export const LoginSuccessEventSchema = {
-	context: 'http://edgenuity.com/events/login-success/0-0-2',
+	context: 'http://edgenuity.com/events/login-success/0-1-0',
 	schema: {
 		title: 'LoginSuccessEvent',
 		type: 'object',
 		required: [
 			'@context',
 			'action',
+			'membership',
 			'actor',
 			'object',
 			'session',
@@ -80,8 +82,8 @@ export const LoginSuccessEventSchema = {
 				items: [
 					{
 						type: 'string',
-						default: 'http://edgenuity.com/events/login-success/0-0-2',
-						enum: ['http://edgenuity.com/events/login-success/0-0-2'],
+						default: 'http://edgenuity.com/events/login-success/0-1-0',
+						enum: ['http://edgenuity.com/events/login-success/0-1-0'],
 					},
 					{
 						type: 'string',
@@ -94,6 +96,18 @@ export const LoginSuccessEventSchema = {
 				type: 'string',
 				default: 'LoggedIn',
 				enum: ['LoggedIn'],
+			},
+			membership: {
+				title: 'LoginMembership',
+				allOf: [
+					{
+						required: ['organization', 'roles', 'type', 'id'],
+					},
+					{
+						title: 'LoginMembership',
+						$ref: '#/definitions/LoginMembership',
+					},
+				],
 			},
 			actor: {
 				required: ['id', 'type'],
@@ -128,16 +142,7 @@ export const LoginSuccessEventSchema = {
 				title: 'UserSession',
 				allOf: [
 					{
-						required: [
-							'loginType',
-							'credentials',
-							'scopes',
-							'userAgent',
-							'ipAddress',
-							'localTimestamp',
-							'type',
-							'id',
-						],
+						required: ['login', 'client', 'type', 'id'],
 					},
 					{
 						title: 'UserSession',
@@ -181,7 +186,7 @@ export const LoginSuccessEventSchema = {
 			},
 			eventTime: {
 				type: 'string',
-				format: 'date-time',
+				pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 			},
 			edApp: {
 				title: 'SoftwareApplication',
@@ -223,18 +228,6 @@ export const LoginSuccessEventSchema = {
 					},
 				],
 			},
-			membership: {
-				title: 'Membership',
-				allOf: [
-					{
-						required: ['type', 'id'],
-					},
-					{
-						title: 'Membership',
-						$ref: '#/definitions/Membership',
-					},
-				],
-			},
 			federatedSession: {
 				title: 'LtiSession',
 				allOf: [
@@ -253,38 +246,145 @@ export const LoginSuccessEventSchema = {
 			},
 		},
 		definitions: {
-			User: {
-				title: 'User',
+			LoginMembership: {
+				title: 'LoginMembership',
 				type: 'object',
 				properties: {
+					organization: {
+						required: ['id', 'type'],
+						oneOf: [
+							{
+								title: 'Organization',
+								$ref: '#/definitions/Organization',
+							},
+							{
+								title: 'School',
+								$ref: '#/definitions/School',
+							},
+							{
+								title: 'Group',
+								$ref: '#/definitions/Group',
+							},
+							{
+								title: 'Class',
+								$ref: '#/definitions/Class',
+							},
+						],
+					},
+					roles: {
+						type: 'array',
+						items: {
+							title: 'Role',
+							$ref: '#/definitions/Role',
+						},
+					},
 					type: {
 						type: 'string',
-						default: 'User',
-						enum: ['User'],
+						default: 'Membership',
+						enum: ['Membership'],
 					},
-					name: {
-						type: 'string',
-					},
-					firstName: {
-						type: 'string',
-					},
-					lastName: {
-						type: 'string',
+					member: {
+						required: ['id', 'type'],
+						oneOf: [
+							{
+								title: 'Person',
+								$ref: '#/definitions/Person',
+							},
+							{
+								title: 'User',
+								$ref: '#/definitions/User',
+							},
+							{
+								title: 'Instructor',
+								$ref: '#/definitions/Instructor',
+							},
+							{
+								title: 'Student',
+								$ref: '#/definitions/Student',
+							},
+						],
 					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
 					},
 					description: {
 						type: 'string',
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Organization: {
+				title: 'Organization',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Organization',
+						enum: ['Organization'],
+					},
+					subOrganizationOf: {
+						title: 'Organization',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Organization',
+								$ref: '#/definitions/Organization',
+							},
+						],
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -378,10 +478,20 @@ export const LoginSuccessEventSchema = {
 				title: 'SoftwareApplication',
 				type: 'object',
 				properties: {
+					ipAddress: {
+						title: 'IPAddress',
+						$ref: '#/definitions/IPAddress',
+					},
+					userAgent: {
+						type: 'string',
+					},
 					type: {
 						type: 'string',
 						default: 'SoftwareApplication',
 						enum: ['SoftwareApplication'],
+					},
+					host: {
+						type: 'string',
 					},
 					version: {
 						type: 'string',
@@ -398,11 +508,11 @@ export const LoginSuccessEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -428,294 +538,6 @@ export const LoginSuccessEventSchema = {
 						additionalProperties: true,
 					},
 				},
-			},
-			Status: {
-				type: 'string',
-				title: 'Status',
-				enum: ['Inactive', 'Active'],
-			},
-			Instructor: {
-				title: 'Instructor',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Instructor',
-						enum: ['Instructor'],
-					},
-					permissions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-					name: {
-						type: 'string',
-					},
-					firstName: {
-						type: 'string',
-					},
-					lastName: {
-						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Student: {
-				title: 'Student',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Student',
-						enum: ['Student'],
-					},
-					gradeLevel: {
-						type: 'number',
-					},
-					individualEducationPlan: {
-						type: 'boolean',
-					},
-					englishLanguageLearner: {
-						type: 'boolean',
-					},
-					settings: {
-						type: 'object',
-						additionalProperties: true,
-						properties: {
-							spanishLanguage: {
-								type: 'array',
-								items: {
-									type: 'string',
-								},
-							},
-							textToSpeech: {
-								type: 'array',
-								items: {
-									type: 'string',
-								},
-							},
-							languageTranslationTools: {
-								type: 'array',
-								items: {
-									type: 'string',
-								},
-							},
-						},
-					},
-					name: {
-						type: 'string',
-					},
-					firstName: {
-						type: 'string',
-					},
-					lastName: {
-						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			UserSession: {
-				title: 'UserSession',
-				type: 'object',
-				properties: {
-					loginType: {
-						title: 'LoginType',
-						$ref: '#/definitions/LoginType',
-					},
-					credentials: {
-						type: 'array',
-						items: {
-							title: 'CredentialType',
-							$ref: '#/definitions/CredentialType',
-						},
-					},
-					scopes: {
-						type: 'array',
-						items: {
-							type: 'string',
-						},
-					},
-					userAgent: {
-						type: 'string',
-					},
-					ipAddress: {
-						title: 'IPAddress',
-						$ref: '#/definitions/IPAddress',
-					},
-					localTimestamp: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?[-|\\+]\\d{2}:\\d{2}',
-					},
-					type: {
-						type: 'string',
-						default: 'UserSession',
-						enum: ['UserSession'],
-					},
-					user: {
-						required: ['id', 'type'],
-						oneOf: [
-							{
-								title: 'Person',
-								$ref: '#/definitions/Person',
-							},
-							{
-								title: 'User',
-								$ref: '#/definitions/User',
-							},
-							{
-								title: 'Instructor',
-								$ref: '#/definitions/Instructor',
-							},
-							{
-								title: 'Student',
-								$ref: '#/definitions/Student',
-							},
-						],
-					},
-					startedAtTime: {
-						type: 'string',
-						format: 'date-time',
-					},
-					endedAtTime: {
-						type: 'string',
-						format: 'date-time',
-					},
-					duration: {
-						type: 'string',
-						pattern: '^P(?:\\d+Y)?(?:\\d+M)?(?:\\d+D)?T?(?:\\d+H)?(?:\\d+M)?(?:\\d+S)?',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			LoginType: {
-				type: 'string',
-				title: 'LoginType',
-				enum: [
-					'QRCodeSwipeFromALA',
-					'SAML',
-					'CleverApi',
-					'LtiSSO',
-					'GoogleAuthentication',
-					'ApplicationLoginPage',
-				],
-			},
-			CredentialType: {
-				type: 'string',
-				title: 'CredentialType',
-				enum: ['Username', 'Password', 'QRCode'],
 			},
 			IPAddress: {
 				type: 'string',
@@ -728,508 +550,10 @@ export const LoginSuccessEventSchema = {
 					},
 				],
 			},
-			Person: {
-				title: 'Person',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Person',
-						enum: ['Person'],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			DigitalResource: {
-				title: 'DigitalResource',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'DigitalResource',
-						enum: ['DigitalResource'],
-					},
-					learningObjectives: {
-						type: 'array',
-						items: {
-							title: 'LearningObjective',
-							allOf: [
-								{
-									required: ['type', 'id'],
-								},
-								{
-									title: 'LearningObjective',
-									$ref: '#/definitions/LearningObjective',
-								},
-							],
-						},
-					},
-					keywords: {
-						type: 'array',
-						items: {
-							type: 'string',
-						},
-					},
-					creators: {
-						type: 'array',
-						items: {
-							title: 'Agent',
-							allOf: [
-								{
-									required: ['type', 'id'],
-								},
-								{
-									title: 'Agent',
-									$ref: '#/definitions/Agent',
-								},
-							],
-						},
-					},
-					mediaType: {
-						type: 'string',
-					},
-					isPartOf: {
-						title: 'Entity',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Entity',
-								$ref: '#/definitions/Entity',
-							},
-						],
-					},
-					datePublished: {
-						type: 'string',
-						format: 'date-time',
-					},
-					version: {
-						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			LearningObjective: {
-				title: 'LearningObjective',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'LearningObjective',
-						enum: ['LearningObjective'],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Agent: {
-				title: 'Agent',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Agent',
-						enum: ['Agent'],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Entity: {
-				title: 'Entity',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Entity',
-						enum: ['Entity'],
-					},
-					name: {
-						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			CaliperProfile: {
+			Status: {
 				type: 'string',
-				title: 'CaliperProfile',
-				enum: [
-					'GeneralProfile',
-					'AnnotationProfile',
-					'AssessmentProfile',
-					'AssignableProfile',
-					'FeedbackProfile',
-					'ForumProfile',
-					'GradingProfile',
-					'MediaProfile',
-					'ReadingProfile',
-					'ResourceManagementProfile',
-					'SearchProfile',
-					'SessionProfile',
-					'ToolLaunchProfile',
-					'ToolUseProfile',
-				],
-			},
-			Organization: {
-				title: 'Organization',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Organization',
-						enum: ['Organization'],
-					},
-					subOrganizationOf: {
-						title: 'Organization',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Organization',
-								$ref: '#/definitions/Organization',
-							},
-						],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Membership: {
-				title: 'Membership',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Membership',
-						enum: ['Membership'],
-					},
-					member: {
-						required: ['id', 'type'],
-						oneOf: [
-							{
-								title: 'Person',
-								$ref: '#/definitions/Person',
-							},
-							{
-								title: 'User',
-								$ref: '#/definitions/User',
-							},
-							{
-								title: 'Instructor',
-								$ref: '#/definitions/Instructor',
-							},
-							{
-								title: 'Student',
-								$ref: '#/definitions/Student',
-							},
-						],
-					},
-					organization: {
-						required: ['id', 'type'],
-						oneOf: [
-							{
-								title: 'Organization',
-								$ref: '#/definitions/Organization',
-							},
-							{
-								title: 'School',
-								$ref: '#/definitions/School',
-							},
-							{
-								title: 'Group',
-								$ref: '#/definitions/Group',
-							},
-							{
-								title: 'Class',
-								$ref: '#/definitions/Class',
-							},
-						],
-					},
-					roles: {
-						type: 'array',
-						items: {
-							title: 'Role',
-							$ref: '#/definitions/Role',
-						},
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
+				title: 'Status',
+				enum: ['Inactive', 'Active'],
 			},
 			School: {
 				title: 'School',
@@ -1264,11 +588,11 @@ export const LoginSuccessEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1334,11 +658,11 @@ export const LoginSuccessEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1407,11 +731,11 @@ export const LoginSuccessEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1502,6 +826,704 @@ export const LoginSuccessEventSchema = {
 					'Officer#Vice-Chair',
 				],
 			},
+			Person: {
+				title: 'Person',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Person',
+						enum: ['Person'],
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			User: {
+				title: 'User',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'User',
+						enum: ['User'],
+					},
+					name: {
+						type: 'string',
+					},
+					firstName: {
+						type: 'string',
+					},
+					lastName: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Instructor: {
+				title: 'Instructor',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Instructor',
+						enum: ['Instructor'],
+					},
+					permissions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+					name: {
+						type: 'string',
+					},
+					firstName: {
+						type: 'string',
+					},
+					lastName: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Student: {
+				title: 'Student',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Student',
+						enum: ['Student'],
+					},
+					gradeLevel: {
+						type: 'number',
+					},
+					individualEducationPlan: {
+						type: 'boolean',
+					},
+					englishLanguageLearner: {
+						type: 'boolean',
+					},
+					settings: {
+						type: 'object',
+						additionalProperties: true,
+						properties: {
+							spanishLanguage: {
+								type: 'array',
+								items: {
+									type: 'string',
+								},
+							},
+							textToSpeech: {
+								type: 'array',
+								items: {
+									type: 'string',
+								},
+							},
+							languageTranslationTools: {
+								type: 'array',
+								items: {
+									type: 'string',
+								},
+							},
+						},
+					},
+					name: {
+						type: 'string',
+					},
+					firstName: {
+						type: 'string',
+					},
+					lastName: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			UserSession: {
+				title: 'UserSession',
+				type: 'object',
+				properties: {
+					login: {
+						title: 'AuthorizationClaims',
+						allOf: [
+							{
+								required: ['localTimestamp', 'loginType', 'credentialTypes', 'scopes'],
+							},
+							{
+								title: 'AuthorizationClaims',
+								$ref: '#/definitions/AuthorizationClaims',
+							},
+						],
+					},
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['ipAddress', 'userAgent', 'type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
+							},
+						],
+					},
+					type: {
+						type: 'string',
+						default: 'UserSession',
+						enum: ['UserSession'],
+					},
+					user: {
+						required: ['id', 'type'],
+						oneOf: [
+							{
+								title: 'User',
+								$ref: '#/definitions/User',
+							},
+							{
+								title: 'Instructor',
+								$ref: '#/definitions/Instructor',
+							},
+							{
+								title: 'Student',
+								$ref: '#/definitions/Student',
+							},
+						],
+					},
+					startedAtTime: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					endedAtTime: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					duration: {
+						type: 'string',
+						pattern: '^P(?:\\d+Y)?(?:\\d+M)?(?:\\d+D)?T?(?:\\d+H)?(?:\\d+M)?(?:\\d+S)?',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			AuthorizationClaims: {
+				title: 'AuthorizationClaims',
+				type: 'object',
+				properties: {
+					localTimestamp: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?[-|\\+]\\d{2}:\\d{2}$',
+					},
+					loginType: {
+						title: 'LoginType',
+						$ref: '#/definitions/LoginType',
+					},
+					credentialTypes: {
+						type: 'array',
+						items: {
+							title: 'CredentialType',
+							$ref: '#/definitions/CredentialType',
+						},
+					},
+					scopes: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+				},
+			},
+			LoginType: {
+				type: 'string',
+				title: 'LoginType',
+				enum: [
+					'QRCodeSwipeFromALA',
+					'SAML',
+					'CleverApi',
+					'LtiSSO',
+					'GoogleAuthentication',
+					'ApplicationLoginPage',
+				],
+			},
+			CredentialType: {
+				type: 'string',
+				title: 'CredentialType',
+				enum: ['Username', 'Password', 'QRCode'],
+			},
+			DigitalResource: {
+				title: 'DigitalResource',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'DigitalResource',
+						enum: ['DigitalResource'],
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
+					datePublished: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					version: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			LearningObjective: {
+				title: 'LearningObjective',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'LearningObjective',
+						enum: ['LearningObjective'],
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Agent: {
+				title: 'Agent',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Agent',
+						enum: ['Agent'],
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Entity: {
+				title: 'Entity',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Entity',
+						enum: ['Entity'],
+					},
+					name: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			CaliperProfile: {
+				type: 'string',
+				title: 'CaliperProfile',
+				enum: [
+					'GeneralProfile',
+					'AnnotationProfile',
+					'AssessmentProfile',
+					'AssignableProfile',
+					'FeedbackProfile',
+					'ForumProfile',
+					'GradingProfile',
+					'MediaProfile',
+					'ReadingProfile',
+					'ResourceManagementProfile',
+					'SearchProfile',
+					'SessionProfile',
+					'ToolLaunchProfile',
+					'ToolUseProfile',
+				],
+			},
 			LtiSession: {
 				title: 'LtiSession',
 				type: 'object',
@@ -1536,13 +1558,25 @@ export const LoginSuccessEventSchema = {
 							},
 						],
 					},
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
+							},
+						],
+					},
 					startedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					endedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					duration: {
 						type: 'string',
@@ -1560,11 +1594,11 @@ export const LoginSuccessEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',

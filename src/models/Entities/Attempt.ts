@@ -4,10 +4,14 @@
  */
 
 import { SystemIdentifier } from '../SystemIdentifier';
+import { Assessment } from './Assessment';
+import { AssessmentItem } from './AssessmentItem';
+import { AssignableDigitalResource } from './AssignableDigitalResource';
 import { DigitalResource } from './DigitalResource';
 import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 import { Instructor } from './Instructor';
+import { Lesson } from './Lesson';
 import { Person } from './Person';
 import { Status } from './Status';
 import { Student } from './Student';
@@ -15,7 +19,7 @@ import { User } from './User';
 
 export interface Attempt extends Entity {
 	id: string;
-	assignable?: DigitalResource;
+	assignable?: DigitalResource | AssignableDigitalResource | Assessment | AssessmentItem | Lesson;
 	assignee?: Person | User | Instructor | Student;
 	count?: number;
 	startedAtTime?: string;
@@ -26,7 +30,7 @@ export interface Attempt extends Entity {
 
 export interface AttemptParams {
 	id: string;
-	assignable?: DigitalResource;
+	assignable?: DigitalResource | AssignableDigitalResource | Assessment | AssessmentItem | Lesson;
 	assignee?: Person | User | Instructor | Student;
 	count?: number;
 	startedAtTime?: string;

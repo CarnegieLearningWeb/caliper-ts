@@ -4,30 +4,41 @@
  */
 
 import Caliper from '../../caliper';
+import { Agent } from '../Entities/Agent';
 import { Attempt } from '../Entities/Attempt';
+import { CourseOffering } from '../Entities/CourseOffering';
+import { Domain } from '../Entities/Domain';
 import { Entity } from '../Entities/Entity';
+import { EntityType } from '../Entities/EntityType';
+import { LearningObjective } from '../Entities/LearningObjective';
 import { LtiSession } from '../Entities/LtiSession';
 import { Membership } from '../Entities/Membership';
 import { Organization } from '../Entities/Organization';
 import { Session } from '../Entities/Session';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { Status } from '../Entities/Status';
 import { Student } from '../Entities/Student';
 import { UserSession } from '../Entities/UserSession';
+import { SystemIdentifier } from '../SystemIdentifier';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
-import { LessonEvent, LessonEventLesson } from './Internals/LessonEvent';
+import {
+	LessonEvent,
+	LessonEventIndividualizedLearningPath,
+	LessonEventLesson,
+} from './Internals/LessonEvent';
 
 export interface LessonStartedEvent extends LessonEvent {
 	actor: Student;
-	object: LessonEventLesson;
+	object: LessonStartedEventLesson | LessonEventLesson;
 	generated: Attempt;
 	session?: Session | UserSession;
 }
 
 export interface LessonStartedEventParams {
 	actor: Student;
-	object: LessonEventLesson;
+	object: LessonStartedEventLesson | LessonEventLesson;
 	generated: Attempt;
 	session?: Session | UserSession;
 	profile?: CaliperProfile;
@@ -45,7 +56,7 @@ export function createLessonStartedEvent(
 ): LessonStartedEvent {
 	return {
 		'@context': [
-			'http://edgenuity.com/events/lesson-started/0-0-2',
+			'http://edgenuity.com/events/lesson-started/0-1-0',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
 		action: CaliperAction.Started,
@@ -57,8 +68,54 @@ export function createLessonStartedEvent(
 	};
 }
 
+export interface LessonStartedEventLesson extends LessonEventLesson {
+	id: string;
+	language: string;
+	isPartOf: LessonEventIndividualizedLearningPath | CourseOffering;
+}
+
+export interface LessonStartedEventLessonParams {
+	id: string;
+	language: string;
+	isPartOf: LessonEventIndividualizedLearningPath | CourseOffering;
+	domain?: Domain;
+	gradeLevel?: number;
+	domainOrder?: number;
+	lessonOrder?: number;
+	isAssigned?: boolean;
+	dateToActivate?: string;
+	dateToShow?: string;
+	dateToStartOn?: string;
+	dateToSubmit?: string;
+	maxAttempts?: number;
+	maxSubmits?: number;
+	maxScore?: number;
+	learningObjectives?: LearningObjective[];
+	keywords?: string[];
+	creators?: Agent[];
+	mediaType?: string;
+	datePublished?: string;
+	version?: string;
+	name?: string;
+	description?: string;
+	dateCreated?: string;
+	dateModified?: string;
+	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
+	extensions?: Record<string, any>;
+}
+
+export function createLessonStartedEventLesson(
+	params: LessonStartedEventLessonParams
+): LessonStartedEventLesson {
+	return {
+		type: EntityType.Lesson,
+		...params,
+	};
+}
+
 export const LessonStartedEventSchema = {
-	context: 'http://edgenuity.com/events/lesson-started/0-0-2',
+	context: 'http://edgenuity.com/events/lesson-started/0-1-0',
 	schema: {
 		title: 'LessonStartedEvent',
 		type: 'object',
@@ -69,8 +126,8 @@ export const LessonStartedEventSchema = {
 				items: [
 					{
 						type: 'string',
-						default: 'http://edgenuity.com/events/lesson-started/0-0-2',
-						enum: ['http://edgenuity.com/events/lesson-started/0-0-2'],
+						default: 'http://edgenuity.com/events/lesson-started/0-1-0',
+						enum: ['http://edgenuity.com/events/lesson-started/0-1-0'],
 					},
 					{
 						type: 'string',
@@ -131,7 +188,7 @@ export const LessonStartedEventSchema = {
 			},
 			eventTime: {
 				type: 'string',
-				format: 'date-time',
+				pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 			},
 			edApp: {
 				title: 'SoftwareApplication',
@@ -288,11 +345,11 @@ export const LessonStartedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -391,6 +448,16 @@ export const LessonStartedEventSchema = {
 						default: 'SoftwareApplication',
 						enum: ['SoftwareApplication'],
 					},
+					host: {
+						type: 'string',
+					},
+					ipAddress: {
+						title: 'IPAddress',
+						$ref: '#/definitions/IPAddress',
+					},
+					userAgent: {
+						type: 'string',
+					},
 					version: {
 						type: 'string',
 					},
@@ -406,11 +473,11 @@ export const LessonStartedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -437,6 +504,17 @@ export const LessonStartedEventSchema = {
 					},
 				},
 			},
+			IPAddress: {
+				type: 'string',
+				oneOf: [
+					{
+						pattern: '^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$',
+					},
+					{
+						pattern: '^\\w{1,4}(:\\w{1,4}){7}$',
+					},
+				],
+			},
 			Status: {
 				type: 'string',
 				title: 'Status',
@@ -452,14 +530,27 @@ export const LessonStartedEventSchema = {
 						enum: ['Attempt'],
 					},
 					assignable: {
-						title: 'DigitalResource',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
+						required: ['id', 'type'],
+						oneOf: [
 							{
 								title: 'DigitalResource',
 								$ref: '#/definitions/DigitalResource',
+							},
+							{
+								title: 'AssignableDigitalResource',
+								$ref: '#/definitions/AssignableDigitalResource',
+							},
+							{
+								title: 'Assessment',
+								$ref: '#/definitions/Assessment',
+							},
+							{
+								title: 'AssessmentItem',
+								$ref: '#/definitions/AssessmentItem',
+							},
+							{
+								title: 'Lesson',
+								$ref: '#/definitions/Lesson',
 							},
 						],
 					},
@@ -489,11 +580,11 @@ export const LessonStartedEventSchema = {
 					},
 					startedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					endedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					duration: {
 						type: 'string',
@@ -523,11 +614,11 @@ export const LessonStartedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -562,6 +653,18 @@ export const LessonStartedEventSchema = {
 						type: 'string',
 						default: 'DigitalResource',
 						enum: ['DigitalResource'],
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
 					},
 					learningObjectives: {
 						type: 'array',
@@ -602,21 +705,9 @@ export const LessonStartedEventSchema = {
 					mediaType: {
 						type: 'string',
 					},
-					isPartOf: {
-						title: 'Entity',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Entity',
-								$ref: '#/definitions/Entity',
-							},
-						],
-					},
 					datePublished: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					version: {
 						type: 'string',
@@ -633,115 +724,11 @@ export const LessonStartedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			LearningObjective: {
-				title: 'LearningObjective',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'LearningObjective',
-						enum: ['LearningObjective'],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Agent: {
-				title: 'Agent',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Agent',
-						enum: ['Agent'],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -789,11 +776,11 @@ export const LessonStartedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -820,14 +807,14 @@ export const LessonStartedEventSchema = {
 					},
 				},
 			},
-			Person: {
-				title: 'Person',
+			LearningObjective: {
+				title: 'LearningObjective',
 				type: 'object',
 				properties: {
 					type: {
 						type: 'string',
-						default: 'Person',
-						enum: ['Person'],
+						default: 'LearningObjective',
+						enum: ['LearningObjective'],
 					},
 					id: {
 						title: 'Uri',
@@ -841,11 +828,11 @@ export const LessonStartedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -872,38 +859,32 @@ export const LessonStartedEventSchema = {
 					},
 				},
 			},
-			User: {
-				title: 'User',
+			Agent: {
+				title: 'Agent',
 				type: 'object',
 				properties: {
 					type: {
 						type: 'string',
-						default: 'User',
-						enum: ['User'],
-					},
-					name: {
-						type: 'string',
-					},
-					firstName: {
-						type: 'string',
-					},
-					lastName: {
-						type: 'string',
+						default: 'Agent',
+						enum: ['Agent'],
 					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
 					},
 					description: {
 						type: 'string',
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -930,42 +911,537 @@ export const LessonStartedEventSchema = {
 					},
 				},
 			},
-			Instructor: {
-				title: 'Instructor',
+			AssignableDigitalResource: {
+				title: 'AssignableDigitalResource',
 				type: 'object',
 				properties: {
 					type: {
 						type: 'string',
-						default: 'Instructor',
-						enum: ['Instructor'],
+						default: 'AssignableDigitalResource',
+						enum: ['AssignableDigitalResource'],
 					},
-					permissions: {
-						type: 'object',
-						additionalProperties: true,
+					dateToActivate: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
-					name: {
+					dateToShow: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateToStartOn: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateToSubmit: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					maxAttempts: {
+						type: 'number',
+					},
+					maxSubmits: {
+						type: 'number',
+					},
+					maxScore: {
+						type: 'integer',
+					},
+					isPartOf: {
+						title: 'CourseOffering',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'CourseOffering',
+								$ref: '#/definitions/CourseOffering',
+							},
+						],
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
 						type: 'string',
 					},
-					firstName: {
+					datePublished: {
 						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
-					lastName: {
+					version: {
 						type: 'string',
 					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
 					},
+					name: {
+						type: 'string',
+					},
 					description: {
 						type: 'string',
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			CourseOffering: {
+				title: 'CourseOffering',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'CourseOffering',
+						enum: ['CourseOffering'],
+					},
+					courseNumber: {
+						type: 'string',
+					},
+					academicSession: {
+						type: 'string',
+					},
+					subOrganizationOf: {
+						title: 'Organization',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Organization',
+								$ref: '#/definitions/Organization',
+							},
+						],
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Organization: {
+				title: 'Organization',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Organization',
+						enum: ['Organization'],
+					},
+					subOrganizationOf: {
+						title: 'Organization',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Organization',
+								$ref: '#/definitions/Organization',
+							},
+						],
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Assessment: {
+				title: 'Assessment',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Assessment',
+						enum: ['Assessment'],
+					},
+					items: {
+						type: 'array',
+						items: {
+							title: 'DigitalResource',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'DigitalResource',
+									$ref: '#/definitions/DigitalResource',
+								},
+							],
+						},
+					},
+					dateToActivate: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateToShow: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateToStartOn: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateToSubmit: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					maxAttempts: {
+						type: 'number',
+					},
+					maxSubmits: {
+						type: 'number',
+					},
+					maxScore: {
+						type: 'integer',
+					},
+					isPartOf: {
+						title: 'CourseOffering',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'CourseOffering',
+								$ref: '#/definitions/CourseOffering',
+							},
+						],
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					datePublished: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					version: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			AssessmentItem: {
+				title: 'AssessmentItem',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'AssessmentItem',
+						enum: ['AssessmentItem'],
+					},
+					isTimeDependent: {
+						type: 'boolean',
+					},
+					dateToActivate: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateToShow: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateToStartOn: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateToSubmit: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					maxAttempts: {
+						type: 'number',
+					},
+					maxSubmits: {
+						type: 'number',
+					},
+					maxScore: {
+						type: 'integer',
+					},
+					isPartOf: {
+						title: 'CourseOffering',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'CourseOffering',
+								$ref: '#/definitions/CourseOffering',
+							},
+						],
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					datePublished: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					version: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1034,21 +1510,27 @@ export const LessonStartedEventSchema = {
 					lessonOrder: {
 						type: 'number',
 					},
+					isAssigned: {
+						type: 'boolean',
+					},
+					language: {
+						type: 'string',
+					},
 					dateToActivate: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateToShow: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateToStartOn: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateToSubmit: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					maxAttempts: {
 						type: 'number',
@@ -1100,7 +1582,7 @@ export const LessonStartedEventSchema = {
 					},
 					datePublished: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					version: {
 						type: 'string',
@@ -1117,11 +1599,241 @@ export const LessonStartedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Domain: {
+				title: 'Domain',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Domain',
+						enum: ['Domain'],
+					},
+					name: {
+						type: 'string',
+					},
+					code: {
+						type: 'string',
+					},
+					standard: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Person: {
+				title: 'Person',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Person',
+						enum: ['Person'],
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			User: {
+				title: 'User',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'User',
+						enum: ['User'],
+					},
+					name: {
+						type: 'string',
+					},
+					firstName: {
+						type: 'string',
+					},
+					lastName: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Instructor: {
+				title: 'Instructor',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Instructor',
+						enum: ['Instructor'],
+					},
+					permissions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+					name: {
+						type: 'string',
+					},
+					firstName: {
+						type: 'string',
+					},
+					lastName: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1208,69 +1920,11 @@ export const LessonStartedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Domain: {
-				title: 'Domain',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Domain',
-						enum: ['Domain'],
-					},
-					name: {
-						type: 'string',
-					},
-					code: {
-						type: 'string',
-					},
-					standard: {
-						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1316,70 +1970,6 @@ export const LessonStartedEventSchema = {
 					'ToolLaunchProfile',
 					'ToolUseProfile',
 				],
-			},
-			Organization: {
-				title: 'Organization',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Organization',
-						enum: ['Organization'],
-					},
-					subOrganizationOf: {
-						title: 'Organization',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Organization',
-								$ref: '#/definitions/Organization',
-							},
-						],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						format: 'date-time',
-					},
-					dateModified: {
-						type: 'string',
-						format: 'date-time',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
 			},
 			Membership: {
 				title: 'Membership',
@@ -1451,11 +2041,11 @@ export const LessonStartedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1515,11 +2105,11 @@ export const LessonStartedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1585,11 +2175,11 @@ export const LessonStartedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1658,11 +2248,11 @@ export const LessonStartedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1787,13 +2377,25 @@ export const LessonStartedEventSchema = {
 							},
 						],
 					},
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
+							},
+						],
+					},
 					startedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					endedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					duration: {
 						type: 'string',
@@ -1811,11 +2413,11 @@ export const LessonStartedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1872,13 +2474,25 @@ export const LessonStartedEventSchema = {
 							},
 						],
 					},
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
+							},
+						],
+					},
 					startedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					endedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					duration: {
 						type: 'string',
@@ -1896,11 +2510,11 @@ export const LessonStartedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1936,41 +2550,9 @@ export const LessonStartedEventSchema = {
 						default: 'UserSession',
 						enum: ['UserSession'],
 					},
-					loginType: {
-						title: 'LoginType',
-						$ref: '#/definitions/LoginType',
-					},
-					credentials: {
-						type: 'array',
-						items: {
-							title: 'CredentialType',
-							$ref: '#/definitions/CredentialType',
-						},
-					},
-					scopes: {
-						type: 'array',
-						items: {
-							type: 'string',
-						},
-					},
-					userAgent: {
-						type: 'string',
-					},
-					ipAddress: {
-						title: 'IPAddress',
-						$ref: '#/definitions/IPAddress',
-					},
-					localTimestamp: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?[-|\\+]\\d{2}:\\d{2}',
-					},
 					user: {
 						required: ['id', 'type'],
 						oneOf: [
-							{
-								title: 'Person',
-								$ref: '#/definitions/Person',
-							},
 							{
 								title: 'User',
 								$ref: '#/definitions/User',
@@ -1985,13 +2567,29 @@ export const LessonStartedEventSchema = {
 							},
 						],
 					},
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
+							},
+						],
+					},
+					login: {
+						title: 'AuthorizationClaims',
+						$ref: '#/definitions/AuthorizationClaims',
+					},
 					startedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					endedAtTime: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					duration: {
 						type: 'string',
@@ -2009,11 +2607,11 @@ export const LessonStartedEventSchema = {
 					},
 					dateCreated: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					dateModified: {
 						type: 'string',
-						format: 'date-time',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -2040,6 +2638,33 @@ export const LessonStartedEventSchema = {
 					},
 				},
 			},
+			AuthorizationClaims: {
+				title: 'AuthorizationClaims',
+				type: 'object',
+				properties: {
+					localTimestamp: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?[-|\\+]\\d{2}:\\d{2}$',
+					},
+					loginType: {
+						title: 'LoginType',
+						$ref: '#/definitions/LoginType',
+					},
+					credentialTypes: {
+						type: 'array',
+						items: {
+							title: 'CredentialType',
+							$ref: '#/definitions/CredentialType',
+						},
+					},
+					scopes: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+				},
+			},
 			LoginType: {
 				type: 'string',
 				title: 'LoginType',
@@ -2056,17 +2681,6 @@ export const LessonStartedEventSchema = {
 				type: 'string',
 				title: 'CredentialType',
 				enum: ['Username', 'Password', 'QRCode'],
-			},
-			IPAddress: {
-				type: 'string',
-				oneOf: [
-					{
-						pattern: '^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$',
-					},
-					{
-						pattern: '^\\w{1,4}(:\\w{1,4}){7}$',
-					},
-				],
 			},
 		},
 	},

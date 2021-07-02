@@ -3,37 +3,28 @@
  * This file was automatically generated.
  */
 
+import { AuthorizationClaims } from '../AuthorizationClaims';
 import { SystemIdentifier } from '../SystemIdentifier';
-import { CredentialType } from './CredentialType';
 import { EntityType } from './EntityType';
 import { Instructor } from './Instructor';
-import { LoginType } from './LoginType';
-import { Person } from './Person';
 import { Session } from './Session';
+import { SoftwareApplication } from './SoftwareApplication';
 import { Status } from './Status';
 import { Student } from './Student';
 import { User } from './User';
 
 export interface UserSession extends Session {
 	id: string;
-	loginType?: LoginType;
-	credentials?: CredentialType[];
-	scopes?: string[];
-	userAgent?: string;
-	ipAddress?: string;
-	localTimestamp?: string;
-	user?: Person | User | Instructor | Student;
+	user?: User | Instructor | Student;
+	client?: SoftwareApplication;
+	login?: AuthorizationClaims;
 }
 
 export interface UserSessionParams {
 	id: string;
-	loginType?: LoginType;
-	credentials?: CredentialType[];
-	scopes?: string[];
-	userAgent?: string;
-	ipAddress?: string;
-	localTimestamp?: string;
-	user?: Person | User | Instructor | Student;
+	user?: User | Instructor | Student;
+	client?: SoftwareApplication;
+	login?: AuthorizationClaims;
 	startedAtTime?: string;
 	endedAtTime?: string;
 	duration?: string;

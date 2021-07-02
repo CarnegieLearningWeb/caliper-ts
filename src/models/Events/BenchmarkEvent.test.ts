@@ -1,12 +1,12 @@
 import {
 	createBenchmarkEvent,
-	createBenchmarkEventAttempt,
 	createBenchmarkEventAssessment,
+	createBenchmarkEventAttempt,
+	createBenchmarkEventScore,
 	createBenchmarkEventStudent,
+	createSoftwareApplication,
 	createSystemIdentifier,
 	SystemIdentifierType,
-	createBenchmarkEventScore,
-	createSoftwareApplication,
 } from '..';
 import Caliper from '../../caliper';
 import { validate } from '../../validate';

@@ -80,10 +80,14 @@ export class Sensor {
 			throw new Error('Chosen Client has not been registered.');
 		}
 
-		if (this.validationEnabled) {
-			envelope.data.forEach((event) => {
-				validate(event);
-			});
+		const validationError = this.validateEvents(envelope.data);
+		if (validationError !== null) {
+			const message = {
+				error: validationError.message,
+				source: this.edApp ? this.edApp.id : (Caliper.settings.applicationUri as string),
+				payload: envelope,
+			};
+			httpClient.queueDeadletterMessage(message);
 		}
 
 		return httpClient.send<TEnvelope, TResponse>(envelope);
@@ -95,10 +99,18 @@ export class Sensor {
 			throw new Error('No Clients have been registered.');
 		}
 
-		if (this.validationEnabled) {
-			envelope.data.forEach((event) => {
-				validate(event);
-			});
+		const validationError = this.validateEvents(envelope.data);
+		if (validationError !== null) {
+			return Promise.all(
+				clients.map((client) => {
+					const message = {
+						error: validationError.message,
+						source: this.edApp ? this.edApp.id : (Caliper.settings.applicationUri as string),
+						payload: envelope,
+					};
+					return client.queueDeadletterMessage(message);
+				})
+			);
 		}
 
 		return Promise.all(clients.map((client) => client.send<TEnvelope, TResponse>(envelope)));
@@ -106,5 +118,25 @@ export class Sensor {
 
 	unregisterClient(id: string) {
 		delete this.clients[id];
+	}
+
+	private validateEvents(events: Event[]) {
+		if (!this.validationEnabled) {
+			return null;
+		}
+
+		let isValid = true;
+		const validationErrors: string[] = [];
+		events.forEach((event) => {
+			try {
+				validate(event);
+				validationErrors.push('Other events in the batch were invalid');
+			} catch (errors) {
+				isValid = false;
+				validationErrors.push(`${event.id}: ${errors.join('\n\t')}`);
+			}
+		});
+
+		return isValid ? null : new Error(validationErrors.join('\n'));
 	}
 }

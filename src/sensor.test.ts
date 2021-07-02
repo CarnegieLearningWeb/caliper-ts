@@ -1,16 +1,13 @@
-import { httpClient } from './clients/httpClient';
+import { HttpClient, httpClient } from './clients/httpClient';
 import { DEFAULT_CONFIG, getJsonLdContext } from './config/config';
+import { CaliperAction } from './models';
 import { EntityType } from './models/Entities/EntityType';
 import { createGroup } from './models/Entities/Group';
 import { createSoftwareApplication } from './models/Entities/SoftwareApplication';
 import { createUser } from './models/Entities/User';
 import { createGroupDeletedEvent, GroupDeletedEvent } from './models/Events/GroupDeletedEvent';
 import { Sensor, SensorConfig } from './sensor';
-import { validate } from './validate';
-
-jest.mock('./validate', () => ({
-	validate: jest.fn(),
-}));
+import * as Validation from './validate';
 
 describe('Sensor', () => {
 	let config: SensorConfig;
@@ -191,8 +188,10 @@ describe('Sensor', () => {
 		});
 
 		it('validates event before sending', () => {
+			const mockValidate = jest.spyOn(Validation, 'validate').mockImplementation(() => {});
 			const client = httpClient('id-1', 'https://example.com');
 			jest.spyOn(client, 'send').mockImplementation(() => Promise.resolve());
+
 			sensor = new Sensor('id', {
 				...config,
 				validationEnabled: true,
@@ -200,7 +199,27 @@ describe('Sensor', () => {
 			});
 			const envelope = sensor.createEnvelope({ data: [event] });
 			sensor.sendToClient('id-1', envelope);
-			expect(validate).toHaveBeenCalledWith(event);
+
+			expect(Validation.validate).toHaveBeenCalledWith(event);
+			mockValidate.mockRestore();
+		});
+
+		it('deadletter on validation failed', async () => {
+			const client = new HttpClient('id-1', {
+				uri: 'https://example.com/1',
+				deadletterUrl: 'https://dlq.rad-dev-app.wna.cloud/api/DeadletterMessage',
+				headers: {},
+			});
+			jest.spyOn(client, 'queueDeadletterMessage').mockImplementation(() => Promise.resolve());
+			sensor = new Sensor('id', {
+				...config,
+				validationEnabled: true,
+				clients: { 'id-1': client },
+			});
+			const badEvent = { ...event, action: CaliperAction.ChangedResolution }; // invalid action
+			const envelope = sensor.createEnvelope({ data: [badEvent] });
+			await sensor.sendToClients(envelope);
+			expect(client.queueDeadletterMessage).toHaveBeenCalled();
 		});
 	});
 
@@ -225,18 +244,47 @@ describe('Sensor', () => {
 		});
 
 		it('validates event before sending', () => {
-			const client1 = httpClient('id-1', 'https://example.com/1');
-			jest.spyOn(client1, 'send').mockImplementation(() => Promise.resolve());
-			const client2 = httpClient('id-2', 'https://example.com/2');
-			jest.spyOn(client2, 'send').mockImplementation(() => Promise.resolve());
+			const mockValidate = jest.spyOn(Validation, 'validate').mockImplementation(() => {});
+			const clients = {
+				'id-1': httpClient('id-1', 'https://example.com/1'),
+				'id-2': httpClient('id-2', 'https://example.com/2'),
+			};
+			Object.values(clients).forEach((client) =>
+				jest.spyOn(client, 'send').mockImplementation(() => Promise.resolve())
+			);
+
 			sensor = new Sensor('id', {
 				...config,
 				validationEnabled: true,
-				clients: { 'id-1': client1, 'id-2': client2 },
+				clients,
 			});
 			const envelope = sensor.createEnvelope({ data: [event] });
 			sensor.sendToClients(envelope);
-			expect(validate).toHaveBeenCalledWith(event);
+			expect(Validation.validate).toHaveBeenCalledWith(event);
+			mockValidate.mockRestore();
+		});
+
+		it('deadletter on validation failed', async () => {
+			const clients = {
+				'id-1': httpClient('id-1', 'https://example.com/1'),
+				'id-2': httpClient('id-2', 'https://example.com/2'),
+			};
+			Object.values(clients).forEach((client) =>
+				jest.spyOn(client, 'queueDeadletterMessage').mockImplementation(() => Promise.resolve())
+			);
+
+			sensor = new Sensor('id', {
+				...config,
+				validationEnabled: true,
+				clients,
+			});
+			const badEvent = { ...event, action: CaliperAction.ChangedResolution }; // invalid action
+			const envelope = sensor.createEnvelope({ data: [badEvent] });
+			await sensor.sendToClients(envelope);
+
+			Object.values(clients).forEach((client) =>
+				expect(client.queueDeadletterMessage).toHaveBeenCalled()
+			);
 		});
 	});
 

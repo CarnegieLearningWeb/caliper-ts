@@ -6,6 +6,7 @@
 import Caliper from '../../../caliper';
 import { Agent } from '../../Entities/Agent';
 import { Attempt } from '../../Entities/Attempt';
+import { CourseOffering } from '../../Entities/CourseOffering';
 import { Domain } from '../../Entities/Domain';
 import { Entity } from '../../Entities/Entity';
 import { EntityType } from '../../Entities/EntityType';
@@ -68,16 +69,18 @@ export function createLessonEvent(
 
 export interface LessonEventLesson extends Lesson {
 	id: string;
-	isPartOf: LessonEventIndividualizedLearningPath;
+	isPartOf: LessonEventIndividualizedLearningPath | CourseOffering;
 }
 
 export interface LessonEventLessonParams {
 	id: string;
-	isPartOf: LessonEventIndividualizedLearningPath;
+	isPartOf: LessonEventIndividualizedLearningPath | CourseOffering;
 	domain?: Domain;
 	gradeLevel?: number;
 	domainOrder?: number;
 	lessonOrder?: number;
+	isAssigned?: boolean;
+	language?: string;
 	dateToActivate?: string;
 	dateToShow?: string;
 	dateToStartOn?: string;

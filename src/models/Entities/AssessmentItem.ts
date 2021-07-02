@@ -6,7 +6,7 @@
 import { SystemIdentifier } from '../SystemIdentifier';
 import { Agent } from './Agent';
 import { AssignableDigitalResource } from './AssignableDigitalResource';
-import { Entity } from './Entity';
+import { CourseOffering } from './CourseOffering';
 import { EntityType } from './EntityType';
 import { LearningObjective } from './LearningObjective';
 import { Status } from './Status';
@@ -14,11 +14,13 @@ import { Status } from './Status';
 export interface AssessmentItem extends AssignableDigitalResource {
 	id: string;
 	isTimeDependent?: boolean;
+	isPartOf?: CourseOffering;
 }
 
 export interface AssessmentItemParams {
 	id: string;
 	isTimeDependent?: boolean;
+	isPartOf?: CourseOffering;
 	dateToActivate?: string;
 	dateToShow?: string;
 	dateToStartOn?: string;
@@ -30,7 +32,6 @@ export interface AssessmentItemParams {
 	keywords?: string[];
 	creators?: Agent[];
 	mediaType?: string;
-	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;

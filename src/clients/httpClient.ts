@@ -1,10 +1,12 @@
 import ky from 'ky-universal';
+import Caliper from '../caliper';
 import { Envelope } from '../envelope';
-import { Client } from './client';
+import { Client, DeadletterMessage } from './client';
 
 export interface ClientOptions {
 	uri: string;
 	headers: Record<string, string>;
+	deadletterUrl?: string;
 }
 
 export class HttpClient implements Client {
@@ -33,21 +35,54 @@ export class HttpClient implements Client {
 		return this.id;
 	}
 
-	send<TEnvelope, TResponse>(envelope: Envelope<TEnvelope>) {
+	getHeaders() {
+		return this.options.headers;
+	}
+
+	getUri() {
+		return this.options.uri;
+	}
+
+	async send<TEnvelope, TResponse>(envelope: Envelope<TEnvelope>) {
 		if (Object.keys(envelope).length === 0) {
 			throw new Error('Chosen Requestor has not been registered.');
 		}
 
-		return ky
-			.post(this.options.uri, {
-				json: envelope,
-				headers: this.options.headers,
-			})
-			.json<TResponse>();
+		const task = ky.post(this.options.uri, {
+			json: envelope,
+			headers: this.options.headers,
+		});
+
+		const response = await task;
+		if (!response.ok) {
+			const message = {
+				error: await response.text(),
+				source: Caliper.settings.applicationUri as string,
+				payload: envelope,
+			};
+			await this.queueDeadletterMessage(message);
+		}
+
+		return task.json<TResponse>();
+	}
+
+	async queueDeadletterMessage<TEnvelope>(message: DeadletterMessage<TEnvelope>) {
+		if (!this.options.deadletterUrl) {
+			return;
+		}
+
+		const response = await ky.post(this.options.deadletterUrl, {
+			json: { ...message, destination: this.options.uri },
+			headers: this.options.headers,
+		});
+
+		if (!response.ok) {
+			throw new Error(`Failed to deadletter envelope. ${await response.text()}`);
+		}
 	}
 }
 
-export function httpClient(id: string, uri: string, token?: string) {
-	const options = { uri, headers: {} } as ClientOptions;
+export function httpClient(id: string, uri: string, token?: string, deadletterUrl?: string) {
+	const options = { uri, deadletterUrl, headers: {} } as ClientOptions;
 	return new HttpClient(id, options).bearer(token);
 }

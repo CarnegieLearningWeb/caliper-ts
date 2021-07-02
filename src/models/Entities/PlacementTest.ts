@@ -6,8 +6,8 @@
 import { SystemIdentifier } from '../SystemIdentifier';
 import { Agent } from './Agent';
 import { Assessment } from './Assessment';
+import { CourseOffering } from './CourseOffering';
 import { DigitalResource } from './DigitalResource';
-import { Entity } from './Entity';
 import { EntityType } from './EntityType';
 import { LearningObjective } from './LearningObjective';
 import { Status } from './Status';
@@ -15,11 +15,13 @@ import { Status } from './Status';
 export interface PlacementTest extends Assessment {
 	id: string;
 	subject?: string;
+	isPartOf?: CourseOffering;
 }
 
 export interface PlacementTestParams {
 	id: string;
 	subject?: string;
+	isPartOf?: CourseOffering;
 	items?: DigitalResource[];
 	dateToActivate?: string;
 	dateToShow?: string;
@@ -32,7 +34,6 @@ export interface PlacementTestParams {
 	keywords?: string[];
 	creators?: Agent[];
 	mediaType?: string;
-	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
 	name?: string;
