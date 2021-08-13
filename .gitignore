@@ -4,5 +4,3 @@ node_modules
 dist
 .vscode/
 coverage/
-code-generator/bin/
-code-generator/obj/

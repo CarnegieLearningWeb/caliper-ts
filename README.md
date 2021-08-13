@@ -614,12 +614,4 @@ Per Palmer Group guidelines, [always use named exports.](https://github.com/palm
 
 ## Code generation
 
-This repository also contains a [`code-generator` project](code-generator), which is a C# project used to generate TypeScript definitions for events and entities using the [.NET Caliper Sensor Library](https://github.com/edgenuity/caliper-net).
-
-A **generate-caliper.ps1** script file is also included to execute the code-generator project. Before running this script file, it is recommended to first update the NuGet package for the .NET Caliper Sensor Library.
-
-**NOTE**: Executing the above script will require an active feed from MyGet. This can be accomplished by executing the below command (_replace `MY_PREAUTHORIZED_KEY` with your actual account key from MyGet_).
-
-```sh
-dotnet nuget add source https://edgedev.myget.org/F/edgenuity/auth/MY_PREAUTHORIZED_KEY/api/v3/index.json -n edgenuity
-```
+This repository contains events and entities that are generated with the [caliper-code-generator](https://github.com/ImagineLearning/caliper-code-generator) using [caliper-net](https://github.com/edgenuity/caliper-net) as the source of truth.
