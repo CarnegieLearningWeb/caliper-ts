@@ -4,29 +4,44 @@
  */
 
 import Caliper from '../../caliper';
+import { Agent } from '../Entities/Agent';
+import { Assessment } from '../Entities/Assessment';
+import { Attempt } from '../Entities/Attempt';
+import { CourseOffering } from '../Entities/CourseOffering';
+import { DigitalResource } from '../Entities/DigitalResource';
 import { Entity } from '../Entities/Entity';
+import { EntityType } from '../Entities/EntityType';
+import { LearningObjective } from '../Entities/LearningObjective';
 import { LtiSession } from '../Entities/LtiSession';
 import { Membership } from '../Entities/Membership';
 import { Organization } from '../Entities/Organization';
 import { Session } from '../Entities/Session';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { Status } from '../Entities/Status';
+import { StudentProfileSettings } from '../Entities/StudentProfileSettings';
 import { UserSession } from '../Entities/UserSession';
-import { BenchmarkEvent, BenchmarkEventAttempt, BenchmarkEventScore } from './BenchmarkEvent';
+import { SystemIdentifier } from '../SystemIdentifier';
+import {
+	BenchmarkEvent,
+	BenchmarkEventAttempt,
+	BenchmarkEventScore,
+	BenchmarkEventStudent,
+} from './BenchmarkEvent';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
 
 export interface NWEABenchmarkEvent extends BenchmarkEvent {
 	actor: SoftwareApplication;
-	object: BenchmarkEventAttempt;
-	generated: BenchmarkEventScore;
+	object: NWEABenchmarkEventAttempt | BenchmarkEventAttempt;
+	generated: NWEABenchmarkEventScore | BenchmarkEventScore;
 	session?: Session | UserSession;
 }
 
 export interface NWEABenchmarkEventParams {
 	actor: SoftwareApplication;
-	object: BenchmarkEventAttempt;
-	generated: BenchmarkEventScore;
+	object: NWEABenchmarkEventAttempt | BenchmarkEventAttempt;
+	generated: NWEABenchmarkEventScore | BenchmarkEventScore;
 	session?: Session | UserSession;
 	profile?: CaliperProfile;
 	target?: Entity;
@@ -51,6 +66,150 @@ export function createNWEABenchmarkEvent(
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
 		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
+		...params,
+	};
+}
+
+export interface NWEABenchmarkEventAttempt extends BenchmarkEventAttempt {
+	id: string;
+	assignable: NWEABenchmarkEventAssessment | Assessment;
+	assignee: NWEABenchmarkEventStudent | BenchmarkEventStudent;
+	dateCreated: string;
+	duration: string;
+}
+
+export interface NWEABenchmarkEventAttemptParams {
+	id: string;
+	assignable: NWEABenchmarkEventAssessment | Assessment;
+	assignee: NWEABenchmarkEventStudent | BenchmarkEventStudent;
+	dateCreated: string;
+	duration: string;
+	count?: number;
+	startedAtTime?: string;
+	endedAtTime?: string;
+	isPartOf?: Attempt;
+	name?: string;
+	description?: string;
+	dateModified?: string;
+	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
+	extensions?: Record<string, any>;
+}
+
+export function createNWEABenchmarkEventAttempt(
+	params: NWEABenchmarkEventAttemptParams
+): NWEABenchmarkEventAttempt {
+	return {
+		type: EntityType.Attempt,
+		...params,
+	};
+}
+
+export interface NWEABenchmarkEventAssessment extends Assessment {
+	id: string;
+	name: string;
+	subject: string;
+	isPartOf?: CourseOffering;
+}
+
+export interface NWEABenchmarkEventAssessmentParams {
+	id: string;
+	name: string;
+	subject: string;
+	isPartOf?: CourseOffering;
+	items?: DigitalResource[];
+	dateToActivate?: string;
+	dateToShow?: string;
+	dateToStartOn?: string;
+	dateToSubmit?: string;
+	maxAttempts?: number;
+	maxSubmits?: number;
+	maxScore?: number;
+	learningObjectives?: LearningObjective[];
+	keywords?: string[];
+	creators?: Agent[];
+	mediaType?: string;
+	datePublished?: string;
+	version?: string;
+	description?: string;
+	dateCreated?: string;
+	dateModified?: string;
+	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
+	extensions?: Record<string, any>;
+}
+
+export function createNWEABenchmarkEventAssessment(
+	params: NWEABenchmarkEventAssessmentParams
+): NWEABenchmarkEventAssessment {
+	return {
+		type: EntityType.Assessment,
+		...params,
+	};
+}
+
+export interface NWEABenchmarkEventStudent extends BenchmarkEventStudent {
+	id: string;
+	gradeLevel: number;
+	otherIdentifiers: SystemIdentifier[];
+}
+
+export interface NWEABenchmarkEventStudentParams {
+	id: string;
+	gradeLevel: number;
+	otherIdentifiers: SystemIdentifier[];
+	individualEducationPlan?: boolean;
+	englishLanguageLearner?: boolean;
+	settings?: StudentProfileSettings;
+	name?: string;
+	firstName?: string;
+	lastName?: string;
+	description?: string;
+	dateCreated?: string;
+	dateModified?: string;
+	status?: Status;
+	extensions?: Record<string, any>;
+}
+
+export function createNWEABenchmarkEventStudent(
+	params: NWEABenchmarkEventStudentParams
+): NWEABenchmarkEventStudent {
+	return {
+		type: EntityType.Student,
+		...params,
+	};
+}
+
+export interface NWEABenchmarkEventScore extends BenchmarkEventScore {
+	id: string;
+	dateCreated: string;
+	scoreGiven: number;
+	academicTerm: string;
+	extensions: Record<string, any>;
+}
+
+export interface NWEABenchmarkEventScoreParams {
+	id: string;
+	dateCreated: string;
+	scoreGiven: number;
+	academicTerm: string;
+	extensions: Record<string, any>;
+	attempt?: Attempt;
+	maxScore?: number;
+	comment?: string;
+	scoredBy?: Agent;
+	name?: string;
+	description?: string;
+	dateModified?: string;
+	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
+}
+
+export function createNWEABenchmarkEventScore(
+	params: NWEABenchmarkEventScoreParams
+): NWEABenchmarkEventScore {
+	return {
+		type: EntityType.Score,
 		...params,
 	};
 }
@@ -125,7 +284,7 @@ export const NWEABenchmarkEventSchema = {
 				title: 'Score',
 				allOf: [
 					{
-						required: ['scoreGiven', 'extensions', 'academicTerm', 'type', 'id'],
+						required: ['scoreGiven', 'extensions', 'type', 'id'],
 					},
 					{
 						title: 'Score',
@@ -388,7 +547,7 @@ export const NWEABenchmarkEventSchema = {
 						title: 'Assessment',
 						allOf: [
 							{
-								required: ['subject', 'type', 'id'],
+								required: ['type', 'id'],
 							},
 							{
 								title: 'Assessment',
@@ -400,7 +559,7 @@ export const NWEABenchmarkEventSchema = {
 						title: 'Student',
 						allOf: [
 							{
-								required: ['otherIdentifiers', 'gradeLevel', 'type', 'id'],
+								required: ['otherIdentifiers', 'type', 'id'],
 							},
 							{
 								title: 'Student',
@@ -487,9 +646,6 @@ export const NWEABenchmarkEventSchema = {
 				title: 'Assessment',
 				type: 'object',
 				properties: {
-					subject: {
-						type: 'string',
-					},
 					type: {
 						type: 'string',
 						default: 'Assessment',
@@ -645,6 +801,18 @@ export const NWEABenchmarkEventSchema = {
 						default: 'DigitalResource',
 						enum: ['DigitalResource'],
 					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
 					learningObjectives: {
 						type: 'array',
 						items: {
@@ -683,18 +851,6 @@ export const NWEABenchmarkEventSchema = {
 					},
 					mediaType: {
 						type: 'string',
-					},
-					isPartOf: {
-						title: 'Entity',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Entity',
-								$ref: '#/definitions/Entity',
-							},
-						],
 					},
 					datePublished: {
 						type: 'string',
@@ -743,6 +899,58 @@ export const NWEABenchmarkEventSchema = {
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
+					},
+				},
+			},
+			Entity: {
+				title: 'Entity',
+				type: 'object',
+				properties: {
+					name: {
+						type: 'string',
+					},
+					type: {
+						type: 'string',
+						default: 'Entity',
+						enum: ['Entity'],
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 				},
 			},
@@ -847,58 +1055,6 @@ export const NWEABenchmarkEventSchema = {
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
-					},
-				},
-			},
-			Entity: {
-				title: 'Entity',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Entity',
-						enum: ['Entity'],
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
 					},
 				},
 			},
@@ -1055,13 +1211,13 @@ export const NWEABenchmarkEventSchema = {
 							],
 						},
 					},
-					gradeLevel: {
-						type: 'number',
-					},
 					type: {
 						type: 'string',
 						default: 'Student',
 						enum: ['Student'],
+					},
+					gradeLevel: {
+						type: 'number',
 					},
 					individualEducationPlan: {
 						type: 'boolean',
@@ -1137,9 +1293,6 @@ export const NWEABenchmarkEventSchema = {
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
-					},
-					academicTerm: {
-						type: 'string',
 					},
 					type: {
 						type: 'string',
@@ -2111,6 +2264,7 @@ export const NWEABenchmarkEventSchema = {
 					'LtiSSO',
 					'GoogleAuthentication',
 					'ApplicationLoginPage',
+					'Impersonation',
 				],
 			},
 			CredentialType: {

@@ -428,6 +428,7 @@ export const LoginFailedEventSchema = {
 					'LtiSSO',
 					'GoogleAuthentication',
 					'ApplicationLoginPage',
+					'Impersonation',
 				],
 			},
 			CredentialType: {
@@ -1008,20 +1009,20 @@ export const LoginFailedEventSchema = {
 				title: 'Entity',
 				type: 'object',
 				properties: {
-					description: {
-						type: 'string',
-					},
 					type: {
 						type: 'string',
 						default: 'Entity',
 						enum: ['Entity'],
 					},
-					name: {
-						type: 'string',
-					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
 					},
 					dateCreated: {
 						type: 'string',

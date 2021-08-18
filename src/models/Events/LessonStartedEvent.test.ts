@@ -1,10 +1,10 @@
 import {
-	createLessonStartedEvent,
-	createLessonStartedEventLesson,
-	createLessonEventIndividualizedLearningPath,
-	createStudent,
 	createAttempt,
 	createDomain,
+	createLessonEventIndividualizedLearningPath,
+	createLessonStartedEvent,
+	createLessonStartedEventLesson,
+	createStudent,
 } from '..';
 import Caliper from '../../caliper';
 import { validate } from '../../validate';

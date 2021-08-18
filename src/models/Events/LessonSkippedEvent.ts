@@ -1894,6 +1894,7 @@ export const LessonSkippedEventSchema = {
 					'LtiSSO',
 					'GoogleAuthentication',
 					'ApplicationLoginPage',
+					'Impersonation',
 				],
 			},
 			CredentialType: {

@@ -1540,6 +1540,7 @@ export const UserCreatedEventSchema = {
 					'LtiSSO',
 					'GoogleAuthentication',
 					'ApplicationLoginPage',
+					'Impersonation',
 				],
 			},
 			CredentialType: {

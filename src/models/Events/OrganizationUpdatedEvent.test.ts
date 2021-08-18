@@ -6,6 +6,7 @@ import {
 	createOrganizationUpdatedEvent,
 	createSystemIdentifier,
 	createUser,
+	InstitutionType,
 	Status,
 	SystemIdentifierType,
 } from '..';
@@ -23,7 +24,7 @@ describe('OrganizationUpdatedEvent', () => {
 
 	const organizationEvent = {
 		'@context': [
-			'http://edgenuity.com/events/organization-updated/0-0-2',
+			'http://edgenuity.com/events/organization-updated/0-0-3',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
 		id: 'urn:uuid:e251d4a0-b93c-4a0e-86cc-8b14c8db6787',
@@ -47,6 +48,7 @@ describe('OrganizationUpdatedEvent', () => {
 			name: 'My Organization',
 			state: 'AZ',
 			timezone: 'America/Phoenix',
+			institutionType: 'Customer',
 			subOrganizationOf: {
 				id: 'urn:uuid:e292faa7-9429-4323-8d67-c2e23ebb7c99',
 				type: 'District',
@@ -103,6 +105,7 @@ describe('OrganizationUpdatedEvent', () => {
 				name: 'My Organization',
 				state: 'AZ',
 				timezone: 'America/Phoenix',
+				institutionType: InstitutionType.Customer,
 				subOrganizationOf: createDistrict({
 					id: Caliper.uuid('e292faa7-9429-4323-8d67-c2e23ebb7c99'),
 				}),
@@ -139,7 +142,7 @@ describe('OrganizationUpdatedEvent', () => {
 
 	const schoolEvent = {
 		'@context': [
-			'http://edgenuity.com/events/organization-updated/0-0-2',
+			'http://edgenuity.com/events/organization-updated/0-0-3',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
 		id: 'urn:uuid:e251d4a0-b93c-4a0e-86cc-8b14c8db6787',
@@ -163,6 +166,7 @@ describe('OrganizationUpdatedEvent', () => {
 			name: 'My School',
 			state: 'AZ',
 			timezone: 'America/Phoenix',
+			institutionType: 'Customer',
 			subOrganizationOf: {
 				id: 'urn:uuid:e292faa7-9429-4323-8d67-c2e23ebb7c99',
 				type: 'District',
@@ -219,6 +223,7 @@ describe('OrganizationUpdatedEvent', () => {
 				name: 'My School',
 				state: 'AZ',
 				timezone: 'America/Phoenix',
+				institutionType: InstitutionType.Customer,
 				subOrganizationOf: createDistrict({
 					id: Caliper.uuid('e292faa7-9429-4323-8d67-c2e23ebb7c99'),
 				}),
@@ -255,7 +260,7 @@ describe('OrganizationUpdatedEvent', () => {
 
 	const districtEvent = {
 		'@context': [
-			'http://edgenuity.com/events/organization-updated/0-0-2',
+			'http://edgenuity.com/events/organization-updated/0-0-3',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
 		id: 'urn:uuid:e251d4a0-b93c-4a0e-86cc-8b14c8db6787',
@@ -279,6 +284,7 @@ describe('OrganizationUpdatedEvent', () => {
 			name: 'My District',
 			state: 'AZ',
 			timezone: 'America/Phoenix',
+			institutionType: 'Customer',
 			otherIdentifiers: [
 				{
 					type: 'SystemIdentifier',
@@ -331,6 +337,7 @@ describe('OrganizationUpdatedEvent', () => {
 				name: 'My District',
 				state: 'AZ',
 				timezone: 'America/Phoenix',
+				institutionType: InstitutionType.Customer,
 				otherIdentifiers: [
 					createSystemIdentifier({
 						identifierType: SystemIdentifierType.SystemId,

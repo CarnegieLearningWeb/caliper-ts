@@ -734,6 +734,7 @@ export const LogoutEventSchema = {
 					'LtiSSO',
 					'GoogleAuthentication',
 					'ApplicationLoginPage',
+					'Impersonation',
 				],
 			},
 			CredentialType: {
@@ -964,12 +965,12 @@ export const LogoutEventSchema = {
 						default: 'Entity',
 						enum: ['Entity'],
 					},
-					name: {
-						type: 'string',
-					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
 					},
 					description: {
 						type: 'string',

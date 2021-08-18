@@ -1003,6 +1003,11 @@ export const AssignableSubmittedEventSchema = {
 				title: 'DigitalResource',
 				type: 'object',
 				properties: {
+					type: {
+						type: 'string',
+						default: 'DigitalResource',
+						enum: ['DigitalResource'],
+					},
 					isPartOf: {
 						title: 'Entity',
 						allOf: [
@@ -1014,11 +1019,6 @@ export const AssignableSubmittedEventSchema = {
 								$ref: '#/definitions/Entity',
 							},
 						],
-					},
-					type: {
-						type: 'string',
-						default: 'DigitalResource',
-						enum: ['DigitalResource'],
 					},
 					learningObjectives: {
 						type: 'array',
@@ -1118,12 +1118,12 @@ export const AssignableSubmittedEventSchema = {
 						default: 'Entity',
 						enum: ['Entity'],
 					},
+					name: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
 					},
 					description: {
 						type: 'string',
@@ -2540,6 +2540,7 @@ export const AssignableSubmittedEventSchema = {
 					'LtiSSO',
 					'GoogleAuthentication',
 					'ApplicationLoginPage',
+					'Impersonation',
 				],
 			},
 			CredentialType: {

@@ -1092,16 +1092,6 @@ export const MembershipCreatedEventSchema = {
 						default: 'Entity',
 						enum: ['Entity'],
 					},
-					name: {
-						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
 					dateCreated: {
 						type: 'string',
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
@@ -1109,6 +1099,16 @@ export const MembershipCreatedEventSchema = {
 					dateModified: {
 						type: 'string',
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1292,18 +1292,6 @@ export const MembershipCreatedEventSchema = {
 				title: 'Session',
 				type: 'object',
 				properties: {
-					client: {
-						title: 'SoftwareApplication',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'SoftwareApplication',
-								$ref: '#/definitions/SoftwareApplication',
-							},
-						],
-					},
 					type: {
 						type: 'string',
 						default: 'Session',
@@ -1327,6 +1315,18 @@ export const MembershipCreatedEventSchema = {
 							{
 								title: 'Student',
 								$ref: '#/definitions/Student',
+							},
+						],
+					},
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
 							},
 						],
 					},
@@ -1519,6 +1519,7 @@ export const MembershipCreatedEventSchema = {
 					'LtiSSO',
 					'GoogleAuthentication',
 					'ApplicationLoginPage',
+					'Impersonation',
 				],
 			},
 			CredentialType: {

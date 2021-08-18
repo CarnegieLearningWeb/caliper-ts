@@ -125,7 +125,7 @@ export const RenaissanceBenchmarkEventSchema = {
 				title: 'Score',
 				allOf: [
 					{
-						required: ['scoreGiven', 'extensions', 'academicTerm', 'type', 'id'],
+						required: ['scoreGiven', 'extensions', 'type', 'id'],
 					},
 					{
 						title: 'Score',
@@ -388,7 +388,7 @@ export const RenaissanceBenchmarkEventSchema = {
 						title: 'Assessment',
 						allOf: [
 							{
-								required: ['subject', 'type', 'id'],
+								required: ['type', 'id'],
 							},
 							{
 								title: 'Assessment',
@@ -400,7 +400,7 @@ export const RenaissanceBenchmarkEventSchema = {
 						title: 'Student',
 						allOf: [
 							{
-								required: ['otherIdentifiers', 'gradeLevel', 'type', 'id'],
+								required: ['otherIdentifiers', 'type', 'id'],
 							},
 							{
 								title: 'Student',
@@ -487,9 +487,6 @@ export const RenaissanceBenchmarkEventSchema = {
 				title: 'Assessment',
 				type: 'object',
 				properties: {
-					subject: {
-						type: 'string',
-					},
 					type: {
 						type: 'string',
 						default: 'Assessment',
@@ -645,6 +642,18 @@ export const RenaissanceBenchmarkEventSchema = {
 						default: 'DigitalResource',
 						enum: ['DigitalResource'],
 					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
 					learningObjectives: {
 						type: 'array',
 						items: {
@@ -683,18 +692,6 @@ export const RenaissanceBenchmarkEventSchema = {
 					},
 					mediaType: {
 						type: 'string',
-					},
-					isPartOf: {
-						title: 'Entity',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Entity',
-								$ref: '#/definitions/Entity',
-							},
-						],
 					},
 					datePublished: {
 						type: 'string',
@@ -743,6 +740,58 @@ export const RenaissanceBenchmarkEventSchema = {
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
+					},
+				},
+			},
+			Entity: {
+				title: 'Entity',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Entity',
+						enum: ['Entity'],
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 				},
 			},
@@ -813,58 +862,6 @@ export const RenaissanceBenchmarkEventSchema = {
 					},
 					name: {
 						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Entity: {
-				title: 'Entity',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Entity',
-						enum: ['Entity'],
-					},
-					name: {
-						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
 					},
 					description: {
 						type: 'string',
@@ -1055,13 +1052,13 @@ export const RenaissanceBenchmarkEventSchema = {
 							],
 						},
 					},
-					gradeLevel: {
-						type: 'number',
-					},
 					type: {
 						type: 'string',
 						default: 'Student',
 						enum: ['Student'],
+					},
+					gradeLevel: {
+						type: 'number',
 					},
 					individualEducationPlan: {
 						type: 'boolean',
@@ -1137,9 +1134,6 @@ export const RenaissanceBenchmarkEventSchema = {
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
-					},
-					academicTerm: {
-						type: 'string',
 					},
 					type: {
 						type: 'string',
@@ -2111,6 +2105,7 @@ export const RenaissanceBenchmarkEventSchema = {
 					'LtiSSO',
 					'GoogleAuthentication',
 					'ApplicationLoginPage',
+					'Impersonation',
 				],
 			},
 			CredentialType: {

@@ -28,8 +28,8 @@ export interface DomainParams {
 
 export function createDomain(params: DomainParams): Domain {
 	return {
-		id: `urn:domain:${params.standard.toLocaleUpperCase()}.${params.code.toLocaleUpperCase()}`,
 		type: EntityType.Domain,
+		id: `urn:domain:${params.standard.toLocaleUpperCase()}.${params.code.toLocaleUpperCase()}`,
 		...params,
 	};
 }

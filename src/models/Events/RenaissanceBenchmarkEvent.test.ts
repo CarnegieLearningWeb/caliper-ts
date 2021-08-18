@@ -1,5 +1,5 @@
 import {
-	createBenchmarkEventAssessment,
+	createAssessment,
 	createBenchmarkEventAttempt,
 	createBenchmarkEventScore,
 	createBenchmarkEventStudent,
@@ -44,7 +44,6 @@ describe('RenaissanceBenchmarkEvent', () => {
 			assignable: {
 				id: 'urn:test:renaissance:some-renaissance-test',
 				type: 'Assessment',
-				subject: 'Reading',
 			},
 			assignee: {
 				id: 'urn:uuid:ec3b84f0-ca55-4b0d-8ffd-4b1cdf5ab9ae',
@@ -66,7 +65,6 @@ describe('RenaissanceBenchmarkEvent', () => {
 		generated: {
 			id: 'urn:uuid:e8d7d46e-edcf-40a1-b31d-b1461cb483c2',
 			type: 'Score',
-			academicTerm: 'SY2021-2022',
 			scoreGiven: 95.0,
 			extensions: {
 				studentId: '43c29652-9b24-41bd-af3f-57648672432f',
@@ -86,10 +84,6 @@ describe('RenaissanceBenchmarkEvent', () => {
 		};
 
 		// Events should only utilize known WNE IDs, not external IDs
-		const wneAssessment = {
-			Id: '18ac07b6-9bc1-438d-be2a-f5c8b03e3fa6',
-			Subject: 'Reading',
-		};
 		const wneStudent = {
 			Id: 'ec3b84f0-ca55-4b0d-8ffd-4b1cdf5ab9ae',
 			GradeLevel: 5,
@@ -100,9 +94,8 @@ describe('RenaissanceBenchmarkEvent', () => {
 			object: createBenchmarkEventAttempt({
 				id: Caliper.uuid(),
 				dateCreated: `${payload.testDate}Z`,
-				assignable: createBenchmarkEventAssessment({
+				assignable: createAssessment({
 					id: `urn:test:renaissance:${payload.test}`,
-					subject: wneAssessment.Subject,
 				}),
 				assignee: createBenchmarkEventStudent({
 					id: Caliper.uuid(wneStudent.Id),
@@ -118,7 +111,6 @@ describe('RenaissanceBenchmarkEvent', () => {
 			}),
 			generated: createBenchmarkEventScore({
 				id: Caliper.uuid(),
-				academicTerm: 'SY2021-2022',
 				scoreGiven: payload.scaledScore,
 				extensions: payload,
 			}),

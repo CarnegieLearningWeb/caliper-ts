@@ -49,7 +49,7 @@ export function createOrganizationCreatedEvent(
 ): OrganizationCreatedEvent {
 	return {
 		'@context': [
-			'http://edgenuity.com/events/organization-created/0-0-2',
+			'http://edgenuity.com/events/organization-created/0-0-3',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
 		action: CaliperAction.Created,
@@ -62,7 +62,7 @@ export function createOrganizationCreatedEvent(
 }
 
 export const OrganizationCreatedEventSchema = {
-	context: 'http://edgenuity.com/events/organization-created/0-0-2',
+	context: 'http://edgenuity.com/events/organization-created/0-0-3',
 	schema: {
 		title: 'OrganizationCreatedEvent',
 		type: 'object',
@@ -73,8 +73,8 @@ export const OrganizationCreatedEventSchema = {
 				items: [
 					{
 						type: 'string',
-						default: 'http://edgenuity.com/events/organization-created/0-0-2',
-						enum: ['http://edgenuity.com/events/organization-created/0-0-2'],
+						default: 'http://edgenuity.com/events/organization-created/0-0-3',
+						enum: ['http://edgenuity.com/events/organization-created/0-0-3'],
 					},
 					{
 						type: 'string',
@@ -111,7 +111,7 @@ export const OrganizationCreatedEventSchema = {
 				],
 			},
 			object: {
-				required: ['id', 'state', 'status', 'timezone', 'type'],
+				required: ['id', 'institutionType', 'state', 'status', 'timezone', 'type'],
 				oneOf: [
 					{
 						title: 'Organization',
@@ -516,6 +516,10 @@ export const OrganizationCreatedEventSchema = {
 					timezone: {
 						type: 'string',
 					},
+					institutionType: {
+						title: 'InstitutionType',
+						$ref: '#/definitions/InstitutionType',
+					},
 					status: {
 						title: 'Status',
 						$ref: '#/definitions/Status',
@@ -581,6 +585,11 @@ export const OrganizationCreatedEventSchema = {
 					},
 				},
 			},
+			InstitutionType: {
+				type: 'string',
+				title: 'InstitutionType',
+				enum: ['Customer', 'Internal'],
+			},
 			District: {
 				title: 'District',
 				type: 'object',
@@ -595,6 +604,10 @@ export const OrganizationCreatedEventSchema = {
 					},
 					timezone: {
 						type: 'string',
+					},
+					institutionType: {
+						title: 'InstitutionType',
+						$ref: '#/definitions/InstitutionType',
 					},
 					status: {
 						title: 'Status',
@@ -670,6 +683,10 @@ export const OrganizationCreatedEventSchema = {
 					},
 					timezone: {
 						type: 'string',
+					},
+					institutionType: {
+						title: 'InstitutionType',
+						$ref: '#/definitions/InstitutionType',
 					},
 					status: {
 						title: 'Status',
@@ -755,21 +772,21 @@ export const OrganizationCreatedEventSchema = {
 				title: 'Entity',
 				type: 'object',
 				properties: {
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
 					type: {
 						type: 'string',
 						default: 'Entity',
 						enum: ['Entity'],
 					},
-					name: {
-						type: 'string',
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
 					},
 					description: {
 						type: 'string',
@@ -1586,6 +1603,7 @@ export const OrganizationCreatedEventSchema = {
 					'LtiSSO',
 					'GoogleAuthentication',
 					'ApplicationLoginPage',
+					'Impersonation',
 				],
 			},
 			CredentialType: {
