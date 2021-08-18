@@ -3,5 +3,4 @@
 node_modules
 dist
 caliper-spec
-code-generator
 coverage
