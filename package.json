@@ -1,6 +1,6 @@
 {
 	"name": "@imaginelearning/caliper-ts",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "Reference implementation of the Caliper Sensor API written in TypeScript",
 	"author": "Imagine Learning",
 	"license": "MIT",
@@ -22,8 +22,7 @@
 		"test:ci": "cross-env CI=true tsdx test --coverage",
 		"test:coverage": "tsdx test --coverage",
 		"lint": "eslint src/**/*.ts",
-		"format": "prettier --write **/*.{js,json,ts}",
-		"generate": "pwsh -f ./generate-caliper.ps1"
+		"format": "prettier --write **/*.{js,json,ts}"
 	},
 	"peerDependencies": {
 		"jsonschema": ">=1.4",
@@ -32,7 +31,6 @@
 	"devDependencies": {
 		"@imaginelearning/eslint-config": "^0.1.1",
 		"@imaginelearning/prettier-config": "^0.1.1",
-		"@imaginelearning/ts-imports-organizer": "^0.2.0",
 		"@types/jsonschema": "^1.1.1",
 		"@types/lodash": "^4.14.161",
 		"@types/text-encoding": "^0.0.35",
