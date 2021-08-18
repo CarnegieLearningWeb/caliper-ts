@@ -1,6 +1,6 @@
 import {
+	createAssessment,
 	createBenchmarkEvent,
-	createBenchmarkEventAssessment,
 	createBenchmarkEventAttempt,
 	createBenchmarkEventScore,
 	createBenchmarkEventStudent,
@@ -44,7 +44,6 @@ describe('Generic BenchmarkEvent', () => {
 			assignable: {
 				id: 'urn:uuid:a84dc6e1-dbde-4da2-a1c8-1415ce19c5eb',
 				type: 'Assessment',
-				subject: 'Reading',
 			},
 			assignee: {
 				id: 'urn:uuid:ec3b84f0-ca55-4b0d-8ffd-4b1cdf5ab9ae',
@@ -66,7 +65,6 @@ describe('Generic BenchmarkEvent', () => {
 		generated: {
 			id: 'urn:uuid:e8d7d46e-edcf-40a1-b31d-b1461cb483c2',
 			type: 'Score',
-			academicTerm: 'SY2021-2022',
 			scoreGiven: 140.0,
 			extensions: {
 				whateverStudent: {
@@ -116,7 +114,6 @@ describe('Generic BenchmarkEvent', () => {
 		};
 
 		// Events should only utilize known WNE IDs, not external IDs
-		const wneSubject = 'Reading';
 		const wneStudent = {
 			Id: 'ec3b84f0-ca55-4b0d-8ffd-4b1cdf5ab9ae',
 			GradeLevel: 5,
@@ -127,9 +124,8 @@ describe('Generic BenchmarkEvent', () => {
 			object: createBenchmarkEventAttempt({
 				id: Caliper.uuid(),
 				dateCreated: payload.whateverTest.timestamp,
-				assignable: createBenchmarkEventAssessment({
+				assignable: createAssessment({
 					id: Caliper.uuid(payload.whateverTest.id),
-					subject: wneSubject,
 				}),
 				assignee: createBenchmarkEventStudent({
 					id: Caliper.uuid(wneStudent.Id),
@@ -145,7 +141,6 @@ describe('Generic BenchmarkEvent', () => {
 			}),
 			generated: createBenchmarkEventScore({
 				id: Caliper.uuid(payload.whateverResult.id),
-				academicTerm: 'SY2021-2022',
 				scoreGiven: payload.whateverResult.score,
 				extensions: payload,
 			}),

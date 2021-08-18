@@ -145,7 +145,7 @@ export const LessonResetEventSchema = {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['id', 'type'],
+						required: ['type', 'id'],
 					},
 					{
 						title: 'Entity',
@@ -157,7 +157,7 @@ export const LessonResetEventSchema = {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['id', 'type'],
+						required: ['type', 'id'],
 					},
 					{
 						title: 'Entity',
@@ -218,7 +218,7 @@ export const LessonResetEventSchema = {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['id', 'type'],
+						required: ['type', 'id'],
 					},
 					{
 						title: 'Entity',
@@ -1026,10 +1026,6 @@ export const LessonResetEventSchema = {
 				title: 'Entity',
 				type: 'object',
 				properties: {
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
 					type: {
 						type: 'string',
 						default: 'Entity',
@@ -1037,6 +1033,10 @@ export const LessonResetEventSchema = {
 					},
 					name: {
 						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
 					},
 					description: {
 						type: 'string',
@@ -1894,6 +1894,7 @@ export const LessonResetEventSchema = {
 					'LtiSSO',
 					'GoogleAuthentication',
 					'ApplicationLoginPage',
+					'Impersonation',
 				],
 			},
 			CredentialType: {

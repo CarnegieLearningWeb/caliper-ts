@@ -6,23 +6,31 @@
 import Caliper from '../../caliper';
 import { DigitalResource } from '../Entities/DigitalResource';
 import { Entity } from '../Entities/Entity';
+import { EntityType } from '../Entities/EntityType';
 import { Instructor } from '../Entities/Instructor';
 import { LtiSession } from '../Entities/LtiSession';
 import { Organization } from '../Entities/Organization';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { Status } from '../Entities/Status';
 import { Student } from '../Entities/Student';
 import { User } from '../Entities/User';
+import { SystemIdentifier } from '../SystemIdentifier';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
-import { LoginEvent, LoginEventUserSession } from './Internals/LoginEvent';
+import {
+	LoginEvent,
+	LoginEventAuthorizationClaims,
+	LoginEventSoftwareApplication,
+	LoginEventUserSession,
+} from './Internals/LoginEvent';
 import { LoginMembership } from './LoginMembership';
 
 export interface LoginSuccessEvent extends LoginEvent {
 	actor: User | Instructor | Student;
 	object: SoftwareApplication;
 	membership: LoginMembership;
-	session: LoginEventUserSession;
+	session: LoginSuccessEventUserSession;
 	target?: DigitalResource;
 	referrer?: DigitalResource | SoftwareApplication;
 }
@@ -31,7 +39,7 @@ export interface LoginSuccessEventParams {
 	actor: User | Instructor | Student;
 	object: SoftwareApplication;
 	membership: LoginMembership;
-	session: LoginEventUserSession;
+	session: LoginSuccessEventUserSession;
 	target?: DigitalResource;
 	referrer?: DigitalResource | SoftwareApplication;
 	profile?: CaliperProfile;
@@ -47,7 +55,7 @@ export function createLoginSuccessEvent(
 ): LoginSuccessEvent {
 	return {
 		'@context': [
-			'http://edgenuity.com/events/login-success/0-1-0',
+			'http://edgenuity.com/events/login-success/0-1-1',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
 		action: CaliperAction.LoggedIn,
@@ -59,8 +67,41 @@ export function createLoginSuccessEvent(
 	};
 }
 
+export interface LoginSuccessEventUserSession extends LoginEventUserSession {
+	id: string;
+	login: LoginEventAuthorizationClaims;
+	client: LoginEventSoftwareApplication;
+	user: User | Instructor | Student;
+}
+
+export interface LoginSuccessEventUserSessionParams {
+	id: string;
+	login: LoginEventAuthorizationClaims;
+	client: LoginEventSoftwareApplication;
+	user: User | Instructor | Student;
+	startedAtTime?: string;
+	endedAtTime?: string;
+	duration?: string;
+	name?: string;
+	description?: string;
+	dateCreated?: string;
+	dateModified?: string;
+	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
+	extensions?: Record<string, any>;
+}
+
+export function createLoginSuccessEventUserSession(
+	params: LoginSuccessEventUserSessionParams
+): LoginSuccessEventUserSession {
+	return {
+		type: EntityType.UserSession,
+		...params,
+	};
+}
+
 export const LoginSuccessEventSchema = {
-	context: 'http://edgenuity.com/events/login-success/0-1-0',
+	context: 'http://edgenuity.com/events/login-success/0-1-1',
 	schema: {
 		title: 'LoginSuccessEvent',
 		type: 'object',
@@ -68,9 +109,9 @@ export const LoginSuccessEventSchema = {
 			'@context',
 			'action',
 			'membership',
+			'session',
 			'actor',
 			'object',
-			'session',
 			'type',
 			'id',
 			'eventTime',
@@ -82,8 +123,8 @@ export const LoginSuccessEventSchema = {
 				items: [
 					{
 						type: 'string',
-						default: 'http://edgenuity.com/events/login-success/0-1-0',
-						enum: ['http://edgenuity.com/events/login-success/0-1-0'],
+						default: 'http://edgenuity.com/events/login-success/0-1-1',
+						enum: ['http://edgenuity.com/events/login-success/0-1-1'],
 					},
 					{
 						type: 'string',
@@ -106,6 +147,18 @@ export const LoginSuccessEventSchema = {
 					{
 						title: 'LoginMembership',
 						$ref: '#/definitions/LoginMembership',
+					},
+				],
+			},
+			session: {
+				title: 'UserSession',
+				allOf: [
+					{
+						required: ['user', 'login', 'client', 'type', 'id'],
+					},
+					{
+						title: 'UserSession',
+						$ref: '#/definitions/UserSession',
 					},
 				],
 			},
@@ -135,18 +188,6 @@ export const LoginSuccessEventSchema = {
 					{
 						title: 'SoftwareApplication',
 						$ref: '#/definitions/SoftwareApplication',
-					},
-				],
-			},
-			session: {
-				title: 'UserSession',
-				allOf: [
-					{
-						required: ['login', 'client', 'type', 'id'],
-					},
-					{
-						title: 'UserSession',
-						$ref: '#/definitions/UserSession',
 					},
 				],
 			},
@@ -1093,6 +1134,23 @@ export const LoginSuccessEventSchema = {
 				title: 'UserSession',
 				type: 'object',
 				properties: {
+					user: {
+						required: ['id', 'type'],
+						oneOf: [
+							{
+								title: 'User',
+								$ref: '#/definitions/User',
+							},
+							{
+								title: 'Instructor',
+								$ref: '#/definitions/Instructor',
+							},
+							{
+								title: 'Student',
+								$ref: '#/definitions/Student',
+							},
+						],
+					},
 					login: {
 						title: 'AuthorizationClaims',
 						allOf: [
@@ -1121,23 +1179,6 @@ export const LoginSuccessEventSchema = {
 						type: 'string',
 						default: 'UserSession',
 						enum: ['UserSession'],
-					},
-					user: {
-						required: ['id', 'type'],
-						oneOf: [
-							{
-								title: 'User',
-								$ref: '#/definitions/User',
-							},
-							{
-								title: 'Instructor',
-								$ref: '#/definitions/Instructor',
-							},
-							{
-								title: 'Student',
-								$ref: '#/definitions/Student',
-							},
-						],
 					},
 					startedAtTime: {
 						type: 'string',
@@ -1231,6 +1272,7 @@ export const LoginSuccessEventSchema = {
 					'LtiSSO',
 					'GoogleAuthentication',
 					'ApplicationLoginPage',
+					'Impersonation',
 				],
 			},
 			CredentialType: {

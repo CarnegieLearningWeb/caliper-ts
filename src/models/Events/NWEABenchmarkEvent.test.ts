@@ -1,5 +1,5 @@
 import {
-	createBenchmarkEventAssessment,
+	createAssessment,
 	createBenchmarkEventAttempt,
 	createBenchmarkEventScore,
 	createBenchmarkEventStudent,
@@ -45,7 +45,6 @@ describe('NWEABenchmarkEvent', () => {
 			assignable: {
 				id: 'urn:test:nwea:MAP2-2780',
 				type: 'Assessment',
-				subject: 'Reading',
 				name: 'Growth: Reading 2-5 GA 2015',
 			},
 			assignee: {
@@ -68,7 +67,6 @@ describe('NWEABenchmarkEvent', () => {
 		generated: {
 			id: 'urn:uuid:a6732943-3a9f-4366-863e-d1b920fb68e2',
 			type: 'Score',
-			academicTerm: 'SY2021-2022',
 			dateCreated: '0001-01-01T00:00:00Z',
 			scoreGiven: 200.0,
 			extensions: {
@@ -255,7 +253,6 @@ describe('NWEABenchmarkEvent', () => {
 		};
 
 		// Events should only utilize known WNE IDs, not external IDs
-		const wneSubject = 'Reading';
 		const wneStudent = {
 			Id: 'ec3b84f0-ca55-4b0d-8ffd-4b1cdf5ab9ae',
 			GradeLevel: 5,
@@ -266,9 +263,8 @@ describe('NWEABenchmarkEvent', () => {
 			object: createBenchmarkEventAttempt({
 				id: Caliper.uuid(),
 				dateCreated: `${payload.testDate}Z`,
-				assignable: createBenchmarkEventAssessment({
+				assignable: createAssessment({
 					id: `urn:test:nwea:${payload.testKey}`,
-					subject: wneSubject,
 					name: payload.testName,
 				}),
 				assignee: createBenchmarkEventStudent({
@@ -286,7 +282,6 @@ describe('NWEABenchmarkEvent', () => {
 			}),
 			generated: createBenchmarkEventScore({
 				id: Caliper.uuid(payload.testResultBid),
-				academicTerm: 'SY2021-2022',
 				scoreGiven: parseInt(payload.rit, 10),
 				extensions: payload,
 				dateCreated: `${payload.eventDate}Z`,

@@ -1292,18 +1292,6 @@ export const MembershipDeletedEventSchema = {
 				title: 'Session',
 				type: 'object',
 				properties: {
-					client: {
-						title: 'SoftwareApplication',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'SoftwareApplication',
-								$ref: '#/definitions/SoftwareApplication',
-							},
-						],
-					},
 					type: {
 						type: 'string',
 						default: 'Session',
@@ -1327,6 +1315,18 @@ export const MembershipDeletedEventSchema = {
 							{
 								title: 'Student',
 								$ref: '#/definitions/Student',
+							},
+						],
+					},
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
 							},
 						],
 					},
@@ -1519,6 +1519,7 @@ export const MembershipDeletedEventSchema = {
 					'LtiSSO',
 					'GoogleAuthentication',
 					'ApplicationLoginPage',
+					'Impersonation',
 				],
 			},
 			CredentialType: {

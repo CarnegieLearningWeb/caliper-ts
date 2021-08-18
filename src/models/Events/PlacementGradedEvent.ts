@@ -6,59 +6,56 @@
 import Caliper from '../../caliper';
 import { Agent } from '../Entities/Agent';
 import { Attempt } from '../Entities/Attempt';
-import { CourseOffering } from '../Entities/CourseOffering';
-import { DigitalResource } from '../Entities/DigitalResource';
 import { Entity } from '../Entities/Entity';
 import { EntityType } from '../Entities/EntityType';
-import { LearningObjective } from '../Entities/LearningObjective';
 import { LtiSession } from '../Entities/LtiSession';
 import { Membership } from '../Entities/Membership';
 import { Organization } from '../Entities/Organization';
-import { PlacementTest } from '../Entities/PlacementTest';
-import { Score } from '../Entities/Score';
+import { PlacementScore } from '../Entities/PlacementScore';
 import { Session } from '../Entities/Session';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { Status } from '../Entities/Status';
-import { Student } from '../Entities/Student';
 import { UserSession } from '../Entities/UserSession';
 import { SystemIdentifier } from '../SystemIdentifier';
+import { BenchmarkEventAttempt, BenchmarkEventScore } from './BenchmarkEvent';
 import { CaliperAction } from './CaliperAction';
 import { CaliperProfile } from './CaliperProfile';
-import { Event } from './Event';
 import { EventType } from './EventType';
+import { PlacementEvent } from './Internals/PlacementEvent';
 
-export interface PlacementEvent extends Event {
+export interface PlacementGradedEvent extends PlacementEvent {
 	actor: SoftwareApplication;
-	object: PlacementEventAttempt;
-	generated: PlacementEventPlacementScore;
+	object: BenchmarkEventAttempt;
+	generated: PlacementGradedEventPlacementScore | PlacementScore;
+	referrer: SoftwareApplication;
 	session?: Session | UserSession;
 }
 
-export interface PlacementEventParams {
+export interface PlacementGradedEventParams {
 	actor: SoftwareApplication;
-	object: PlacementEventAttempt;
-	generated: PlacementEventPlacementScore;
+	object: BenchmarkEventAttempt;
+	generated: PlacementGradedEventPlacementScore | PlacementScore;
+	referrer: SoftwareApplication;
 	session?: Session | UserSession;
 	profile?: CaliperProfile;
 	target?: Entity;
 	group?: Organization;
 	membership?: Membership;
 	federatedSession?: LtiSession;
-	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function createPlacementEvent(
-	params: PlacementEventParams,
+export function createPlacementGradedEvent(
+	params: PlacementGradedEventParams,
 	edApp?: SoftwareApplication
-): PlacementEvent {
+): PlacementGradedEvent {
 	return {
 		'@context': [
-			'http://edgenuity.com/events/placement/0-0-2',
+			'http://edgenuity.com/events/placement-graded/0-0-1',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
+		action: CaliperAction.Graded,
 		type: EventType.PlacementEvent,
-		action: CaliperAction.None,
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
 		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
@@ -66,92 +63,24 @@ export function createPlacementEvent(
 	};
 }
 
-export interface PlacementEventAttempt extends Attempt {
-	id: string;
-	assignable: PlacementEventPlacementTest;
-	assignee: Student;
-}
-
-export interface PlacementEventAttemptParams {
-	id: string;
-	assignable: PlacementEventPlacementTest;
-	assignee: Student;
-	count?: number;
-	startedAtTime?: string;
-	endedAtTime?: string;
-	duration?: string;
-	isPartOf?: Attempt;
-	name?: string;
-	description?: string;
-	dateCreated?: string;
-	dateModified?: string;
-	otherIdentifiers?: SystemIdentifier[];
-	status?: Status;
-	extensions?: Record<string, any>;
-}
-
-export function createPlacementEventAttempt(
-	params: PlacementEventAttemptParams
-): PlacementEventAttempt {
-	return {
-		type: EntityType.Attempt,
-		...params,
-	};
-}
-
-export interface PlacementEventPlacementTest extends PlacementTest {
+export interface PlacementGradedEventPlacementScore extends BenchmarkEventScore {
 	id: string;
 	subject: string;
-	isPartOf?: CourseOffering;
+	scoreGiven: number;
+	placementGrade: number;
+	academicTerm: string;
+	extensions: Record<string, any>;
 }
 
-export interface PlacementEventPlacementTestParams {
+export interface PlacementGradedEventPlacementScoreParams {
 	id: string;
 	subject: string;
-	isPartOf?: CourseOffering;
-	items?: DigitalResource[];
-	dateToActivate?: string;
-	dateToShow?: string;
-	dateToStartOn?: string;
-	dateToSubmit?: string;
-	maxAttempts?: number;
-	maxSubmits?: number;
-	maxScore?: number;
-	learningObjectives?: LearningObjective[];
-	keywords?: string[];
-	creators?: Agent[];
-	mediaType?: string;
-	datePublished?: string;
-	version?: string;
-	name?: string;
-	description?: string;
-	dateCreated?: string;
-	dateModified?: string;
-	otherIdentifiers?: SystemIdentifier[];
-	status?: Status;
-	extensions?: Record<string, any>;
-}
-
-export function createPlacementEventPlacementTest(
-	params: PlacementEventPlacementTestParams
-): PlacementEventPlacementTest {
-	return {
-		type: EntityType.PlacementTest,
-		...params,
-	};
-}
-
-export interface PlacementEventPlacementScore extends Score {
-	id: string;
+	scoreGiven: number;
 	placementGrade: number;
-}
-
-export interface PlacementEventPlacementScoreParams {
-	id: string;
-	placementGrade: number;
+	academicTerm: string;
+	extensions: Record<string, any>;
 	attempt?: Attempt;
 	maxScore?: number;
-	scoreGiven?: number;
 	comment?: string;
 	scoredBy?: Agent;
 	name?: string;
@@ -160,29 +89,29 @@ export interface PlacementEventPlacementScoreParams {
 	dateModified?: string;
 	otherIdentifiers?: SystemIdentifier[];
 	status?: Status;
-	extensions?: Record<string, any>;
 }
 
-export function createPlacementEventPlacementScore(
-	params: PlacementEventPlacementScoreParams
-): PlacementEventPlacementScore {
+export function createPlacementGradedEventPlacementScore(
+	params: PlacementGradedEventPlacementScoreParams
+): PlacementGradedEventPlacementScore {
 	return {
 		type: EntityType.PlacementScore,
 		...params,
 	};
 }
 
-export const PlacementEventSchema = {
-	context: 'http://edgenuity.com/events/placement/0-0-2',
+export const PlacementGradedEventSchema = {
+	context: 'http://edgenuity.com/events/placement-graded/0-0-1',
 	schema: {
-		title: 'PlacementEvent',
+		title: 'PlacementGradedEvent',
 		type: 'object',
 		required: [
 			'@context',
-			'type',
 			'action',
 			'actor',
 			'object',
+			'referrer',
+			'type',
 			'generated',
 			'id',
 			'eventTime',
@@ -194,8 +123,8 @@ export const PlacementEventSchema = {
 				items: [
 					{
 						type: 'string',
-						default: 'http://edgenuity.com/events/placement/0-0-2',
-						enum: ['http://edgenuity.com/events/placement/0-0-2'],
+						default: 'http://edgenuity.com/events/placement-graded/0-0-1',
+						enum: ['http://edgenuity.com/events/placement-graded/0-0-1'],
 					},
 					{
 						type: 'string',
@@ -203,11 +132,6 @@ export const PlacementEventSchema = {
 						enum: ['http://purl.imsglobal.org/ctx/caliper/v1p2'],
 					},
 				],
-			},
-			type: {
-				type: 'string',
-				default: 'PlacementEvent',
-				enum: ['PlacementEvent'],
 			},
 			action: {
 				type: 'string',
@@ -236,6 +160,23 @@ export const PlacementEventSchema = {
 						$ref: '#/definitions/Attempt',
 					},
 				],
+			},
+			referrer: {
+				title: 'SoftwareApplication',
+				allOf: [
+					{
+						required: ['type', 'id'],
+					},
+					{
+						title: 'SoftwareApplication',
+						$ref: '#/definitions/SoftwareApplication',
+					},
+				],
+			},
+			type: {
+				type: 'string',
+				default: 'PlacementEvent',
+				enum: ['PlacementEvent'],
 			},
 			generated: {
 				title: 'PlacementScore',
@@ -277,7 +218,7 @@ export const PlacementEventSchema = {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['id', 'type'],
+						required: ['type', 'id'],
 					},
 					{
 						title: 'Entity',
@@ -331,18 +272,6 @@ export const PlacementEventSchema = {
 					{
 						title: 'UserSession',
 						$ref: '#/definitions/UserSession',
-					},
-				],
-			},
-			referrer: {
-				title: 'Entity',
-				allOf: [
-					{
-						required: ['type', 'id'],
-					},
-					{
-						title: 'Entity',
-						$ref: '#/definitions/Entity',
 					},
 				],
 			},
@@ -501,14 +430,14 @@ export const PlacementEventSchema = {
 				type: 'object',
 				properties: {
 					assignable: {
-						title: 'PlacementTest',
+						title: 'Assessment',
 						allOf: [
 							{
-								required: ['subject', 'type', 'id'],
+								required: ['type', 'id'],
 							},
 							{
-								title: 'PlacementTest',
-								$ref: '#/definitions/PlacementTest',
+								title: 'Assessment',
+								$ref: '#/definitions/Assessment',
 							},
 						],
 					},
@@ -516,7 +445,7 @@ export const PlacementEventSchema = {
 						title: 'Student',
 						allOf: [
 							{
-								required: ['type', 'id'],
+								required: ['otherIdentifiers', 'type', 'id'],
 							},
 							{
 								title: 'Student',
@@ -599,17 +528,14 @@ export const PlacementEventSchema = {
 					},
 				},
 			},
-			PlacementTest: {
-				title: 'PlacementTest',
+			Assessment: {
+				title: 'Assessment',
 				type: 'object',
 				properties: {
-					subject: {
-						type: 'string',
-					},
 					type: {
 						type: 'string',
-						default: 'PlacementTest',
-						enum: ['PlacementTest'],
+						default: 'Assessment',
+						enum: ['Assessment'],
 					},
 					items: {
 						type: 'array',
@@ -761,18 +687,6 @@ export const PlacementEventSchema = {
 						default: 'DigitalResource',
 						enum: ['DigitalResource'],
 					},
-					isPartOf: {
-						title: 'Entity',
-						allOf: [
-							{
-								required: ['id', 'type'],
-							},
-							{
-								title: 'Entity',
-								$ref: '#/definitions/Entity',
-							},
-						],
-					},
 					learningObjectives: {
 						type: 'array',
 						items: {
@@ -812,6 +726,18 @@ export const PlacementEventSchema = {
 					mediaType: {
 						type: 'string',
 					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
 					datePublished: {
 						type: 'string',
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
@@ -822,58 +748,6 @@ export const PlacementEventSchema = {
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Entity: {
-				title: 'Entity',
-				type: 'object',
-				properties: {
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					type: {
-						type: 'string',
-						default: 'Entity',
-						enum: ['Entity'],
 					},
 					name: {
 						type: 'string',
@@ -974,6 +848,58 @@ export const PlacementEventSchema = {
 						type: 'string',
 						default: 'Agent',
 						enum: ['Agent'],
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Entity: {
+				title: 'Entity',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Entity',
+						enum: ['Entity'],
 					},
 					id: {
 						title: 'Uri',
@@ -1156,6 +1082,21 @@ export const PlacementEventSchema = {
 				title: 'Student',
 				type: 'object',
 				properties: {
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
 					type: {
 						type: 'string',
 						default: 'Student',
@@ -1217,21 +1158,6 @@ export const PlacementEventSchema = {
 					dateModified: {
 						type: 'string',
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
 					},
 					status: {
 						title: 'Status',
@@ -2227,6 +2153,7 @@ export const PlacementEventSchema = {
 					'LtiSSO',
 					'GoogleAuthentication',
 					'ApplicationLoginPage',
+					'Impersonation',
 				],
 			},
 			CredentialType: {

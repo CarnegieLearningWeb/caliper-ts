@@ -1,5 +1,5 @@
 import {
-	createLoginEventUserSession,
+	createLoginSuccessEventUserSession,
 	createLoginSuccessEvent,
 	createSoftwareApplication,
 	createUser,
@@ -25,7 +25,7 @@ describe('LoginSuccessEvent', () => {
 
 	const expected = {
 		'@context': [
-			'http://edgenuity.com/events/login-success/0-1-0',
+			'http://edgenuity.com/events/login-success/0-1-1',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
 		id: 'urn:uuid:cf32353c-dbd3-42d5-90a4-02830409c2bd',
@@ -56,6 +56,10 @@ describe('LoginSuccessEvent', () => {
 		session: {
 			id: 'urn:uuid:31e1ab8e-f7d2-4656-a4bb-719a823ebd2b',
 			type: 'UserSession',
+			user: {
+				type: 'Instructor',
+				id: 'urn:uuid:22c9865c-7252-4cf7-9580-f56476f24df6',
+			},
 			login: {
 				localTimestamp: '2020-09-22T22:31:28.000-07:00',
 				loginType: 'LtiSSO',
@@ -72,16 +76,18 @@ describe('LoginSuccessEvent', () => {
 	};
 
 	it('OK', () => {
+		const user = createInstructor({ id: Caliper.uuid('22c9865c-7252-4cf7-9580-f56476f24df6') });
 		const model = createLoginSuccessEvent({
-			actor: createInstructor({ id: Caliper.uuid('22c9865c-7252-4cf7-9580-f56476f24df6') }),
+			actor: user,
 			object: createSoftwareApplication({ id: 'https://app.edgenuity.com' }),
 			membership: createLoginMembership({
 				id: Caliper.uuid('9283824d-4f9d-4061-b256-4eebc13bcf61'),
 				organization: createSchool({ id: Caliper.uuid('a627c09d-bbcd-4d76-bd02-375cf4c1d4f1') }),
 				roles: [Role.INSTRUCTOR],
 			}),
-			session: createLoginEventUserSession({
+			session: createLoginSuccessEventUserSession({
 				id: Caliper.uuid('31e1ab8e-f7d2-4656-a4bb-719a823ebd2b'),
+				user,
 				login: {
 					localTimestamp: '2020-09-22T22:31:28.000-07:00',
 					loginType: LoginType.LtiSSO,
@@ -110,16 +116,18 @@ describe('LoginSuccessEvent', () => {
 			'2001:db8:3333:4444:CCCC:DDDD:EEEE:FFFF',
 		];
 		test.each(validIpAddresses)('%p', (ipAddress) => {
+			const user = createUser({ id: 'https://app.edgenuity.com/user/12345' });
 			const model = createLoginSuccessEvent({
-				actor: createUser({ id: 'https://app.edgenuity.com/user/12345' }),
+				actor: user,
 				object: createSoftwareApplication({ id: 'https://app.edgenuity.com' }),
 				membership: createLoginMembership({
 					id: Caliper.uuid('9283824d-4f9d-4061-b256-4eebc13bcf61'),
 					organization: createSchool({ id: Caliper.uuid('a627c09d-bbcd-4d76-bd02-375cf4c1d4f1') }),
 					roles: [Role.INSTRUCTOR],
 				}),
-				session: createLoginEventUserSession({
+				session: createLoginSuccessEventUserSession({
 					id: 'https://identity.edgenuity.com/session/12345',
+					user,
 					login: {
 						localTimestamp: '2020-09-22T22:31:28.000-07:00',
 						loginType: LoginType.LtiSSO,
@@ -141,16 +149,18 @@ describe('LoginSuccessEvent', () => {
 	describe('FAIL with invalid ip address', () => {
 		const invalidIpAddresses = ['asd', '192.168.0.1.999', '2001:db8:3333:4444:CCCC:DDDD:EEEE'];
 		test.each(invalidIpAddresses)('%p', (ipAddress) => {
+			const user = createUser({ id: 'https://app.edgenuity.com/user/12345' });
 			const model = createLoginSuccessEvent({
-				actor: createUser({ id: 'https://app.edgenuity.com/user/12345' }),
+				actor: user,
 				object: createSoftwareApplication({ id: 'https://app.edgenuity.com' }),
 				membership: createLoginMembership({
 					id: Caliper.uuid('9283824d-4f9d-4061-b256-4eebc13bcf61'),
 					organization: createSchool({ id: Caliper.uuid('a627c09d-bbcd-4d76-bd02-375cf4c1d4f1') }),
 					roles: [Role.INSTRUCTOR],
 				}),
-				session: createLoginEventUserSession({
+				session: createLoginSuccessEventUserSession({
 					id: 'https://identity.edgenuity.com/session/12345',
+					user,
 					login: {
 						localTimestamp: '2020-09-22T22:31:28.000-07:00',
 						loginType: LoginType.LtiSSO,

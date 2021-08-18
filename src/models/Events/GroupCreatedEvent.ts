@@ -1039,16 +1039,6 @@ export const GroupCreatedEventSchema = {
 						default: 'Entity',
 						enum: ['Entity'],
 					},
-					name: {
-						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
 					dateCreated: {
 						type: 'string',
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
@@ -1056,6 +1046,20 @@ export const GroupCreatedEventSchema = {
 					dateModified: {
 						type: 'string',
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					name: {
+						type: 'string',
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1071,10 +1075,6 @@ export const GroupCreatedEventSchema = {
 								},
 							],
 						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -1631,6 +1631,7 @@ export const GroupCreatedEventSchema = {
 					'LtiSSO',
 					'GoogleAuthentication',
 					'ApplicationLoginPage',
+					'Impersonation',
 				],
 			},
 			CredentialType: {

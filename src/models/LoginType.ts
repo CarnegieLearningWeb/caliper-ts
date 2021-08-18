@@ -10,4 +10,5 @@ export enum LoginType {
 	LtiSSO = 'LtiSSO',
 	GoogleAuthentication = 'GoogleAuthentication',
 	ApplicationLoginPage = 'ApplicationLoginPage',
+	Impersonation = 'Impersonation',
 }

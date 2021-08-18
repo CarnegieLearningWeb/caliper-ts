@@ -17,6 +17,7 @@ import { UserSession } from '../../Entities/UserSession';
 import { SystemIdentifier } from '../../SystemIdentifier';
 import { CaliperAction } from '../CaliperAction';
 import { Event } from '../Event';
+import { InstitutionType } from '../InstitutionType';
 
 export interface OrganizationEvent extends Event {
 	actor: Agent | SoftwareApplication | User | Instructor;
@@ -33,6 +34,7 @@ export interface OrganizationEventOrganization extends Organization {
 	name: string;
 	state: string;
 	timezone: string;
+	institutionType: InstitutionType;
 	subOrganizationOf?: Organization | District | School;
 	otherIdentifiers?: SystemIdentifier[];
 }
@@ -45,6 +47,7 @@ export interface OrganizationEventOrganizationParams {
 	name: string;
 	state: string;
 	timezone: string;
+	institutionType: InstitutionType;
 	subOrganizationOf?: Organization | District | School;
 	otherIdentifiers?: SystemIdentifier[];
 	description?: string;
@@ -68,6 +71,7 @@ export interface OrganizationEventDistrict extends OrganizationEventOrganization
 	name: string;
 	state: string;
 	timezone: string;
+	institutionType: InstitutionType;
 	subOrganizationOf?: Organization | District | School;
 	otherIdentifiers?: SystemIdentifier[];
 }
@@ -80,6 +84,7 @@ export interface OrganizationEventDistrictParams {
 	name: string;
 	state: string;
 	timezone: string;
+	institutionType: InstitutionType;
 	subOrganizationOf?: Organization | District | School;
 	otherIdentifiers?: SystemIdentifier[];
 	description?: string;
@@ -103,6 +108,7 @@ export interface OrganizationEventSchool extends OrganizationEventOrganization {
 	name: string;
 	state: string;
 	timezone: string;
+	institutionType: InstitutionType;
 	subOrganizationOf?: Organization | District | School;
 	otherIdentifiers?: SystemIdentifier[];
 }
@@ -115,6 +121,7 @@ export interface OrganizationEventSchoolParams {
 	name: string;
 	state: string;
 	timezone: string;
+	institutionType: InstitutionType;
 	subOrganizationOf?: Organization | District | School;
 	otherIdentifiers?: SystemIdentifier[];
 	description?: string;

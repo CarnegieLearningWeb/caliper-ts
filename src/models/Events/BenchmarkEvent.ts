@@ -7,11 +7,8 @@ import Caliper from '../../caliper';
 import { Agent } from '../Entities/Agent';
 import { Assessment } from '../Entities/Assessment';
 import { Attempt } from '../Entities/Attempt';
-import { CourseOffering } from '../Entities/CourseOffering';
-import { DigitalResource } from '../Entities/DigitalResource';
 import { Entity } from '../Entities/Entity';
 import { EntityType } from '../Entities/EntityType';
-import { LearningObjective } from '../Entities/LearningObjective';
 import { LtiSession } from '../Entities/LtiSession';
 import { Membership } from '../Entities/Membership';
 import { Organization } from '../Entities/Organization';
@@ -69,14 +66,14 @@ export function createBenchmarkEvent(
 
 export interface BenchmarkEventAttempt extends Attempt {
 	id: string;
-	assignable: BenchmarkEventAssessment;
+	assignable: Assessment;
 	assignee: BenchmarkEventStudent;
 	dateCreated: string;
 }
 
 export interface BenchmarkEventAttemptParams {
 	id: string;
-	assignable: BenchmarkEventAssessment;
+	assignable: Assessment;
 	assignee: BenchmarkEventStudent;
 	dateCreated: string;
 	count?: number;
@@ -101,58 +98,16 @@ export function createBenchmarkEventAttempt(
 	};
 }
 
-export interface BenchmarkEventAssessment extends Assessment {
-	id: string;
-	subject: string;
-	isPartOf?: CourseOffering;
-}
-
-export interface BenchmarkEventAssessmentParams {
-	id: string;
-	subject: string;
-	isPartOf?: CourseOffering;
-	items?: DigitalResource[];
-	dateToActivate?: string;
-	dateToShow?: string;
-	dateToStartOn?: string;
-	dateToSubmit?: string;
-	maxAttempts?: number;
-	maxSubmits?: number;
-	maxScore?: number;
-	learningObjectives?: LearningObjective[];
-	keywords?: string[];
-	creators?: Agent[];
-	mediaType?: string;
-	datePublished?: string;
-	version?: string;
-	name?: string;
-	description?: string;
-	dateCreated?: string;
-	dateModified?: string;
-	otherIdentifiers?: SystemIdentifier[];
-	status?: Status;
-	extensions?: Record<string, any>;
-}
-
-export function createBenchmarkEventAssessment(
-	params: BenchmarkEventAssessmentParams
-): BenchmarkEventAssessment {
-	return {
-		type: EntityType.Assessment,
-		...params,
-	};
-}
-
 export interface BenchmarkEventStudent extends Student {
 	id: string;
-	gradeLevel: number;
 	otherIdentifiers: SystemIdentifier[];
+	gradeLevel?: number;
 }
 
 export interface BenchmarkEventStudentParams {
 	id: string;
-	gradeLevel: number;
 	otherIdentifiers: SystemIdentifier[];
+	gradeLevel?: number;
 	individualEducationPlan?: boolean;
 	englishLanguageLearner?: boolean;
 	settings?: StudentProfileSettings;
@@ -178,14 +133,12 @@ export function createBenchmarkEventStudent(
 export interface BenchmarkEventScore extends Score {
 	id: string;
 	scoreGiven: number;
-	academicTerm: string;
 	extensions: Record<string, any>;
 }
 
 export interface BenchmarkEventScoreParams {
 	id: string;
 	scoreGiven: number;
-	academicTerm: string;
 	extensions: Record<string, any>;
 	attempt?: Attempt;
 	maxScore?: number;
@@ -276,7 +229,7 @@ export const BenchmarkEventSchema = {
 				title: 'Score',
 				allOf: [
 					{
-						required: ['scoreGiven', 'extensions', 'academicTerm', 'type', 'id'],
+						required: ['scoreGiven', 'extensions', 'type', 'id'],
 					},
 					{
 						title: 'Score',
@@ -539,7 +492,7 @@ export const BenchmarkEventSchema = {
 						title: 'Assessment',
 						allOf: [
 							{
-								required: ['subject', 'type', 'id'],
+								required: ['type', 'id'],
 							},
 							{
 								title: 'Assessment',
@@ -551,7 +504,7 @@ export const BenchmarkEventSchema = {
 						title: 'Student',
 						allOf: [
 							{
-								required: ['otherIdentifiers', 'gradeLevel', 'type', 'id'],
+								required: ['otherIdentifiers', 'type', 'id'],
 							},
 							{
 								title: 'Student',
@@ -638,9 +591,6 @@ export const BenchmarkEventSchema = {
 				title: 'Assessment',
 				type: 'object',
 				properties: {
-					subject: {
-						type: 'string',
-					},
 					type: {
 						type: 'string',
 						default: 'Assessment',
@@ -796,6 +746,18 @@ export const BenchmarkEventSchema = {
 						default: 'DigitalResource',
 						enum: ['DigitalResource'],
 					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
 					learningObjectives: {
 						type: 'array',
 						items: {
@@ -835,18 +797,6 @@ export const BenchmarkEventSchema = {
 					mediaType: {
 						type: 'string',
 					},
-					isPartOf: {
-						title: 'Entity',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Entity',
-								$ref: '#/definitions/Entity',
-							},
-						],
-					},
 					datePublished: {
 						type: 'string',
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
@@ -860,6 +810,58 @@ export const BenchmarkEventSchema = {
 					},
 					name: {
 						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Entity: {
+				title: 'Entity',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Entity',
+						enum: ['Entity'],
+					},
+					name: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
 					},
 					description: {
 						type: 'string',
@@ -964,58 +966,6 @@ export const BenchmarkEventSchema = {
 					},
 					name: {
 						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Entity: {
-				title: 'Entity',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Entity',
-						enum: ['Entity'],
-					},
-					name: {
-						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
 					},
 					description: {
 						type: 'string',
@@ -1206,13 +1156,13 @@ export const BenchmarkEventSchema = {
 							],
 						},
 					},
-					gradeLevel: {
-						type: 'number',
-					},
 					type: {
 						type: 'string',
 						default: 'Student',
 						enum: ['Student'],
+					},
+					gradeLevel: {
+						type: 'number',
 					},
 					individualEducationPlan: {
 						type: 'boolean',
@@ -1288,9 +1238,6 @@ export const BenchmarkEventSchema = {
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
-					},
-					academicTerm: {
-						type: 'string',
 					},
 					type: {
 						type: 'string',
@@ -2262,6 +2209,7 @@ export const BenchmarkEventSchema = {
 					'LtiSSO',
 					'GoogleAuthentication',
 					'ApplicationLoginPage',
+					'Impersonation',
 				],
 			},
 			CredentialType: {
