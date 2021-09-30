@@ -20,6 +20,7 @@ export interface InstructorParams {
 	name?: string;
 	firstName?: string;
 	lastName?: string;
+	email?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;

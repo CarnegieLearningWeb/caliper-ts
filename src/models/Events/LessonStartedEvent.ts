@@ -21,13 +21,13 @@ import { Student } from '../Entities/Student';
 import { UserSession } from '../Entities/UserSession';
 import { SystemIdentifier } from '../SystemIdentifier';
 import { CaliperAction } from './CaliperAction';
-import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
 import {
 	LessonEvent,
 	LessonEventIndividualizedLearningPath,
 	LessonEventLesson,
 } from './Internals/LessonEvent';
+import { ProfileType } from './ProfileType';
 
 export interface LessonStartedEvent extends LessonEvent {
 	actor: Student;
@@ -41,7 +41,7 @@ export interface LessonStartedEventParams {
 	object: LessonStartedEventLesson | LessonEventLesson;
 	generated: Attempt;
 	session?: Session | UserSession;
-	profile?: CaliperProfile;
+	profile?: ProfileType;
 	target?: Entity;
 	group?: Organization;
 	membership?: Membership;
@@ -96,6 +96,7 @@ export interface LessonStartedEventLessonParams {
 	mediaType?: string;
 	datePublished?: string;
 	version?: string;
+	storageName?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
@@ -203,8 +204,8 @@ export const LessonStartedEventSchema = {
 				],
 			},
 			profile: {
-				title: 'CaliperProfile',
-				$ref: '#/definitions/CaliperProfile',
+				title: 'ProfileType',
+				$ref: '#/definitions/ProfileType',
 			},
 			target: {
 				title: 'Entity',
@@ -335,6 +336,10 @@ export const LessonStartedEventSchema = {
 					},
 					lastName: {
 						type: 'string',
+					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
 					},
 					id: {
 						title: 'Uri',
@@ -649,11 +654,6 @@ export const LessonStartedEventSchema = {
 				title: 'DigitalResource',
 				type: 'object',
 				properties: {
-					type: {
-						type: 'string',
-						default: 'DigitalResource',
-						enum: ['DigitalResource'],
-					},
 					isPartOf: {
 						title: 'Entity',
 						allOf: [
@@ -665,6 +665,11 @@ export const LessonStartedEventSchema = {
 								$ref: '#/definitions/Entity',
 							},
 						],
+					},
+					type: {
+						type: 'string',
+						default: 'DigitalResource',
+						enum: ['DigitalResource'],
 					},
 					learningObjectives: {
 						type: 'array',
@@ -710,6 +715,9 @@ export const LessonStartedEventSchema = {
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					version: {
+						type: 'string',
+					},
+					storageName: {
 						type: 'string',
 					},
 					id: {
@@ -760,9 +768,8 @@ export const LessonStartedEventSchema = {
 				type: 'object',
 				properties: {
 					type: {
-						type: 'string',
-						default: 'Entity',
-						enum: ['Entity'],
+						title: 'EntityType',
+						$ref: '#/definitions/EntityType',
 					},
 					name: {
 						type: 'string',
@@ -806,6 +813,98 @@ export const LessonStartedEventSchema = {
 						additionalProperties: true,
 					},
 				},
+			},
+			EntityType: {
+				type: 'string',
+				title: 'EntityType',
+				enum: [
+					'Entity',
+					'Agent',
+					'AggregateMeasure',
+					'AggregateMeasureCollection',
+					'Annotation',
+					'Assessment',
+					'AssessmentItem',
+					'AssignableDigitalResource',
+					'Attempt',
+					'AudioObject',
+					'BookmarkAnnotation',
+					'Chapter',
+					'Collection',
+					'Comment',
+					'CourseOffering',
+					'CourseSection',
+					'DateTimeQuestion',
+					'DateTimeResponse',
+					'DigitalResource',
+					'DigitalResourceCollection',
+					'Document',
+					'FillinBlankResponse',
+					'Forum',
+					'Frame',
+					'Group',
+					'HighlightAnnotation',
+					'ImageObject',
+					'LearningObjective',
+					'LikertScale',
+					'Link',
+					'LtiLink',
+					'LtiSession',
+					'MediaLocation',
+					'MediaObject',
+					'Membership',
+					'Message',
+					'MultipleChoiceResponse',
+					'MultipleResponseResponse',
+					'MultiselectQuestion',
+					'MultiselectResponse',
+					'MultiselectScale',
+					'NumericScale',
+					'OpenEndedQuestion',
+					'OpenEndedResponse',
+					'Organization',
+					'Page',
+					'Person',
+					'Query',
+					'Question',
+					'Questionnaire',
+					'QuestionnaireItem',
+					'Rating',
+					'RatingScaleQuestion',
+					'RatingScaleResponse',
+					'Response',
+					'Result',
+					'Scale',
+					'Score',
+					'SearchResponse',
+					'SelectTextResponse',
+					'Session',
+					'SharedAnnotation',
+					'SoftwareApplication',
+					'Survey',
+					'SurveyInvitation',
+					'TagAnnotation',
+					'Thread',
+					'TrueFalseResponse',
+					'VideoObject',
+					'WebPage',
+					'User',
+					'Student',
+					'Instructor',
+					'School',
+					'District',
+					'Class',
+					'ILP',
+					'Lesson',
+					'Award',
+					'MasteryScore',
+					'PlacementTest',
+					'PlacementScore',
+					'UserSession',
+					'EducationStandard',
+					'Domain',
+					'Configuration',
+				],
 			},
 			LearningObjective: {
 				title: 'LearningObjective',
@@ -1001,6 +1100,9 @@ export const LessonStartedEventSchema = {
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					version: {
+						type: 'string',
+					},
+					storageName: {
 						type: 'string',
 					},
 					id: {
@@ -1287,6 +1389,9 @@ export const LessonStartedEventSchema = {
 					version: {
 						type: 'string',
 					},
+					storageName: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1423,6 +1528,9 @@ export const LessonStartedEventSchema = {
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					version: {
+						type: 'string',
+					},
+					storageName: {
 						type: 'string',
 					},
 					id: {
@@ -1585,6 +1693,9 @@ export const LessonStartedEventSchema = {
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					version: {
+						type: 'string',
+					},
+					storageName: {
 						type: 'string',
 					},
 					id: {
@@ -1758,6 +1869,10 @@ export const LessonStartedEventSchema = {
 					lastName: {
 						type: 'string',
 					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1819,6 +1934,10 @@ export const LessonStartedEventSchema = {
 					},
 					lastName: {
 						type: 'string',
+					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
 					},
 					id: {
 						title: 'Uri',
@@ -1951,11 +2070,10 @@ export const LessonStartedEventSchema = {
 					},
 				},
 			},
-			CaliperProfile: {
+			ProfileType: {
 				type: 'string',
-				title: 'CaliperProfile',
+				title: 'ProfileType',
 				enum: [
-					'GeneralProfile',
 					'AnnotationProfile',
 					'AssessmentProfile',
 					'AssignableProfile',
@@ -1967,8 +2085,10 @@ export const LessonStartedEventSchema = {
 					'ResourceManagementProfile',
 					'SearchProfile',
 					'SessionProfile',
+					'SurveyProfile',
 					'ToolLaunchProfile',
 					'ToolUseProfile',
+					'GeneralProfile',
 				],
 			},
 			Membership: {

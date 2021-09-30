@@ -14,9 +14,9 @@ import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { User } from '../Entities/User';
 import { UserSession } from '../Entities/UserSession';
 import { CaliperAction } from './CaliperAction';
-import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
 import { MembershipEvent, MembershipEventMembership } from './Internals/MembershipEvent';
+import { ProfileType } from './ProfileType';
 
 export interface MembershipDeletedEvent extends MembershipEvent {
 	actor: SoftwareApplication | User | Instructor;
@@ -28,7 +28,7 @@ export interface MembershipDeletedEventParams {
 	actor: SoftwareApplication | User | Instructor;
 	object: MembershipEventMembership;
 	session?: Session | UserSession;
-	profile?: CaliperProfile;
+	profile?: ProfileType;
 	target?: Entity;
 	generated?: Entity;
 	group?: Organization;
@@ -146,8 +146,8 @@ export const MembershipDeletedEventSchema = {
 				],
 			},
 			profile: {
-				title: 'CaliperProfile',
-				$ref: '#/definitions/CaliperProfile',
+				title: 'ProfileType',
+				$ref: '#/definitions/ProfileType',
 			},
 			target: {
 				title: 'Entity',
@@ -402,6 +402,10 @@ export const MembershipDeletedEventSchema = {
 					lastName: {
 						type: 'string',
 					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -463,6 +467,10 @@ export const MembershipDeletedEventSchema = {
 					},
 					lastName: {
 						type: 'string',
+					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
 					},
 					id: {
 						title: 'Uri',
@@ -651,6 +659,10 @@ export const MembershipDeletedEventSchema = {
 					},
 					lastName: {
 						type: 'string',
+					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
 					},
 					id: {
 						title: 'Uri',
@@ -1063,11 +1075,10 @@ export const MembershipDeletedEventSchema = {
 					'Officer#Vice-Chair',
 				],
 			},
-			CaliperProfile: {
+			ProfileType: {
 				type: 'string',
-				title: 'CaliperProfile',
+				title: 'ProfileType',
 				enum: [
-					'GeneralProfile',
 					'AnnotationProfile',
 					'AssessmentProfile',
 					'AssignableProfile',
@@ -1079,8 +1090,10 @@ export const MembershipDeletedEventSchema = {
 					'ResourceManagementProfile',
 					'SearchProfile',
 					'SessionProfile',
+					'SurveyProfile',
 					'ToolLaunchProfile',
 					'ToolUseProfile',
+					'GeneralProfile',
 				],
 			},
 			Entity: {
@@ -1088,12 +1101,8 @@ export const MembershipDeletedEventSchema = {
 				type: 'object',
 				properties: {
 					type: {
-						type: 'string',
-						default: 'Entity',
-						enum: ['Entity'],
-					},
-					name: {
-						type: 'string',
+						title: 'EntityType',
+						$ref: '#/definitions/EntityType',
 					},
 					dateCreated: {
 						type: 'string',
@@ -1106,6 +1115,9 @@ export const MembershipDeletedEventSchema = {
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
 					},
 					description: {
 						type: 'string',
@@ -1134,6 +1146,98 @@ export const MembershipDeletedEventSchema = {
 						additionalProperties: true,
 					},
 				},
+			},
+			EntityType: {
+				type: 'string',
+				title: 'EntityType',
+				enum: [
+					'Entity',
+					'Agent',
+					'AggregateMeasure',
+					'AggregateMeasureCollection',
+					'Annotation',
+					'Assessment',
+					'AssessmentItem',
+					'AssignableDigitalResource',
+					'Attempt',
+					'AudioObject',
+					'BookmarkAnnotation',
+					'Chapter',
+					'Collection',
+					'Comment',
+					'CourseOffering',
+					'CourseSection',
+					'DateTimeQuestion',
+					'DateTimeResponse',
+					'DigitalResource',
+					'DigitalResourceCollection',
+					'Document',
+					'FillinBlankResponse',
+					'Forum',
+					'Frame',
+					'Group',
+					'HighlightAnnotation',
+					'ImageObject',
+					'LearningObjective',
+					'LikertScale',
+					'Link',
+					'LtiLink',
+					'LtiSession',
+					'MediaLocation',
+					'MediaObject',
+					'Membership',
+					'Message',
+					'MultipleChoiceResponse',
+					'MultipleResponseResponse',
+					'MultiselectQuestion',
+					'MultiselectResponse',
+					'MultiselectScale',
+					'NumericScale',
+					'OpenEndedQuestion',
+					'OpenEndedResponse',
+					'Organization',
+					'Page',
+					'Person',
+					'Query',
+					'Question',
+					'Questionnaire',
+					'QuestionnaireItem',
+					'Rating',
+					'RatingScaleQuestion',
+					'RatingScaleResponse',
+					'Response',
+					'Result',
+					'Scale',
+					'Score',
+					'SearchResponse',
+					'SelectTextResponse',
+					'Session',
+					'SharedAnnotation',
+					'SoftwareApplication',
+					'Survey',
+					'SurveyInvitation',
+					'TagAnnotation',
+					'Thread',
+					'TrueFalseResponse',
+					'VideoObject',
+					'WebPage',
+					'User',
+					'Student',
+					'Instructor',
+					'School',
+					'District',
+					'Class',
+					'ILP',
+					'Lesson',
+					'Award',
+					'MasteryScore',
+					'PlacementTest',
+					'PlacementScore',
+					'UserSession',
+					'EducationStandard',
+					'Domain',
+					'Configuration',
+				],
 			},
 			LtiSession: {
 				title: 'LtiSession',

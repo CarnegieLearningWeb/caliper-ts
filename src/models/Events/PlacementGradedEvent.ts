@@ -5,9 +5,13 @@
 
 import Caliper from '../../caliper';
 import { Agent } from '../Entities/Agent';
+import { Assessment } from '../Entities/Assessment';
 import { Attempt } from '../Entities/Attempt';
+import { CourseOffering } from '../Entities/CourseOffering';
+import { DigitalResource } from '../Entities/DigitalResource';
 import { Entity } from '../Entities/Entity';
 import { EntityType } from '../Entities/EntityType';
+import { LearningObjective } from '../Entities/LearningObjective';
 import { LtiSession } from '../Entities/LtiSession';
 import { Membership } from '../Entities/Membership';
 import { Organization } from '../Entities/Organization';
@@ -15,13 +19,18 @@ import { PlacementScore } from '../Entities/PlacementScore';
 import { Session } from '../Entities/Session';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { Status } from '../Entities/Status';
+import { StudentProfileSettings } from '../Entities/StudentProfileSettings';
 import { UserSession } from '../Entities/UserSession';
 import { SystemIdentifier } from '../SystemIdentifier';
-import { BenchmarkEventAttempt, BenchmarkEventScore } from './BenchmarkEvent';
+import {
+	BenchmarkEventAttempt,
+	BenchmarkEventScore,
+	BenchmarkEventStudent,
+} from './BenchmarkEvent';
 import { CaliperAction } from './CaliperAction';
-import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
 import { PlacementEvent } from './Internals/PlacementEvent';
+import { ProfileType } from './ProfileType';
 
 export interface PlacementGradedEvent extends PlacementEvent {
 	actor: SoftwareApplication;
@@ -37,7 +46,7 @@ export interface PlacementGradedEventParams {
 	generated: PlacementGradedEventPlacementScore | PlacementScore;
 	referrer: SoftwareApplication;
 	session?: Session | UserSession;
-	profile?: CaliperProfile;
+	profile?: ProfileType;
 	target?: Entity;
 	group?: Organization;
 	membership?: Membership;
@@ -96,6 +105,83 @@ export function createPlacementGradedEventPlacementScore(
 ): PlacementGradedEventPlacementScore {
 	return {
 		type: EntityType.PlacementScore,
+		...params,
+	};
+}
+
+export interface PlacementGradedEventAssessment extends Assessment {
+	id: string;
+	name: string;
+	subject: string;
+	isPartOf?: CourseOffering;
+}
+
+export interface PlacementGradedEventAssessmentParams {
+	id: string;
+	name: string;
+	subject: string;
+	isPartOf?: CourseOffering;
+	items?: DigitalResource[];
+	dateToActivate?: string;
+	dateToShow?: string;
+	dateToStartOn?: string;
+	dateToSubmit?: string;
+	maxAttempts?: number;
+	maxSubmits?: number;
+	maxScore?: number;
+	learningObjectives?: LearningObjective[];
+	keywords?: string[];
+	creators?: Agent[];
+	mediaType?: string;
+	datePublished?: string;
+	version?: string;
+	storageName?: string;
+	description?: string;
+	dateCreated?: string;
+	dateModified?: string;
+	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
+	extensions?: Record<string, any>;
+}
+
+export function createPlacementGradedEventAssessment(
+	params: PlacementGradedEventAssessmentParams
+): PlacementGradedEventAssessment {
+	return {
+		type: EntityType.Assessment,
+		...params,
+	};
+}
+
+export interface PlacementGradedEventStudent extends BenchmarkEventStudent {
+	id: string;
+	gradeLevel: number;
+	otherIdentifiers: SystemIdentifier[];
+}
+
+export interface PlacementGradedEventStudentParams {
+	id: string;
+	gradeLevel: number;
+	otherIdentifiers: SystemIdentifier[];
+	individualEducationPlan?: boolean;
+	englishLanguageLearner?: boolean;
+	settings?: StudentProfileSettings;
+	name?: string;
+	firstName?: string;
+	lastName?: string;
+	email?: string;
+	description?: string;
+	dateCreated?: string;
+	dateModified?: string;
+	status?: Status;
+	extensions?: Record<string, any>;
+}
+
+export function createPlacementGradedEventStudent(
+	params: PlacementGradedEventStudentParams
+): PlacementGradedEventStudent {
+	return {
+		type: EntityType.Student,
 		...params,
 	};
 }
@@ -211,8 +297,8 @@ export const PlacementGradedEventSchema = {
 				],
 			},
 			profile: {
-				title: 'CaliperProfile',
-				$ref: '#/definitions/CaliperProfile',
+				title: 'ProfileType',
+				$ref: '#/definitions/ProfileType',
 			},
 			target: {
 				title: 'Entity',
@@ -635,6 +721,9 @@ export const PlacementGradedEventSchema = {
 					version: {
 						type: 'string',
 					},
+					storageName: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -743,6 +832,9 @@ export const PlacementGradedEventSchema = {
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					version: {
+						type: 'string',
+					},
+					storageName: {
 						type: 'string',
 					},
 					id: {
@@ -897,9 +989,8 @@ export const PlacementGradedEventSchema = {
 				type: 'object',
 				properties: {
 					type: {
-						type: 'string',
-						default: 'Entity',
-						enum: ['Entity'],
+						title: 'EntityType',
+						$ref: '#/definitions/EntityType',
 					},
 					id: {
 						title: 'Uri',
@@ -943,6 +1034,98 @@ export const PlacementGradedEventSchema = {
 						additionalProperties: true,
 					},
 				},
+			},
+			EntityType: {
+				type: 'string',
+				title: 'EntityType',
+				enum: [
+					'Entity',
+					'Agent',
+					'AggregateMeasure',
+					'AggregateMeasureCollection',
+					'Annotation',
+					'Assessment',
+					'AssessmentItem',
+					'AssignableDigitalResource',
+					'Attempt',
+					'AudioObject',
+					'BookmarkAnnotation',
+					'Chapter',
+					'Collection',
+					'Comment',
+					'CourseOffering',
+					'CourseSection',
+					'DateTimeQuestion',
+					'DateTimeResponse',
+					'DigitalResource',
+					'DigitalResourceCollection',
+					'Document',
+					'FillinBlankResponse',
+					'Forum',
+					'Frame',
+					'Group',
+					'HighlightAnnotation',
+					'ImageObject',
+					'LearningObjective',
+					'LikertScale',
+					'Link',
+					'LtiLink',
+					'LtiSession',
+					'MediaLocation',
+					'MediaObject',
+					'Membership',
+					'Message',
+					'MultipleChoiceResponse',
+					'MultipleResponseResponse',
+					'MultiselectQuestion',
+					'MultiselectResponse',
+					'MultiselectScale',
+					'NumericScale',
+					'OpenEndedQuestion',
+					'OpenEndedResponse',
+					'Organization',
+					'Page',
+					'Person',
+					'Query',
+					'Question',
+					'Questionnaire',
+					'QuestionnaireItem',
+					'Rating',
+					'RatingScaleQuestion',
+					'RatingScaleResponse',
+					'Response',
+					'Result',
+					'Scale',
+					'Score',
+					'SearchResponse',
+					'SelectTextResponse',
+					'Session',
+					'SharedAnnotation',
+					'SoftwareApplication',
+					'Survey',
+					'SurveyInvitation',
+					'TagAnnotation',
+					'Thread',
+					'TrueFalseResponse',
+					'VideoObject',
+					'WebPage',
+					'User',
+					'Student',
+					'Instructor',
+					'School',
+					'District',
+					'Class',
+					'ILP',
+					'Lesson',
+					'Award',
+					'MasteryScore',
+					'PlacementTest',
+					'PlacementScore',
+					'UserSession',
+					'EducationStandard',
+					'Domain',
+					'Configuration',
+				],
 			},
 			CourseOffering: {
 				title: 'CourseOffering',
@@ -1144,6 +1327,10 @@ export const PlacementGradedEventSchema = {
 					lastName: {
 						type: 'string',
 					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1257,11 +1444,10 @@ export const PlacementGradedEventSchema = {
 					},
 				},
 			},
-			CaliperProfile: {
+			ProfileType: {
 				type: 'string',
-				title: 'CaliperProfile',
+				title: 'ProfileType',
 				enum: [
-					'GeneralProfile',
 					'AnnotationProfile',
 					'AssessmentProfile',
 					'AssignableProfile',
@@ -1273,8 +1459,10 @@ export const PlacementGradedEventSchema = {
 					'ResourceManagementProfile',
 					'SearchProfile',
 					'SessionProfile',
+					'SurveyProfile',
 					'ToolLaunchProfile',
 					'ToolUseProfile',
+					'GeneralProfile',
 				],
 			},
 			Membership: {
@@ -1448,6 +1636,10 @@ export const PlacementGradedEventSchema = {
 					lastName: {
 						type: 'string',
 					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1509,6 +1701,10 @@ export const PlacementGradedEventSchema = {
 					},
 					lastName: {
 						type: 'string',
+					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
 					},
 					id: {
 						title: 'Uri',

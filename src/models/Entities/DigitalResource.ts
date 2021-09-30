@@ -19,6 +19,7 @@ export interface DigitalResource extends Entity {
 	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
+	storageName?: string;
 }
 
 export interface DigitalResourceParams {
@@ -30,6 +31,7 @@ export interface DigitalResourceParams {
 	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
+	storageName?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;

@@ -14,9 +14,9 @@ import { Session } from '../Entities/Session';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { UserSession } from '../Entities/UserSession';
 import { CaliperAction } from './CaliperAction';
-import { CaliperProfile } from './CaliperProfile';
 import { Event } from './Event';
 import { EventType } from './EventType';
+import { ProfileType } from './ProfileType';
 
 export interface MessageEvent extends Event {
 	actor: Person | SoftwareApplication | Organization;
@@ -30,7 +30,7 @@ export interface MessageEventParams {
 	object: Message;
 	action?: CaliperAction;
 	session?: Session | UserSession;
-	profile?: CaliperProfile;
+	profile?: ProfileType;
 	target?: Entity;
 	generated?: Entity;
 	group?: Organization;

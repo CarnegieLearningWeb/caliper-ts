@@ -17,7 +17,6 @@ import { Student } from '../Entities/Student';
 import { User } from '../Entities/User';
 import { SystemIdentifier } from '../SystemIdentifier';
 import { CaliperAction } from './CaliperAction';
-import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
 import {
 	LoginEvent,
@@ -25,6 +24,7 @@ import {
 	LoginEventSoftwareApplication,
 	LoginEventUserSession,
 } from './Internals/LoginEvent';
+import { ProfileType } from './ProfileType';
 
 export interface LoginFailedEvent extends LoginEvent {
 	actor: User | Instructor | Student;
@@ -40,7 +40,7 @@ export interface LoginFailedEventParams {
 	session: LoginFailedEventUserSession;
 	target?: DigitalResource;
 	referrer?: DigitalResource | SoftwareApplication;
-	profile?: CaliperProfile;
+	profile?: ProfileType;
 	generated?: Entity;
 	group?: Organization;
 	membership?: Membership;
@@ -229,8 +229,8 @@ export const LoginFailedEventSchema = {
 				],
 			},
 			profile: {
-				title: 'CaliperProfile',
-				$ref: '#/definitions/CaliperProfile',
+				title: 'ProfileType',
+				$ref: '#/definitions/ProfileType',
 			},
 			generated: {
 				title: 'Entity',
@@ -598,6 +598,10 @@ export const LoginFailedEventSchema = {
 					lastName: {
 						type: 'string',
 					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -659,6 +663,10 @@ export const LoginFailedEventSchema = {
 					},
 					lastName: {
 						type: 'string',
+					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
 					},
 					id: {
 						title: 'Uri',
@@ -750,6 +758,10 @@ export const LoginFailedEventSchema = {
 					},
 					lastName: {
 						type: 'string',
+					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
 					},
 					id: {
 						title: 'Uri',
@@ -856,6 +868,9 @@ export const LoginFailedEventSchema = {
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					version: {
+						type: 'string',
+					},
+					storageName: {
 						type: 'string',
 					},
 					id: {
@@ -1010,19 +1025,18 @@ export const LoginFailedEventSchema = {
 				type: 'object',
 				properties: {
 					type: {
-						type: 'string',
-						default: 'Entity',
-						enum: ['Entity'],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
+						title: 'EntityType',
+						$ref: '#/definitions/EntityType',
 					},
 					name: {
 						type: 'string',
 					},
 					description: {
 						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
 					},
 					dateCreated: {
 						type: 'string',
@@ -1057,11 +1071,102 @@ export const LoginFailedEventSchema = {
 					},
 				},
 			},
-			CaliperProfile: {
+			EntityType: {
 				type: 'string',
-				title: 'CaliperProfile',
+				title: 'EntityType',
 				enum: [
-					'GeneralProfile',
+					'Entity',
+					'Agent',
+					'AggregateMeasure',
+					'AggregateMeasureCollection',
+					'Annotation',
+					'Assessment',
+					'AssessmentItem',
+					'AssignableDigitalResource',
+					'Attempt',
+					'AudioObject',
+					'BookmarkAnnotation',
+					'Chapter',
+					'Collection',
+					'Comment',
+					'CourseOffering',
+					'CourseSection',
+					'DateTimeQuestion',
+					'DateTimeResponse',
+					'DigitalResource',
+					'DigitalResourceCollection',
+					'Document',
+					'FillinBlankResponse',
+					'Forum',
+					'Frame',
+					'Group',
+					'HighlightAnnotation',
+					'ImageObject',
+					'LearningObjective',
+					'LikertScale',
+					'Link',
+					'LtiLink',
+					'LtiSession',
+					'MediaLocation',
+					'MediaObject',
+					'Membership',
+					'Message',
+					'MultipleChoiceResponse',
+					'MultipleResponseResponse',
+					'MultiselectQuestion',
+					'MultiselectResponse',
+					'MultiselectScale',
+					'NumericScale',
+					'OpenEndedQuestion',
+					'OpenEndedResponse',
+					'Organization',
+					'Page',
+					'Person',
+					'Query',
+					'Question',
+					'Questionnaire',
+					'QuestionnaireItem',
+					'Rating',
+					'RatingScaleQuestion',
+					'RatingScaleResponse',
+					'Response',
+					'Result',
+					'Scale',
+					'Score',
+					'SearchResponse',
+					'SelectTextResponse',
+					'Session',
+					'SharedAnnotation',
+					'SoftwareApplication',
+					'Survey',
+					'SurveyInvitation',
+					'TagAnnotation',
+					'Thread',
+					'TrueFalseResponse',
+					'VideoObject',
+					'WebPage',
+					'User',
+					'Student',
+					'Instructor',
+					'School',
+					'District',
+					'Class',
+					'ILP',
+					'Lesson',
+					'Award',
+					'MasteryScore',
+					'PlacementTest',
+					'PlacementScore',
+					'UserSession',
+					'EducationStandard',
+					'Domain',
+					'Configuration',
+				],
+			},
+			ProfileType: {
+				type: 'string',
+				title: 'ProfileType',
+				enum: [
 					'AnnotationProfile',
 					'AssessmentProfile',
 					'AssignableProfile',
@@ -1073,8 +1178,10 @@ export const LoginFailedEventSchema = {
 					'ResourceManagementProfile',
 					'SearchProfile',
 					'SessionProfile',
+					'SurveyProfile',
 					'ToolLaunchProfile',
 					'ToolUseProfile',
+					'GeneralProfile',
 				],
 			},
 			Organization: {

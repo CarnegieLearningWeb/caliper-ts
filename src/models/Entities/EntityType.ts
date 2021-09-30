@@ -82,6 +82,7 @@ export enum EntityType {
 	Class = 'Class',
 	ILP = 'ILP',
 	Lesson = 'Lesson',
+	Award = 'Award',
 	MasteryScore = 'MasteryScore',
 	PlacementTest = 'PlacementTest',
 	PlacementScore = 'PlacementScore',

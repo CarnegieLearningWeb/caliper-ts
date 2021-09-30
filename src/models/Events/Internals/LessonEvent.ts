@@ -26,9 +26,9 @@ import { Student } from '../../Entities/Student';
 import { UserSession } from '../../Entities/UserSession';
 import { SystemIdentifier } from '../../SystemIdentifier';
 import { CaliperAction } from '../CaliperAction';
-import { CaliperProfile } from '../CaliperProfile';
 import { Event } from '../Event';
 import { EventType } from '../EventType';
+import { ProfileType } from '../ProfileType';
 
 export interface LessonEvent extends Event {
 	actor: Agent | Person | SoftwareApplication | Organization;
@@ -42,7 +42,7 @@ export interface LessonEventParams {
 	object: LessonEventLesson;
 	action?: CaliperAction;
 	session?: Session | UserSession;
-	profile?: CaliperProfile;
+	profile?: ProfileType;
 	target?: Entity;
 	generated?: Entity;
 	group?: Organization;
@@ -94,6 +94,7 @@ export interface LessonEventLessonParams {
 	mediaType?: string;
 	datePublished?: string;
 	version?: string;
+	storageName?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;

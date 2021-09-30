@@ -21,9 +21,9 @@ import { StudentProfileSettings } from '../Entities/StudentProfileSettings';
 import { UserSession } from '../Entities/UserSession';
 import { SystemIdentifier } from '../SystemIdentifier';
 import { CaliperAction } from './CaliperAction';
-import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
 import { GradeEvent } from './GradeEvent';
+import { ProfileType } from './ProfileType';
 
 export interface BenchmarkEvent extends GradeEvent {
 	actor: SoftwareApplication;
@@ -37,7 +37,7 @@ export interface BenchmarkEventParams {
 	object: BenchmarkEventAttempt;
 	generated: BenchmarkEventScore;
 	session?: Session | UserSession;
-	profile?: CaliperProfile;
+	profile?: ProfileType;
 	target?: Entity;
 	group?: Organization;
 	membership?: Membership;
@@ -114,6 +114,7 @@ export interface BenchmarkEventStudentParams {
 	name?: string;
 	firstName?: string;
 	lastName?: string;
+	email?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
@@ -258,14 +259,14 @@ export const BenchmarkEventSchema = {
 				],
 			},
 			profile: {
-				title: 'CaliperProfile',
-				$ref: '#/definitions/CaliperProfile',
+				title: 'ProfileType',
+				$ref: '#/definitions/ProfileType',
 			},
 			target: {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['type', 'id'],
+						required: ['id', 'type'],
 					},
 					{
 						title: 'Entity',
@@ -326,7 +327,7 @@ export const BenchmarkEventSchema = {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['type', 'id'],
+						required: ['id', 'type'],
 					},
 					{
 						title: 'Entity',
@@ -694,6 +695,9 @@ export const BenchmarkEventSchema = {
 					version: {
 						type: 'string',
 					},
+					storageName: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -750,7 +754,7 @@ export const BenchmarkEventSchema = {
 						title: 'Entity',
 						allOf: [
 							{
-								required: ['type', 'id'],
+								required: ['id', 'type'],
 							},
 							{
 								title: 'Entity',
@@ -804,6 +808,9 @@ export const BenchmarkEventSchema = {
 					version: {
 						type: 'string',
 					},
+					storageName: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -851,17 +858,16 @@ export const BenchmarkEventSchema = {
 				title: 'Entity',
 				type: 'object',
 				properties: {
-					type: {
-						type: 'string',
-						default: 'Entity',
-						enum: ['Entity'],
-					},
-					name: {
-						type: 'string',
-					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
+					},
+					type: {
+						title: 'EntityType',
+						$ref: '#/definitions/EntityType',
+					},
+					name: {
+						type: 'string',
 					},
 					description: {
 						type: 'string',
@@ -898,6 +904,98 @@ export const BenchmarkEventSchema = {
 						additionalProperties: true,
 					},
 				},
+			},
+			EntityType: {
+				type: 'string',
+				title: 'EntityType',
+				enum: [
+					'Entity',
+					'Agent',
+					'AggregateMeasure',
+					'AggregateMeasureCollection',
+					'Annotation',
+					'Assessment',
+					'AssessmentItem',
+					'AssignableDigitalResource',
+					'Attempt',
+					'AudioObject',
+					'BookmarkAnnotation',
+					'Chapter',
+					'Collection',
+					'Comment',
+					'CourseOffering',
+					'CourseSection',
+					'DateTimeQuestion',
+					'DateTimeResponse',
+					'DigitalResource',
+					'DigitalResourceCollection',
+					'Document',
+					'FillinBlankResponse',
+					'Forum',
+					'Frame',
+					'Group',
+					'HighlightAnnotation',
+					'ImageObject',
+					'LearningObjective',
+					'LikertScale',
+					'Link',
+					'LtiLink',
+					'LtiSession',
+					'MediaLocation',
+					'MediaObject',
+					'Membership',
+					'Message',
+					'MultipleChoiceResponse',
+					'MultipleResponseResponse',
+					'MultiselectQuestion',
+					'MultiselectResponse',
+					'MultiselectScale',
+					'NumericScale',
+					'OpenEndedQuestion',
+					'OpenEndedResponse',
+					'Organization',
+					'Page',
+					'Person',
+					'Query',
+					'Question',
+					'Questionnaire',
+					'QuestionnaireItem',
+					'Rating',
+					'RatingScaleQuestion',
+					'RatingScaleResponse',
+					'Response',
+					'Result',
+					'Scale',
+					'Score',
+					'SearchResponse',
+					'SelectTextResponse',
+					'Session',
+					'SharedAnnotation',
+					'SoftwareApplication',
+					'Survey',
+					'SurveyInvitation',
+					'TagAnnotation',
+					'Thread',
+					'TrueFalseResponse',
+					'VideoObject',
+					'WebPage',
+					'User',
+					'Student',
+					'Instructor',
+					'School',
+					'District',
+					'Class',
+					'ILP',
+					'Lesson',
+					'Award',
+					'MasteryScore',
+					'PlacementTest',
+					'PlacementScore',
+					'UserSession',
+					'EducationStandard',
+					'Domain',
+					'Configuration',
+				],
 			},
 			LearningObjective: {
 				title: 'LearningObjective',
@@ -1203,6 +1301,10 @@ export const BenchmarkEventSchema = {
 					lastName: {
 						type: 'string',
 					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1313,11 +1415,10 @@ export const BenchmarkEventSchema = {
 					},
 				},
 			},
-			CaliperProfile: {
+			ProfileType: {
 				type: 'string',
-				title: 'CaliperProfile',
+				title: 'ProfileType',
 				enum: [
-					'GeneralProfile',
 					'AnnotationProfile',
 					'AssessmentProfile',
 					'AssignableProfile',
@@ -1329,8 +1430,10 @@ export const BenchmarkEventSchema = {
 					'ResourceManagementProfile',
 					'SearchProfile',
 					'SessionProfile',
+					'SurveyProfile',
 					'ToolLaunchProfile',
 					'ToolUseProfile',
+					'GeneralProfile',
 				],
 			},
 			Membership: {
@@ -1504,6 +1607,10 @@ export const BenchmarkEventSchema = {
 					lastName: {
 						type: 'string',
 					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1565,6 +1672,10 @@ export const BenchmarkEventSchema = {
 					},
 					lastName: {
 						type: 'string',
+					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
 					},
 					id: {
 						title: 'Uri',

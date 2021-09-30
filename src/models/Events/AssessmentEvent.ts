@@ -15,9 +15,9 @@ import { Session } from '../Entities/Session';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { UserSession } from '../Entities/UserSession';
 import { CaliperAction } from './CaliperAction';
-import { CaliperProfile } from './CaliperProfile';
 import { Event } from './Event';
 import { EventType } from './EventType';
+import { ProfileType } from './ProfileType';
 
 export interface AssessmentEvent extends Event {
 	actor: Person | SoftwareApplication | Organization;
@@ -33,7 +33,7 @@ export interface AssessmentEventParams {
 	action?: CaliperAction;
 	generated: Attempt;
 	session?: Session | UserSession;
-	profile?: CaliperProfile;
+	profile?: ProfileType;
 	target?: Entity;
 	group?: Organization;
 	membership?: Membership;

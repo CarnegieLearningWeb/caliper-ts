@@ -32,6 +32,7 @@ export interface UserEventUser extends User {
 	status: Status;
 	firstName: string;
 	lastName: string;
+	email?: string;
 	otherIdentifiers?: SystemIdentifier[];
 }
 
@@ -42,6 +43,7 @@ export interface UserEventUserParams {
 	status: Status;
 	firstName: string;
 	lastName: string;
+	email?: string;
 	otherIdentifiers?: SystemIdentifier[];
 	name: string;
 	description?: string;
@@ -62,6 +64,7 @@ export interface UserEventInstructor extends Instructor {
 	status: Status;
 	firstName: string;
 	lastName: string;
+	email?: string;
 	otherIdentifiers?: SystemIdentifier[];
 	permissions?: InstructorPermissions;
 }
@@ -73,6 +76,7 @@ export interface UserEventInstructorParams {
 	status: Status;
 	firstName: string;
 	lastName: string;
+	email?: string;
 	otherIdentifiers?: SystemIdentifier[];
 	permissions?: InstructorPermissions;
 	name: string;
@@ -97,6 +101,7 @@ export interface UserEventStudent extends Student {
 	gradeLevel: number;
 	individualEducationPlan?: boolean;
 	englishLanguageLearner?: boolean;
+	email?: string;
 	otherIdentifiers?: SystemIdentifier[];
 	settings?: StudentProfileSettings;
 }
@@ -111,6 +116,7 @@ export interface UserEventStudentParams {
 	gradeLevel: number;
 	individualEducationPlan?: boolean;
 	englishLanguageLearner?: boolean;
+	email?: string;
 	otherIdentifiers?: SystemIdentifier[];
 	settings?: StudentProfileSettings;
 	name: string;

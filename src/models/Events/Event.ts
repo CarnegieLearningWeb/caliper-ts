@@ -14,8 +14,8 @@ import { Session } from '../Entities/Session';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { UserSession } from '../Entities/UserSession';
 import { CaliperAction } from './CaliperAction';
-import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
+import { ProfileType } from './ProfileType';
 
 export interface Event {
 	actor: Agent | Person | SoftwareApplication | Organization;
@@ -26,7 +26,7 @@ export interface Event {
 	type: EventType;
 	eventTime: string;
 	edApp: SoftwareApplication;
-	profile?: CaliperProfile;
+	profile?: ProfileType;
 	target?: Entity;
 	generated?: Entity;
 	group?: Organization;
@@ -46,7 +46,7 @@ export interface EventParams {
 	type?: EventType;
 	eventTime?: string;
 	edApp?: SoftwareApplication;
-	profile?: CaliperProfile;
+	profile?: ProfileType;
 	target?: Entity;
 	generated?: Entity;
 	group?: Organization;

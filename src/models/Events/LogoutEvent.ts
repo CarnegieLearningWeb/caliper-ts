@@ -15,9 +15,9 @@ import { Student } from '../Entities/Student';
 import { User } from '../Entities/User';
 import { UserSession } from '../Entities/UserSession';
 import { CaliperAction } from './CaliperAction';
-import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
 import { SessionEvent } from './Internals/SessionEvent';
+import { ProfileType } from './ProfileType';
 
 export interface LogoutEvent extends SessionEvent {
 	actor: User | Instructor | Student;
@@ -33,7 +33,7 @@ export interface LogoutEventParams {
 	session: UserSession;
 	target?: DigitalResource;
 	referrer?: DigitalResource | SoftwareApplication;
-	profile?: CaliperProfile;
+	profile?: ProfileType;
 	generated?: Entity;
 	group?: Organization;
 	membership?: Membership;
@@ -188,8 +188,8 @@ export const LogoutEventSchema = {
 				],
 			},
 			profile: {
-				title: 'CaliperProfile',
-				$ref: '#/definitions/CaliperProfile',
+				title: 'ProfileType',
+				$ref: '#/definitions/ProfileType',
 			},
 			generated: {
 				title: 'Entity',
@@ -262,6 +262,10 @@ export const LogoutEventSchema = {
 					},
 					lastName: {
 						type: 'string',
+					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
 					},
 					id: {
 						title: 'Uri',
@@ -469,6 +473,10 @@ export const LogoutEventSchema = {
 					lastName: {
 						type: 'string',
 					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -559,6 +567,10 @@ export const LogoutEventSchema = {
 					},
 					lastName: {
 						type: 'string',
+					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
 					},
 					id: {
 						title: 'Uri',
@@ -809,6 +821,9 @@ export const LogoutEventSchema = {
 					version: {
 						type: 'string',
 					},
+					storageName: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -961,16 +976,15 @@ export const LogoutEventSchema = {
 				type: 'object',
 				properties: {
 					type: {
+						title: 'EntityType',
+						$ref: '#/definitions/EntityType',
+					},
+					name: {
 						type: 'string',
-						default: 'Entity',
-						enum: ['Entity'],
 					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
 					},
 					description: {
 						type: 'string',
@@ -1008,11 +1022,102 @@ export const LogoutEventSchema = {
 					},
 				},
 			},
-			CaliperProfile: {
+			EntityType: {
 				type: 'string',
-				title: 'CaliperProfile',
+				title: 'EntityType',
 				enum: [
-					'GeneralProfile',
+					'Entity',
+					'Agent',
+					'AggregateMeasure',
+					'AggregateMeasureCollection',
+					'Annotation',
+					'Assessment',
+					'AssessmentItem',
+					'AssignableDigitalResource',
+					'Attempt',
+					'AudioObject',
+					'BookmarkAnnotation',
+					'Chapter',
+					'Collection',
+					'Comment',
+					'CourseOffering',
+					'CourseSection',
+					'DateTimeQuestion',
+					'DateTimeResponse',
+					'DigitalResource',
+					'DigitalResourceCollection',
+					'Document',
+					'FillinBlankResponse',
+					'Forum',
+					'Frame',
+					'Group',
+					'HighlightAnnotation',
+					'ImageObject',
+					'LearningObjective',
+					'LikertScale',
+					'Link',
+					'LtiLink',
+					'LtiSession',
+					'MediaLocation',
+					'MediaObject',
+					'Membership',
+					'Message',
+					'MultipleChoiceResponse',
+					'MultipleResponseResponse',
+					'MultiselectQuestion',
+					'MultiselectResponse',
+					'MultiselectScale',
+					'NumericScale',
+					'OpenEndedQuestion',
+					'OpenEndedResponse',
+					'Organization',
+					'Page',
+					'Person',
+					'Query',
+					'Question',
+					'Questionnaire',
+					'QuestionnaireItem',
+					'Rating',
+					'RatingScaleQuestion',
+					'RatingScaleResponse',
+					'Response',
+					'Result',
+					'Scale',
+					'Score',
+					'SearchResponse',
+					'SelectTextResponse',
+					'Session',
+					'SharedAnnotation',
+					'SoftwareApplication',
+					'Survey',
+					'SurveyInvitation',
+					'TagAnnotation',
+					'Thread',
+					'TrueFalseResponse',
+					'VideoObject',
+					'WebPage',
+					'User',
+					'Student',
+					'Instructor',
+					'School',
+					'District',
+					'Class',
+					'ILP',
+					'Lesson',
+					'Award',
+					'MasteryScore',
+					'PlacementTest',
+					'PlacementScore',
+					'UserSession',
+					'EducationStandard',
+					'Domain',
+					'Configuration',
+				],
+			},
+			ProfileType: {
+				type: 'string',
+				title: 'ProfileType',
+				enum: [
 					'AnnotationProfile',
 					'AssessmentProfile',
 					'AssignableProfile',
@@ -1024,8 +1129,10 @@ export const LogoutEventSchema = {
 					'ResourceManagementProfile',
 					'SearchProfile',
 					'SessionProfile',
+					'SurveyProfile',
 					'ToolLaunchProfile',
 					'ToolUseProfile',
+					'GeneralProfile',
 				],
 			},
 			Organization: {

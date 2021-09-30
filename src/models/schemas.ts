@@ -15,6 +15,7 @@ import { ConfigurationEventSchema } from './Events/ConfigurationEvent';
 import { GroupCreatedEventSchema } from './Events/GroupCreatedEvent';
 import { GroupDeletedEventSchema } from './Events/GroupDeletedEvent';
 import { GroupUpdatedEventSchema } from './Events/GroupUpdatedEvent';
+import { IlpActivatedEventSchema } from './Events/IlpActivatedEvent';
 import { IlpDeactivatedEventSchema } from './Events/IlpDeactivatedEvent';
 import { IlpIdentifiedEventSchema } from './Events/IlpIdentifiedEvent';
 import { IlpRetrievedEventSchema } from './Events/IlpRetrievedEvent';
@@ -43,6 +44,7 @@ import { RenaissanceBenchmarkEventSchema } from './Events/RenaissanceBenchmarkEv
 import { SessionEndedEventSchema } from './Events/SessionEndedEvent';
 import { SessionTimedOutEventSchema } from './Events/SessionTimedOutEvent';
 import { UserActivatedEventSchema } from './Events/UserActivatedEvent';
+import { UserAwardedEventSchema } from './Events/UserAwardedEvent';
 import { UserCreatedEventSchema } from './Events/UserCreatedEvent';
 import { UserDeactivatedEventSchema } from './Events/UserDeactivatedEvent';
 import { UserDeletedEventSchema } from './Events/UserDeletedEvent';
@@ -65,6 +67,7 @@ export const schemas = {
 	[GroupDeletedEventSchema.context]: GroupDeletedEventSchema.schema,
 	[IlpIdentifiedEventSchema.context]: IlpIdentifiedEventSchema.schema,
 	[IlpRetrievedEventSchema.context]: IlpRetrievedEventSchema.schema,
+	[IlpActivatedEventSchema.context]: IlpActivatedEventSchema.schema,
 	[IlpDeactivatedEventSchema.context]: IlpDeactivatedEventSchema.schema,
 	[LessonStartedEventSchema.context]: LessonStartedEventSchema.schema,
 	[LessonCompletedEventSchema.context]: LessonCompletedEventSchema.schema,
@@ -88,6 +91,7 @@ export const schemas = {
 	[PlacementModifiedEventSchema.context]: PlacementModifiedEventSchema.schema,
 	[SessionTimedOutEventSchema.context]: SessionTimedOutEventSchema.schema,
 	[SessionEndedEventSchema.context]: SessionEndedEventSchema.schema,
+	[UserAwardedEventSchema.context]: UserAwardedEventSchema.schema,
 	[UserCreatedEventSchema.context]: UserCreatedEventSchema.schema,
 	[UserUpdatedEventSchema.context]: UserUpdatedEventSchema.schema,
 	[UserDeletedEventSchema.context]: UserDeletedEventSchema.schema,

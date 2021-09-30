@@ -14,9 +14,9 @@ import { Session } from '../../Entities/Session';
 import { SoftwareApplication } from '../../Entities/SoftwareApplication';
 import { UserSession } from '../../Entities/UserSession';
 import { CaliperAction } from '../CaliperAction';
-import { CaliperProfile } from '../CaliperProfile';
 import { Event } from '../Event';
 import { EventType } from '../EventType';
+import { ProfileType } from '../ProfileType';
 
 export interface SessionEvent extends Event {
 	actor: Person | SoftwareApplication;
@@ -34,7 +34,7 @@ export interface SessionEventParams {
 	target?: DigitalResource;
 	referrer?: DigitalResource | SoftwareApplication;
 	session?: Session | UserSession;
-	profile?: CaliperProfile;
+	profile?: ProfileType;
 	generated?: Entity;
 	group?: Organization;
 	membership?: Membership;
