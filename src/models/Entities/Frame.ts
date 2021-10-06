@@ -26,6 +26,7 @@ export interface FrameParams {
 	isPartOf?: Entity;
 	datePublished?: string;
 	version?: string;
+	storageName?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;

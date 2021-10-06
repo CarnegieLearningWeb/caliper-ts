@@ -24,9 +24,9 @@ import { User } from '../../Entities/User';
 import { UserSession } from '../../Entities/UserSession';
 import { SystemIdentifier } from '../../SystemIdentifier';
 import { CaliperAction } from '../CaliperAction';
-import { CaliperProfile } from '../CaliperProfile';
 import { Event } from '../Event';
 import { EventType } from '../EventType';
+import { ProfileType } from '../ProfileType';
 
 export interface IlpEvent extends Event {
 	actor: Agent | SoftwareApplication | User | Instructor | Student;
@@ -40,7 +40,7 @@ export interface IlpEventParams {
 	object: IndividualizedLearningPath | IlpEventIndividualizedLearningPath;
 	action?: CaliperAction;
 	session?: Session | UserSession;
-	profile?: CaliperProfile;
+	profile?: ProfileType;
 	target?: Entity;
 	generated?: Entity;
 	group?: Organization;
@@ -130,6 +130,7 @@ export interface IlpEventLessonParams {
 	mediaType?: string;
 	datePublished?: string;
 	version?: string;
+	storageName?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;

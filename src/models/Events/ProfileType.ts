@@ -3,8 +3,7 @@
  * This file was automatically generated.
  */
 
-export enum CaliperProfile {
-	GeneralProfile = 'GeneralProfile',
+export enum ProfileType {
 	AnnotationProfile = 'AnnotationProfile',
 	AssessmentProfile = 'AssessmentProfile',
 	AssignableProfile = 'AssignableProfile',
@@ -16,6 +15,8 @@ export enum CaliperProfile {
 	ResourceManagementProfile = 'ResourceManagementProfile',
 	SearchProfile = 'SearchProfile',
 	SessionProfile = 'SessionProfile',
+	SurveyProfile = 'SurveyProfile',
 	ToolLaunchProfile = 'ToolLaunchProfile',
 	ToolUseProfile = 'ToolUseProfile',
+	GeneralProfile = 'GeneralProfile',
 }

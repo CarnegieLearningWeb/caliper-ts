@@ -18,9 +18,9 @@ import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { TagAnnotation } from '../Entities/TagAnnotation';
 import { UserSession } from '../Entities/UserSession';
 import { CaliperAction } from './CaliperAction';
-import { CaliperProfile } from './CaliperProfile';
 import { Event } from './Event';
 import { EventType } from './EventType';
+import { ProfileType } from './ProfileType';
 
 export interface AnnotationEvent extends Event {
 	actor: Person | SoftwareApplication | Organization;
@@ -36,7 +36,7 @@ export interface AnnotationEventParams {
 	generated: BookmarkAnnotation | HighlightAnnotation | SharedAnnotation | TagAnnotation;
 	action?: CaliperAction;
 	session?: Session | UserSession;
-	profile?: CaliperProfile;
+	profile?: ProfileType;
 	target?: Entity;
 	group?: Organization;
 	membership?: Membership;

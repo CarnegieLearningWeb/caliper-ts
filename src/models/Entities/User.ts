@@ -12,12 +12,14 @@ export interface User extends Person {
 	id: string;
 	firstName?: string;
 	lastName?: string;
+	email?: string;
 }
 
 export interface UserParams {
 	id: string;
 	firstName?: string;
 	lastName?: string;
+	email?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;

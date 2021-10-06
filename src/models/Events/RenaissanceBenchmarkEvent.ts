@@ -13,8 +13,8 @@ import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { UserSession } from '../Entities/UserSession';
 import { BenchmarkEvent, BenchmarkEventAttempt, BenchmarkEventScore } from './BenchmarkEvent';
 import { CaliperAction } from './CaliperAction';
-import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
+import { ProfileType } from './ProfileType';
 
 export interface RenaissanceBenchmarkEvent extends BenchmarkEvent {
 	actor: SoftwareApplication;
@@ -28,7 +28,7 @@ export interface RenaissanceBenchmarkEventParams {
 	object: BenchmarkEventAttempt;
 	generated: BenchmarkEventScore;
 	session?: Session | UserSession;
-	profile?: CaliperProfile;
+	profile?: ProfileType;
 	target?: Entity;
 	group?: Organization;
 	membership?: Membership;
@@ -154,8 +154,8 @@ export const RenaissanceBenchmarkEventSchema = {
 				],
 			},
 			profile: {
-				title: 'CaliperProfile',
-				$ref: '#/definitions/CaliperProfile',
+				title: 'ProfileType',
+				$ref: '#/definitions/ProfileType',
 			},
 			target: {
 				title: 'Entity',
@@ -590,6 +590,9 @@ export const RenaissanceBenchmarkEventSchema = {
 					version: {
 						type: 'string',
 					},
+					storageName: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -642,18 +645,6 @@ export const RenaissanceBenchmarkEventSchema = {
 						default: 'DigitalResource',
 						enum: ['DigitalResource'],
 					},
-					isPartOf: {
-						title: 'Entity',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Entity',
-								$ref: '#/definitions/Entity',
-							},
-						],
-					},
 					learningObjectives: {
 						type: 'array',
 						items: {
@@ -693,6 +684,18 @@ export const RenaissanceBenchmarkEventSchema = {
 					mediaType: {
 						type: 'string',
 					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
 					datePublished: {
 						type: 'string',
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
@@ -700,6 +703,9 @@ export const RenaissanceBenchmarkEventSchema = {
 					version: {
 						type: 'string',
 					},
+					storageName: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -740,58 +746,6 @@ export const RenaissanceBenchmarkEventSchema = {
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
-					},
-				},
-			},
-			Entity: {
-				title: 'Entity',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Entity',
-						enum: ['Entity'],
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
 					},
 				},
 			},
@@ -898,6 +852,149 @@ export const RenaissanceBenchmarkEventSchema = {
 						additionalProperties: true,
 					},
 				},
+			},
+			Entity: {
+				title: 'Entity',
+				type: 'object',
+				properties: {
+					type: {
+						title: 'EntityType',
+						$ref: '#/definitions/EntityType',
+					},
+					name: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			EntityType: {
+				type: 'string',
+				title: 'EntityType',
+				enum: [
+					'Entity',
+					'Agent',
+					'AggregateMeasure',
+					'AggregateMeasureCollection',
+					'Annotation',
+					'Assessment',
+					'AssessmentItem',
+					'AssignableDigitalResource',
+					'Attempt',
+					'AudioObject',
+					'BookmarkAnnotation',
+					'Chapter',
+					'Collection',
+					'Comment',
+					'CourseOffering',
+					'CourseSection',
+					'DateTimeQuestion',
+					'DateTimeResponse',
+					'DigitalResource',
+					'DigitalResourceCollection',
+					'Document',
+					'FillinBlankResponse',
+					'Forum',
+					'Frame',
+					'Group',
+					'HighlightAnnotation',
+					'ImageObject',
+					'LearningObjective',
+					'LikertScale',
+					'Link',
+					'LtiLink',
+					'LtiSession',
+					'MediaLocation',
+					'MediaObject',
+					'Membership',
+					'Message',
+					'MultipleChoiceResponse',
+					'MultipleResponseResponse',
+					'MultiselectQuestion',
+					'MultiselectResponse',
+					'MultiselectScale',
+					'NumericScale',
+					'OpenEndedQuestion',
+					'OpenEndedResponse',
+					'Organization',
+					'Page',
+					'Person',
+					'Query',
+					'Question',
+					'Questionnaire',
+					'QuestionnaireItem',
+					'Rating',
+					'RatingScaleQuestion',
+					'RatingScaleResponse',
+					'Response',
+					'Result',
+					'Scale',
+					'Score',
+					'SearchResponse',
+					'SelectTextResponse',
+					'Session',
+					'SharedAnnotation',
+					'SoftwareApplication',
+					'Survey',
+					'SurveyInvitation',
+					'TagAnnotation',
+					'Thread',
+					'TrueFalseResponse',
+					'VideoObject',
+					'WebPage',
+					'User',
+					'Student',
+					'Instructor',
+					'School',
+					'District',
+					'Class',
+					'ILP',
+					'Lesson',
+					'Award',
+					'MasteryScore',
+					'PlacementTest',
+					'PlacementScore',
+					'UserSession',
+					'EducationStandard',
+					'Domain',
+					'Configuration',
+				],
 			},
 			CourseOffering: {
 				title: 'CourseOffering',
@@ -1099,6 +1196,10 @@ export const RenaissanceBenchmarkEventSchema = {
 					lastName: {
 						type: 'string',
 					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1209,11 +1310,10 @@ export const RenaissanceBenchmarkEventSchema = {
 					},
 				},
 			},
-			CaliperProfile: {
+			ProfileType: {
 				type: 'string',
-				title: 'CaliperProfile',
+				title: 'ProfileType',
 				enum: [
-					'GeneralProfile',
 					'AnnotationProfile',
 					'AssessmentProfile',
 					'AssignableProfile',
@@ -1225,8 +1325,10 @@ export const RenaissanceBenchmarkEventSchema = {
 					'ResourceManagementProfile',
 					'SearchProfile',
 					'SessionProfile',
+					'SurveyProfile',
 					'ToolLaunchProfile',
 					'ToolUseProfile',
+					'GeneralProfile',
 				],
 			},
 			Membership: {
@@ -1400,6 +1502,10 @@ export const RenaissanceBenchmarkEventSchema = {
 					lastName: {
 						type: 'string',
 					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1461,6 +1567,10 @@ export const RenaissanceBenchmarkEventSchema = {
 					},
 					lastName: {
 						type: 'string',
+					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
 					},
 					id: {
 						title: 'Uri',

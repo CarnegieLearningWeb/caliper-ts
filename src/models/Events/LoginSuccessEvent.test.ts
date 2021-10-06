@@ -1,6 +1,6 @@
 import {
-	createLoginSuccessEventUserSession,
 	createLoginSuccessEvent,
+	createLoginSuccessEventUserSession,
 	createSoftwareApplication,
 	createUser,
 	CredentialType,

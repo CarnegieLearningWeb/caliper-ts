@@ -28,8 +28,8 @@ import {
 	BenchmarkEventStudent,
 } from './BenchmarkEvent';
 import { CaliperAction } from './CaliperAction';
-import { CaliperProfile } from './CaliperProfile';
 import { EventType } from './EventType';
+import { ProfileType } from './ProfileType';
 
 export interface NWEABenchmarkEvent extends BenchmarkEvent {
 	actor: SoftwareApplication;
@@ -43,7 +43,7 @@ export interface NWEABenchmarkEventParams {
 	object: NWEABenchmarkEventAttempt | BenchmarkEventAttempt;
 	generated: NWEABenchmarkEventScore | BenchmarkEventScore;
 	session?: Session | UserSession;
-	profile?: CaliperProfile;
+	profile?: ProfileType;
 	target?: Entity;
 	group?: Organization;
 	membership?: Membership;
@@ -131,6 +131,7 @@ export interface NWEABenchmarkEventAssessmentParams {
 	mediaType?: string;
 	datePublished?: string;
 	version?: string;
+	storageName?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
@@ -164,6 +165,7 @@ export interface NWEABenchmarkEventStudentParams {
 	name?: string;
 	firstName?: string;
 	lastName?: string;
+	email?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
@@ -313,8 +315,8 @@ export const NWEABenchmarkEventSchema = {
 				],
 			},
 			profile: {
-				title: 'CaliperProfile',
-				$ref: '#/definitions/CaliperProfile',
+				title: 'ProfileType',
+				$ref: '#/definitions/ProfileType',
 			},
 			target: {
 				title: 'Entity',
@@ -749,6 +751,9 @@ export const NWEABenchmarkEventSchema = {
 					version: {
 						type: 'string',
 					},
+					storageName: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -859,6 +864,9 @@ export const NWEABenchmarkEventSchema = {
 					version: {
 						type: 'string',
 					},
+					storageName: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -906,13 +914,27 @@ export const NWEABenchmarkEventSchema = {
 				title: 'Entity',
 				type: 'object',
 				properties: {
+					type: {
+						title: 'EntityType',
+						$ref: '#/definitions/EntityType',
+					},
 					name: {
 						type: 'string',
 					},
-					type: {
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
 						type: 'string',
-						default: 'Entity',
-						enum: ['Entity'],
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -929,30 +951,107 @@ export const NWEABenchmarkEventSchema = {
 							],
 						},
 					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
 					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
 				},
+			},
+			EntityType: {
+				type: 'string',
+				title: 'EntityType',
+				enum: [
+					'Entity',
+					'Agent',
+					'AggregateMeasure',
+					'AggregateMeasureCollection',
+					'Annotation',
+					'Assessment',
+					'AssessmentItem',
+					'AssignableDigitalResource',
+					'Attempt',
+					'AudioObject',
+					'BookmarkAnnotation',
+					'Chapter',
+					'Collection',
+					'Comment',
+					'CourseOffering',
+					'CourseSection',
+					'DateTimeQuestion',
+					'DateTimeResponse',
+					'DigitalResource',
+					'DigitalResourceCollection',
+					'Document',
+					'FillinBlankResponse',
+					'Forum',
+					'Frame',
+					'Group',
+					'HighlightAnnotation',
+					'ImageObject',
+					'LearningObjective',
+					'LikertScale',
+					'Link',
+					'LtiLink',
+					'LtiSession',
+					'MediaLocation',
+					'MediaObject',
+					'Membership',
+					'Message',
+					'MultipleChoiceResponse',
+					'MultipleResponseResponse',
+					'MultiselectQuestion',
+					'MultiselectResponse',
+					'MultiselectScale',
+					'NumericScale',
+					'OpenEndedQuestion',
+					'OpenEndedResponse',
+					'Organization',
+					'Page',
+					'Person',
+					'Query',
+					'Question',
+					'Questionnaire',
+					'QuestionnaireItem',
+					'Rating',
+					'RatingScaleQuestion',
+					'RatingScaleResponse',
+					'Response',
+					'Result',
+					'Scale',
+					'Score',
+					'SearchResponse',
+					'SelectTextResponse',
+					'Session',
+					'SharedAnnotation',
+					'SoftwareApplication',
+					'Survey',
+					'SurveyInvitation',
+					'TagAnnotation',
+					'Thread',
+					'TrueFalseResponse',
+					'VideoObject',
+					'WebPage',
+					'User',
+					'Student',
+					'Instructor',
+					'School',
+					'District',
+					'Class',
+					'ILP',
+					'Lesson',
+					'Award',
+					'MasteryScore',
+					'PlacementTest',
+					'PlacementScore',
+					'UserSession',
+					'EducationStandard',
+					'Domain',
+					'Configuration',
+				],
 			},
 			LearningObjective: {
 				title: 'LearningObjective',
@@ -1258,6 +1357,10 @@ export const NWEABenchmarkEventSchema = {
 					lastName: {
 						type: 'string',
 					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1368,11 +1471,10 @@ export const NWEABenchmarkEventSchema = {
 					},
 				},
 			},
-			CaliperProfile: {
+			ProfileType: {
 				type: 'string',
-				title: 'CaliperProfile',
+				title: 'ProfileType',
 				enum: [
-					'GeneralProfile',
 					'AnnotationProfile',
 					'AssessmentProfile',
 					'AssignableProfile',
@@ -1384,8 +1486,10 @@ export const NWEABenchmarkEventSchema = {
 					'ResourceManagementProfile',
 					'SearchProfile',
 					'SessionProfile',
+					'SurveyProfile',
 					'ToolLaunchProfile',
 					'ToolUseProfile',
+					'GeneralProfile',
 				],
 			},
 			Membership: {
@@ -1559,6 +1663,10 @@ export const NWEABenchmarkEventSchema = {
 					lastName: {
 						type: 'string',
 					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1620,6 +1728,10 @@ export const NWEABenchmarkEventSchema = {
 					},
 					lastName: {
 						type: 'string',
+					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
 					},
 					id: {
 						title: 'Uri',
