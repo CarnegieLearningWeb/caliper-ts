@@ -47,7 +47,7 @@ export function createGradeEvent(
 ): GradeEvent {
 	return {
 		type: EventType.GradeEvent,
-		action: CaliperAction.None,
+		action: CaliperAction.Graded,
 		'@context': ['http://purl.imsglobal.org/ctx/caliper/v1p2'],
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),

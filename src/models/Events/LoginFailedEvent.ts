@@ -1024,14 +1024,14 @@ export const LoginFailedEventSchema = {
 				title: 'Entity',
 				type: 'object',
 				properties: {
+					description: {
+						type: 'string',
+					},
 					type: {
 						title: 'EntityType',
 						$ref: '#/definitions/EntityType',
 					},
 					name: {
-						type: 'string',
-					},
-					description: {
 						type: 'string',
 					},
 					id: {

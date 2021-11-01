@@ -32,7 +32,7 @@ export interface OpenEndedResponseParams {
 
 export function createOpenEndedResponse(params: OpenEndedResponseParams): OpenEndedResponse {
 	return {
-		type: EntityType.Response,
+		type: EntityType.OpenEndedResponse,
 		...params,
 	};
 }

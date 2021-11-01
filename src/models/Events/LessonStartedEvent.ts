@@ -654,6 +654,11 @@ export const LessonStartedEventSchema = {
 				title: 'DigitalResource',
 				type: 'object',
 				properties: {
+					type: {
+						type: 'string',
+						default: 'DigitalResource',
+						enum: ['DigitalResource'],
+					},
 					isPartOf: {
 						title: 'Entity',
 						allOf: [
@@ -665,11 +670,6 @@ export const LessonStartedEventSchema = {
 								$ref: '#/definitions/Entity',
 							},
 						],
-					},
-					type: {
-						type: 'string',
-						default: 'DigitalResource',
-						enum: ['DigitalResource'],
 					},
 					learningObjectives: {
 						type: 'array',

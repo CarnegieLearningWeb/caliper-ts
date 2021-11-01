@@ -46,7 +46,7 @@ export function createResourceManagementEvent(
 	edApp?: SoftwareApplication
 ): ResourceManagementEvent {
 	return {
-		type: EventType.Event,
+		type: EventType.ResourceManagementEvent,
 		'@context': ['http://purl.imsglobal.org/ctx/caliper/v1p2'],
 		id: Caliper.uuid(),
 		action: CaliperAction.None,

@@ -39,7 +39,7 @@ export interface QuestionnaireParams {
 
 export function createQuestionnaire(params: QuestionnaireParams): Questionnaire {
 	return {
-		type: EntityType.DigitalResource,
+		type: EntityType.Questionnaire,
 		...params,
 	};
 }

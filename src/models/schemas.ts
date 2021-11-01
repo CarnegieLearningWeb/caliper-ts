@@ -31,6 +31,7 @@ import { LogoutEventSchema } from './Events/LogoutEvent';
 import { MembershipCreatedEventSchema } from './Events/MembershipCreatedEvent';
 import { MembershipDeletedEventSchema } from './Events/MembershipDeletedEvent';
 import { MembershipUpdatedEventSchema } from './Events/MembershipUpdatedEvent';
+import { MotivationEventSchema } from './Events/MotivationEvent';
 import { NavigationEventSchema } from './Events/NavigationEvent';
 import { NWEABenchmarkEventSchema } from './Events/NWEABenchmarkEvent';
 import { OrganizationActivatedEventSchema } from './Events/OrganizationActivatedEvent';
@@ -41,10 +42,10 @@ import { OrganizationUpdatedEventSchema } from './Events/OrganizationUpdatedEven
 import { PlacementGradedEventSchema } from './Events/PlacementGradedEvent';
 import { PlacementModifiedEventSchema } from './Events/PlacementModifiedEvent';
 import { RenaissanceBenchmarkEventSchema } from './Events/RenaissanceBenchmarkEvent';
+import { SessionContinuedEventSchema } from './Events/SessionContinuedEvent';
 import { SessionEndedEventSchema } from './Events/SessionEndedEvent';
 import { SessionTimedOutEventSchema } from './Events/SessionTimedOutEvent';
 import { UserActivatedEventSchema } from './Events/UserActivatedEvent';
-import { UserAwardedEventSchema } from './Events/UserAwardedEvent';
 import { UserCreatedEventSchema } from './Events/UserCreatedEvent';
 import { UserDeactivatedEventSchema } from './Events/UserDeactivatedEvent';
 import { UserDeletedEventSchema } from './Events/UserDeletedEvent';
@@ -81,6 +82,7 @@ export const schemas = {
 	[MembershipCreatedEventSchema.context]: MembershipCreatedEventSchema.schema,
 	[MembershipUpdatedEventSchema.context]: MembershipUpdatedEventSchema.schema,
 	[MembershipDeletedEventSchema.context]: MembershipDeletedEventSchema.schema,
+	[MotivationEventSchema.context]: MotivationEventSchema.schema,
 	[NavigationEventSchema.context]: NavigationEventSchema.schema,
 	[OrganizationCreatedEventSchema.context]: OrganizationCreatedEventSchema.schema,
 	[OrganizationUpdatedEventSchema.context]: OrganizationUpdatedEventSchema.schema,
@@ -91,7 +93,7 @@ export const schemas = {
 	[PlacementModifiedEventSchema.context]: PlacementModifiedEventSchema.schema,
 	[SessionTimedOutEventSchema.context]: SessionTimedOutEventSchema.schema,
 	[SessionEndedEventSchema.context]: SessionEndedEventSchema.schema,
-	[UserAwardedEventSchema.context]: UserAwardedEventSchema.schema,
+	[SessionContinuedEventSchema.context]: SessionContinuedEventSchema.schema,
 	[UserCreatedEventSchema.context]: UserCreatedEventSchema.schema,
 	[UserUpdatedEventSchema.context]: UserUpdatedEventSchema.schema,
 	[UserDeletedEventSchema.context]: UserDeletedEventSchema.schema,

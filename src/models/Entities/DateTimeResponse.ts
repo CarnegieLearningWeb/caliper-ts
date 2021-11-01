@@ -32,7 +32,7 @@ export interface DateTimeResponseParams {
 
 export function createDateTimeResponse(params: DateTimeResponseParams): DateTimeResponse {
 	return {
-		type: EntityType.Response,
+		type: EntityType.DateTimeResponse,
 		...params,
 	};
 }

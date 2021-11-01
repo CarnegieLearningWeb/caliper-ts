@@ -1859,18 +1859,6 @@ export const IlpRetrievedEventSchema = {
 				title: 'Session',
 				type: 'object',
 				properties: {
-					client: {
-						title: 'SoftwareApplication',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'SoftwareApplication',
-								$ref: '#/definitions/SoftwareApplication',
-							},
-						],
-					},
 					type: {
 						type: 'string',
 						default: 'Session',
@@ -1894,6 +1882,18 @@ export const IlpRetrievedEventSchema = {
 							{
 								title: 'Student',
 								$ref: '#/definitions/Student',
+							},
+						],
+					},
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
 							},
 						],
 					},

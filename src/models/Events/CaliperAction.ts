@@ -86,4 +86,5 @@ export enum CaliperAction {
 	Used = 'Used',
 	Viewed = 'Viewed',
 	Awarded = 'Awarded',
+	Continued = 'Continued',
 }

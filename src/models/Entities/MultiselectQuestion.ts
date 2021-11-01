@@ -43,7 +43,7 @@ export interface MultiselectQuestionParams {
 
 export function createMultiselectQuestion(params: MultiselectQuestionParams): MultiselectQuestion {
 	return {
-		type: EntityType.DigitalResource,
+		type: EntityType.MultiselectQuestion,
 		...params,
 	};
 }

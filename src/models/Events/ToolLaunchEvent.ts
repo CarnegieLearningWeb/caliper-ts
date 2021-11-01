@@ -46,7 +46,7 @@ export function createToolLaunchEvent(
 	edApp?: SoftwareApplication
 ): ToolLaunchEvent {
 	return {
-		type: EventType.Event,
+		type: EventType.ToolLaunchEvent,
 		'@context': ['http://purl.imsglobal.org/ctx/caliper/v1p2'],
 		id: Caliper.uuid(),
 		action: CaliperAction.None,

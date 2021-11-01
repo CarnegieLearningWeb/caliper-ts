@@ -40,7 +40,7 @@ export interface RatingScaleQuestionParams {
 
 export function createRatingScaleQuestion(params: RatingScaleQuestionParams): RatingScaleQuestion {
 	return {
-		type: EntityType.DigitalResource,
+		type: EntityType.RatingScaleQuestion,
 		...params,
 	};
 }

@@ -266,7 +266,7 @@ export const BenchmarkEventSchema = {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['id', 'type'],
+						required: ['type', 'id'],
 					},
 					{
 						title: 'Entity',
@@ -327,7 +327,7 @@ export const BenchmarkEventSchema = {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['id', 'type'],
+						required: ['type', 'id'],
 					},
 					{
 						title: 'Entity',
@@ -754,7 +754,7 @@ export const BenchmarkEventSchema = {
 						title: 'Entity',
 						allOf: [
 							{
-								required: ['id', 'type'],
+								required: ['type', 'id'],
 							},
 							{
 								title: 'Entity',
@@ -858,13 +858,13 @@ export const BenchmarkEventSchema = {
 				title: 'Entity',
 				type: 'object',
 				properties: {
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
 					type: {
 						title: 'EntityType',
 						$ref: '#/definitions/EntityType',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
 					},
 					name: {
 						type: 'string',
