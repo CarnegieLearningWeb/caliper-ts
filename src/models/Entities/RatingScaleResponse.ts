@@ -32,7 +32,7 @@ export interface RatingScaleResponseParams {
 
 export function createRatingScaleResponse(params: RatingScaleResponseParams): RatingScaleResponse {
 	return {
-		type: EntityType.Response,
+		type: EntityType.RatingScaleResponse,
 		...params,
 	};
 }

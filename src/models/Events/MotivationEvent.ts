@@ -49,22 +49,20 @@ import { Event } from './Event';
 import { EventType } from './EventType';
 import { ProfileType } from './ProfileType';
 
-export interface UserAwardedEvent extends Event {
+export interface MotivationEvent extends Event {
 	id: string;
-	eventTime: string;
 	actor: Agent | SoftwareApplication | User | Instructor;
 	object: Student;
-	referrer: UserAwardedEventCollection;
+	referrer: MotivationEventCollection;
 	generated: Award;
 	session?: Session | UserSession;
 }
 
-export interface UserAwardedEventParams {
+export interface MotivationEventParams {
 	id?: string;
-	eventTime?: string;
 	actor: Agent | SoftwareApplication | User | Instructor;
 	object: Student;
-	referrer: UserAwardedEventCollection;
+	referrer: MotivationEventCollection;
 	generated: Award;
 	session?: Session | UserSession;
 	profile?: ProfileType;
@@ -75,16 +73,16 @@ export interface UserAwardedEventParams {
 	extensions?: Record<string, any>;
 }
 
-export function createUserAwardedEvent(
-	params: UserAwardedEventParams,
+export function createMotivationEvent(
+	params: MotivationEventParams,
 	edApp?: SoftwareApplication
-): UserAwardedEvent {
+): MotivationEvent {
 	return {
 		'@context': [
-			'http://edgenuity.com/events/user-awarded/0-0-1',
+			'http://edgenuity.com/events/motivation-awarded/0-0-1',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
-		type: EventType.UserEvent,
+		type: EventType.MotivationEvent,
 		action: CaliperAction.Awarded,
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
@@ -93,7 +91,7 @@ export function createUserAwardedEvent(
 	};
 }
 
-export interface UserAwardedEventCollection extends Collection {
+export interface MotivationEventCollection extends Collection {
 	id: string;
 	items:
 		| Entity[]
@@ -121,10 +119,10 @@ export interface UserAwardedEventCollection extends Collection {
 		| WebPage[]
 		| SoftwareApplication[]
 		| Lesson[]
-		| UserAwardedEventIndividualizedLearningPath[];
+		| MotivationEventIndividualizedLearningPath[];
 }
 
-export interface UserAwardedEventCollectionParams {
+export interface MotivationEventCollectionParams {
 	id: string;
 	items:
 		| Entity[]
@@ -152,7 +150,7 @@ export interface UserAwardedEventCollectionParams {
 		| WebPage[]
 		| SoftwareApplication[]
 		| Lesson[]
-		| UserAwardedEventIndividualizedLearningPath[];
+		| MotivationEventIndividualizedLearningPath[];
 	name?: string;
 	description?: string;
 	dateCreated?: string;
@@ -162,23 +160,23 @@ export interface UserAwardedEventCollectionParams {
 	extensions?: Record<string, any>;
 }
 
-export function createUserAwardedEventCollection(
-	params: UserAwardedEventCollectionParams
-): UserAwardedEventCollection {
+export function createMotivationEventCollection(
+	params: MotivationEventCollectionParams
+): MotivationEventCollection {
 	return {
 		type: EntityType.Collection,
 		...params,
 	};
 }
 
-export interface UserAwardedEventIndividualizedLearningPath extends IndividualizedLearningPath {
+export interface MotivationEventIndividualizedLearningPath extends IndividualizedLearningPath {
 	id: string;
 	subject: string;
 	highestGradeLevel?: number;
 	lowestPlacementGrade?: number;
 }
 
-export interface UserAwardedEventIndividualizedLearningPathParams {
+export interface MotivationEventIndividualizedLearningPathParams {
 	id: string;
 	subject: string;
 	highestGradeLevel?: number;
@@ -195,19 +193,19 @@ export interface UserAwardedEventIndividualizedLearningPathParams {
 	extensions?: Record<string, any>;
 }
 
-export function createUserAwardedEventIndividualizedLearningPath(
-	params: UserAwardedEventIndividualizedLearningPathParams
-): UserAwardedEventIndividualizedLearningPath {
+export function createMotivationEventIndividualizedLearningPath(
+	params: MotivationEventIndividualizedLearningPathParams
+): MotivationEventIndividualizedLearningPath {
 	return {
 		type: EntityType.ILP,
 		...params,
 	};
 }
 
-export const UserAwardedEventSchema = {
-	context: 'http://edgenuity.com/events/user-awarded/0-0-1',
+export const MotivationEventSchema = {
+	context: 'http://edgenuity.com/events/motivation-awarded/0-0-1',
 	schema: {
-		title: 'UserAwardedEvent',
+		title: 'MotivationEvent',
 		type: 'object',
 		required: [
 			'@context',
@@ -226,8 +224,8 @@ export const UserAwardedEventSchema = {
 				items: [
 					{
 						type: 'string',
-						default: 'http://edgenuity.com/events/user-awarded/0-0-1',
-						enum: ['http://edgenuity.com/events/user-awarded/0-0-1'],
+						default: 'http://edgenuity.com/events/motivation-awarded/0-0-1',
+						enum: ['http://edgenuity.com/events/motivation-awarded/0-0-1'],
 					},
 					{
 						type: 'string',
@@ -255,8 +253,8 @@ export const UserAwardedEventSchema = {
 			},
 			type: {
 				type: 'string',
-				default: 'UserEvent',
-				enum: ['UserEvent'],
+				default: 'MotivationEvent',
+				enum: ['MotivationEvent'],
 			},
 			action: {
 				type: 'string',
@@ -1030,18 +1028,6 @@ export const UserAwardedEventSchema = {
 						default: 'DigitalResource',
 						enum: ['DigitalResource'],
 					},
-					isPartOf: {
-						title: 'Entity',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Entity',
-								$ref: '#/definitions/Entity',
-							},
-						],
-					},
 					learningObjectives: {
 						type: 'array',
 						items: {
@@ -1080,6 +1066,18 @@ export const UserAwardedEventSchema = {
 					},
 					mediaType: {
 						type: 'string',
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
 					},
 					datePublished: {
 						type: 'string',
@@ -1134,6 +1132,110 @@ export const UserAwardedEventSchema = {
 					},
 				},
 			},
+			LearningObjective: {
+				title: 'LearningObjective',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'LearningObjective',
+						enum: ['LearningObjective'],
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Agent: {
+				title: 'Agent',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Agent',
+						enum: ['Agent'],
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
 			Entity: {
 				title: 'Entity',
 				type: 'object',
@@ -1142,12 +1244,12 @@ export const UserAwardedEventSchema = {
 						title: 'EntityType',
 						$ref: '#/definitions/EntityType',
 					},
-					name: {
-						type: 'string',
-					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
 					},
 					description: {
 						type: 'string',
@@ -1276,110 +1378,6 @@ export const UserAwardedEventSchema = {
 					'Domain',
 					'Configuration',
 				],
-			},
-			LearningObjective: {
-				title: 'LearningObjective',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'LearningObjective',
-						enum: ['LearningObjective'],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Agent: {
-				title: 'Agent',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Agent',
-						enum: ['Agent'],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
 			},
 			AudioObject: {
 				title: 'AudioObject',

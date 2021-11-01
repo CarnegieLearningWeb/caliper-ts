@@ -43,7 +43,7 @@ export interface QuestionnaireItemParams {
 
 export function createQuestionnaireItem(params: QuestionnaireItemParams): QuestionnaireItem {
 	return {
-		type: EntityType.DigitalResource,
+		type: EntityType.QuestionnaireItem,
 		...params,
 	};
 }

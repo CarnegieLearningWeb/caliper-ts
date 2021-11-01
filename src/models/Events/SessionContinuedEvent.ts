@@ -4,53 +4,59 @@
  */
 
 import Caliper from '../../caliper';
-import { Agent } from '../Entities/Agent';
+import { AuthorizationClaims } from '../AuthorizationClaims';
+import { DigitalResource } from '../Entities/DigitalResource';
 import { Entity } from '../Entities/Entity';
+import { EntityType } from '../Entities/EntityType';
 import { Instructor } from '../Entities/Instructor';
 import { LtiSession } from '../Entities/LtiSession';
 import { Membership } from '../Entities/Membership';
 import { Organization } from '../Entities/Organization';
 import { Session } from '../Entities/Session';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { Status } from '../Entities/Status';
 import { Student } from '../Entities/Student';
 import { User } from '../Entities/User';
 import { UserSession } from '../Entities/UserSession';
+import { SystemIdentifier } from '../SystemIdentifier';
 import { CaliperAction } from './CaliperAction';
 import { EventType } from './EventType';
-import { IlpEvent, IlpEventIndividualizedLearningPath } from './Internals/IlpEvent';
+import { SessionEvent } from './Internals/SessionEvent';
 import { ProfileType } from './ProfileType';
 
-export interface IlpIdentifiedEvent extends IlpEvent {
-	actor: Agent | SoftwareApplication | User | Instructor | Student;
-	object: IlpEventIndividualizedLearningPath;
+export interface SessionContinuedEvent extends SessionEvent {
+	actor: SoftwareApplication;
+	object: SessionContinuedEventUserSession;
+	target?: DigitalResource;
+	referrer?: DigitalResource | SoftwareApplication;
 	session?: Session | UserSession;
 }
 
-export interface IlpIdentifiedEventParams {
-	actor: Agent | SoftwareApplication | User | Instructor | Student;
-	object: IlpEventIndividualizedLearningPath;
+export interface SessionContinuedEventParams {
+	actor: SoftwareApplication;
+	object: SessionContinuedEventUserSession;
+	target?: DigitalResource;
+	referrer?: DigitalResource | SoftwareApplication;
 	session?: Session | UserSession;
 	profile?: ProfileType;
-	target?: Entity;
 	generated?: Entity;
 	group?: Organization;
 	membership?: Membership;
 	federatedSession?: LtiSession;
-	referrer?: Entity;
 	extensions?: Record<string, any>;
 }
 
-export function createIlpIdentifiedEvent(
-	params: IlpIdentifiedEventParams,
+export function createSessionContinuedEvent(
+	params: SessionContinuedEventParams,
 	edApp?: SoftwareApplication
-): IlpIdentifiedEvent {
+): SessionContinuedEvent {
 	return {
 		'@context': [
-			'http://edgenuity.com/events/ilp-identified/0-0-3',
+			'http://edgenuity.com/events/session-continued/0-0-1',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
-		action: CaliperAction.Identified,
-		type: EventType.IlpEvent,
+		action: CaliperAction.Continued,
+		type: EventType.SessionEvent,
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
 		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
@@ -58,20 +64,52 @@ export function createIlpIdentifiedEvent(
 	};
 }
 
-export const IlpIdentifiedEventSchema = {
-	context: 'http://edgenuity.com/events/ilp-identified/0-0-3',
+export interface SessionContinuedEventUserSession extends UserSession {
+	id: string;
+	user: User | Student | Instructor;
+	client?: SoftwareApplication;
+}
+
+export interface SessionContinuedEventUserSessionParams {
+	id: string;
+	user: User | Student | Instructor;
+	client?: SoftwareApplication;
+	login?: AuthorizationClaims;
+	startedAtTime?: string;
+	endedAtTime?: string;
+	duration?: string;
+	name?: string;
+	description?: string;
+	dateCreated?: string;
+	dateModified?: string;
+	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
+	extensions?: Record<string, any>;
+}
+
+export function createSessionContinuedEventUserSession(
+	params: SessionContinuedEventUserSessionParams
+): SessionContinuedEventUserSession {
+	return {
+		type: EntityType.UserSession,
+		...params,
+	};
+}
+
+export const SessionContinuedEventSchema = {
+	context: 'http://edgenuity.com/events/session-continued/0-0-1',
 	schema: {
-		title: 'IlpIdentifiedEvent',
+		title: 'SessionContinuedEvent',
 		type: 'object',
-		required: ['@context', 'action', 'type', 'actor', 'object', 'id', 'eventTime', 'edApp'],
+		required: ['@context', 'action', 'actor', 'object', 'type', 'id', 'eventTime', 'edApp'],
 		properties: {
 			'@context': {
 				type: 'array',
 				items: [
 					{
 						type: 'string',
-						default: 'http://edgenuity.com/events/ilp-identified/0-0-3',
-						enum: ['http://edgenuity.com/events/ilp-identified/0-0-3'],
+						default: 'http://edgenuity.com/events/session-continued/0-0-1',
+						enum: ['http://edgenuity.com/events/session-continued/0-0-1'],
 					},
 					{
 						type: 'string',
@@ -82,53 +120,60 @@ export const IlpIdentifiedEventSchema = {
 			},
 			action: {
 				type: 'string',
-				default: 'Identified',
-				enum: ['Identified'],
-			},
-			type: {
-				type: 'string',
-				default: 'IlpEvent',
-				enum: ['IlpEvent'],
+				default: 'Continued',
+				enum: ['Continued'],
 			},
 			actor: {
-				required: ['id', 'type'],
-				oneOf: [
+				title: 'SoftwareApplication',
+				allOf: [
+					{
+						required: ['type', 'id'],
+					},
 					{
 						title: 'SoftwareApplication',
 						$ref: '#/definitions/SoftwareApplication',
 					},
-					{
-						title: 'User',
-						$ref: '#/definitions/User',
-					},
-					{
-						title: 'Instructor',
-						$ref: '#/definitions/Instructor',
-					},
-					{
-						title: 'Student',
-						$ref: '#/definitions/Student',
-					},
 				],
 			},
 			object: {
-				title: 'IndividualizedLearningPath',
+				title: 'UserSession',
 				allOf: [
 					{
-						required: [
-							'type',
-							'state',
-							'student',
-							'subject',
-							'highestGradeLevel',
-							'lowestPlacementGrade',
-							'lessons',
-							'id',
-						],
+						required: ['user', 'type', 'id'],
 					},
 					{
-						title: 'IndividualizedLearningPath',
-						$ref: '#/definitions/IndividualizedLearningPath',
+						title: 'UserSession',
+						$ref: '#/definitions/UserSession',
+					},
+				],
+			},
+			type: {
+				type: 'string',
+				default: 'SessionEvent',
+				enum: ['SessionEvent'],
+			},
+			target: {
+				title: 'DigitalResource',
+				allOf: [
+					{
+						required: ['type', 'id'],
+					},
+					{
+						title: 'DigitalResource',
+						$ref: '#/definitions/DigitalResource',
+					},
+				],
+			},
+			referrer: {
+				required: ['id', 'type'],
+				oneOf: [
+					{
+						title: 'DigitalResource',
+						$ref: '#/definitions/DigitalResource',
+					},
+					{
+						title: 'SoftwareApplication',
+						$ref: '#/definitions/SoftwareApplication',
 					},
 				],
 			},
@@ -156,23 +201,11 @@ export const IlpIdentifiedEventSchema = {
 				title: 'ProfileType',
 				$ref: '#/definitions/ProfileType',
 			},
-			target: {
-				title: 'Entity',
-				allOf: [
-					{
-						required: ['id', 'type'],
-					},
-					{
-						title: 'Entity',
-						$ref: '#/definitions/Entity',
-					},
-				],
-			},
 			generated: {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['id', 'type'],
+						required: ['type', 'id'],
 					},
 					{
 						title: 'Entity',
@@ -226,18 +259,6 @@ export const IlpIdentifiedEventSchema = {
 					{
 						title: 'UserSession',
 						$ref: '#/definitions/UserSession',
-					},
-				],
-			},
-			referrer: {
-				title: 'Entity',
-				allOf: [
-					{
-						required: ['type', 'id'],
-					},
-					{
-						title: 'Entity',
-						$ref: '#/definitions/Entity',
 					},
 				],
 			},
@@ -391,31 +412,66 @@ export const IlpIdentifiedEventSchema = {
 				title: 'Status',
 				enum: ['Inactive', 'Active'],
 			},
-			User: {
-				title: 'User',
+			UserSession: {
+				title: 'UserSession',
 				type: 'object',
 				properties: {
+					user: {
+						required: ['id', 'type'],
+						oneOf: [
+							{
+								title: 'User',
+								$ref: '#/definitions/User',
+							},
+							{
+								title: 'Student',
+								$ref: '#/definitions/Student',
+							},
+							{
+								title: 'Instructor',
+								$ref: '#/definitions/Instructor',
+							},
+						],
+					},
 					type: {
 						type: 'string',
-						default: 'User',
-						enum: ['User'],
+						default: 'UserSession',
+						enum: ['UserSession'],
 					},
-					name: {
-						type: 'string',
+					client: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
+							},
+						],
 					},
-					firstName: {
-						type: 'string',
+					login: {
+						title: 'AuthorizationClaims',
+						$ref: '#/definitions/AuthorizationClaims',
 					},
-					lastName: {
+					startedAtTime: {
 						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
-					email: {
+					endedAtTime: {
 						type: 'string',
-						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					duration: {
+						type: 'string',
+						pattern: '^P(?:\\d+Y)?(?:\\d+M)?(?:\\d+D)?T?(?:\\d+H)?(?:\\d+M)?(?:\\d+S)?',
 					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
 					},
 					description: {
 						type: 'string',
@@ -453,18 +509,14 @@ export const IlpIdentifiedEventSchema = {
 					},
 				},
 			},
-			Instructor: {
-				title: 'Instructor',
+			User: {
+				title: 'User',
 				type: 'object',
 				properties: {
 					type: {
 						type: 'string',
-						default: 'Instructor',
-						enum: ['Instructor'],
-					},
-					permissions: {
-						type: 'object',
-						additionalProperties: true,
+						default: 'User',
+						enum: ['User'],
 					},
 					name: {
 						type: 'string',
@@ -614,60 +666,35 @@ export const IlpIdentifiedEventSchema = {
 					},
 				},
 			},
-			IndividualizedLearningPath: {
-				title: 'IndividualizedLearningPath',
+			Instructor: {
+				title: 'Instructor',
 				type: 'object',
 				properties: {
 					type: {
 						type: 'string',
-						default: 'ILP',
-						enum: ['ILP'],
+						default: 'Instructor',
+						enum: ['Instructor'],
 					},
-					state: {
+					permissions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+					name: {
 						type: 'string',
 					},
-					student: {
-						title: 'Student',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Student',
-								$ref: '#/definitions/Student',
-							},
-						],
-					},
-					subject: {
+					firstName: {
 						type: 'string',
 					},
-					highestGradeLevel: {
-						type: 'number',
+					lastName: {
+						type: 'string',
 					},
-					lowestPlacementGrade: {
-						type: 'number',
-					},
-					lessons: {
-						type: 'array',
-						items: {
-							title: 'Lesson',
-							allOf: [
-								{
-									required: ['type', 'domain', 'gradeLevel', 'domainOrder', 'lessonOrder', 'id'],
-								},
-								{
-									title: 'Lesson',
-									$ref: '#/definitions/Lesson',
-								},
-							],
-						},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
 					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
 					},
 					description: {
 						type: 'string',
@@ -705,78 +732,59 @@ export const IlpIdentifiedEventSchema = {
 					},
 				},
 			},
-			Lesson: {
-				title: 'Lesson',
+			AuthorizationClaims: {
+				title: 'AuthorizationClaims',
+				type: 'object',
+				properties: {
+					localTimestamp: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?[-|\\+]\\d{2}:\\d{2}$',
+					},
+					loginType: {
+						title: 'LoginType',
+						$ref: '#/definitions/LoginType',
+					},
+					credentialTypes: {
+						type: 'array',
+						items: {
+							title: 'CredentialType',
+							$ref: '#/definitions/CredentialType',
+						},
+					},
+					scopes: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+				},
+			},
+			LoginType: {
+				type: 'string',
+				title: 'LoginType',
+				enum: [
+					'QRCodeSwipeFromALA',
+					'SAML',
+					'CleverApi',
+					'LtiSSO',
+					'GoogleAuthentication',
+					'ApplicationLoginPage',
+					'Impersonation',
+				],
+			},
+			CredentialType: {
+				type: 'string',
+				title: 'CredentialType',
+				enum: ['Username', 'Password', 'QRCode'],
+			},
+			DigitalResource: {
+				title: 'DigitalResource',
 				type: 'object',
 				properties: {
 					type: {
 						type: 'string',
-						default: 'Lesson',
-						enum: ['Lesson'],
-					},
-					domain: {
-						title: 'Domain',
-						allOf: [
-							{
-								required: ['type', 'name', 'code', 'standard', 'id'],
-							},
-							{
-								title: 'Domain',
-								$ref: '#/definitions/Domain',
-							},
-						],
-					},
-					gradeLevel: {
-						type: 'number',
-					},
-					domainOrder: {
-						type: 'number',
-					},
-					lessonOrder: {
-						type: 'number',
-					},
-					isAssigned: {
-						type: 'boolean',
-					},
-					language: {
-						type: 'string',
-					},
-					dateToActivate: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateToShow: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateToStartOn: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateToSubmit: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					maxAttempts: {
-						type: 'number',
-					},
-					maxSubmits: {
-						type: 'number',
-					},
-					maxScore: {
-						type: 'integer',
-					},
-					isPartOf: {
-						title: 'CourseOffering',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'CourseOffering',
-								$ref: '#/definitions/CourseOffering',
-							},
-						],
+						default: 'DigitalResource',
+						enum: ['DigitalResource'],
 					},
 					learningObjectives: {
 						type: 'array',
@@ -817,6 +825,18 @@ export const IlpIdentifiedEventSchema = {
 					mediaType: {
 						type: 'string',
 					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
 					datePublished: {
 						type: 'string',
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
@@ -826,198 +846,6 @@ export const IlpIdentifiedEventSchema = {
 					},
 					storageName: {
 						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Domain: {
-				title: 'Domain',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Domain',
-						enum: ['Domain'],
-					},
-					name: {
-						type: 'string',
-					},
-					code: {
-						type: 'string',
-					},
-					standard: {
-						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			CourseOffering: {
-				title: 'CourseOffering',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'CourseOffering',
-						enum: ['CourseOffering'],
-					},
-					courseNumber: {
-						type: 'string',
-					},
-					academicSession: {
-						type: 'string',
-					},
-					subOrganizationOf: {
-						title: 'Organization',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Organization',
-								$ref: '#/definitions/Organization',
-							},
-						],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Organization: {
-				title: 'Organization',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Organization',
-						enum: ['Organization'],
-					},
-					subOrganizationOf: {
-						title: 'Organization',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Organization',
-								$ref: '#/definitions/Organization',
-							},
-						],
 					},
 					id: {
 						title: 'Uri',
@@ -1166,41 +994,20 @@ export const IlpIdentifiedEventSchema = {
 					},
 				},
 			},
-			ProfileType: {
-				type: 'string',
-				title: 'ProfileType',
-				enum: [
-					'AnnotationProfile',
-					'AssessmentProfile',
-					'AssignableProfile',
-					'FeedbackProfile',
-					'ForumProfile',
-					'GradingProfile',
-					'MediaProfile',
-					'ReadingProfile',
-					'ResourceManagementProfile',
-					'SearchProfile',
-					'SessionProfile',
-					'SurveyProfile',
-					'ToolLaunchProfile',
-					'ToolUseProfile',
-					'GeneralProfile',
-				],
-			},
 			Entity: {
 				title: 'Entity',
 				type: 'object',
 				properties: {
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
 					type: {
 						title: 'EntityType',
 						$ref: '#/definitions/EntityType',
 					},
 					name: {
 						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
 					},
 					description: {
 						type: 'string',
@@ -1329,6 +1136,91 @@ export const IlpIdentifiedEventSchema = {
 					'Domain',
 					'Configuration',
 				],
+			},
+			ProfileType: {
+				type: 'string',
+				title: 'ProfileType',
+				enum: [
+					'AnnotationProfile',
+					'AssessmentProfile',
+					'AssignableProfile',
+					'FeedbackProfile',
+					'ForumProfile',
+					'GradingProfile',
+					'MediaProfile',
+					'ReadingProfile',
+					'ResourceManagementProfile',
+					'SearchProfile',
+					'SessionProfile',
+					'SurveyProfile',
+					'ToolLaunchProfile',
+					'ToolUseProfile',
+					'GeneralProfile',
+				],
+			},
+			Organization: {
+				title: 'Organization',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Organization',
+						enum: ['Organization'],
+					},
+					subOrganizationOf: {
+						title: 'Organization',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Organization',
+								$ref: '#/definitions/Organization',
+							},
+						],
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
 			},
 			Membership: {
 				title: 'Membership',
@@ -1951,148 +1843,6 @@ export const IlpIdentifiedEventSchema = {
 						additionalProperties: true,
 					},
 				},
-			},
-			UserSession: {
-				title: 'UserSession',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'UserSession',
-						enum: ['UserSession'],
-					},
-					user: {
-						required: ['id', 'type'],
-						oneOf: [
-							{
-								title: 'User',
-								$ref: '#/definitions/User',
-							},
-							{
-								title: 'Instructor',
-								$ref: '#/definitions/Instructor',
-							},
-							{
-								title: 'Student',
-								$ref: '#/definitions/Student',
-							},
-						],
-					},
-					client: {
-						title: 'SoftwareApplication',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'SoftwareApplication',
-								$ref: '#/definitions/SoftwareApplication',
-							},
-						],
-					},
-					login: {
-						title: 'AuthorizationClaims',
-						$ref: '#/definitions/AuthorizationClaims',
-					},
-					startedAtTime: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					endedAtTime: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					duration: {
-						type: 'string',
-						pattern: '^P(?:\\d+Y)?(?:\\d+M)?(?:\\d+D)?T?(?:\\d+H)?(?:\\d+M)?(?:\\d+S)?',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			AuthorizationClaims: {
-				title: 'AuthorizationClaims',
-				type: 'object',
-				properties: {
-					localTimestamp: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?[-|\\+]\\d{2}:\\d{2}$',
-					},
-					loginType: {
-						title: 'LoginType',
-						$ref: '#/definitions/LoginType',
-					},
-					credentialTypes: {
-						type: 'array',
-						items: {
-							title: 'CredentialType',
-							$ref: '#/definitions/CredentialType',
-						},
-					},
-					scopes: {
-						type: 'array',
-						items: {
-							type: 'string',
-						},
-					},
-				},
-			},
-			LoginType: {
-				type: 'string',
-				title: 'LoginType',
-				enum: [
-					'QRCodeSwipeFromALA',
-					'SAML',
-					'CleverApi',
-					'LtiSSO',
-					'GoogleAuthentication',
-					'ApplicationLoginPage',
-					'Impersonation',
-				],
-			},
-			CredentialType: {
-				type: 'string',
-				title: 'CredentialType',
-				enum: ['Username', 'Password', 'QRCode'],
 			},
 		},
 	},

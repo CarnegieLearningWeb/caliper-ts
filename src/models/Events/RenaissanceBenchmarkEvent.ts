@@ -861,12 +861,16 @@ export const RenaissanceBenchmarkEventSchema = {
 						title: 'EntityType',
 						$ref: '#/definitions/EntityType',
 					},
-					name: {
-						type: 'string',
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
 					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
 					},
 					description: {
 						type: 'string',
@@ -897,10 +901,6 @@ export const RenaissanceBenchmarkEventSchema = {
 					status: {
 						title: 'Status',
 						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
 					},
 				},
 			},

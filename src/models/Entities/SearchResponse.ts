@@ -43,7 +43,7 @@ export interface SearchResponseParams {
 
 export function createSearchResponse(params: SearchResponseParams): SearchResponse {
 	return {
-		type: EntityType.Response,
+		type: EntityType.SearchResponse,
 		...params,
 	};
 }

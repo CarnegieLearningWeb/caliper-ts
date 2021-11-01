@@ -29,7 +29,7 @@ export function createAggregateMeasureCollection(
 	params: AggregateMeasureCollectionParams
 ): AggregateMeasureCollection {
 	return {
-		type: EntityType.Collection,
+		type: EntityType.AggregateMeasureCollection,
 		...params,
 	};
 }

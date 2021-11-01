@@ -38,7 +38,7 @@ export interface QuestionParams {
 
 export function createQuestion(params: QuestionParams): Question {
 	return {
-		type: EntityType.DigitalResource,
+		type: EntityType.Question,
 		...params,
 	};
 }

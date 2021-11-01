@@ -227,7 +227,7 @@ export const AssignableUsedEventSchema = {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['id', 'type'],
+						required: ['type', 'id'],
 					},
 					{
 						title: 'Entity',

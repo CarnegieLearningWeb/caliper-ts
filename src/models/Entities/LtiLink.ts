@@ -39,7 +39,7 @@ export interface LtiLinkParams {
 
 export function createLtiLink(params: LtiLinkParams): LtiLink {
 	return {
-		type: EntityType.DigitalResource,
+		type: EntityType.LtiLink,
 		...params,
 	};
 }

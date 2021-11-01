@@ -1054,13 +1054,6 @@ export const GroupCreatedEventSchema = {
 					name: {
 						type: 'string',
 					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
 					dateCreated: {
 						type: 'string',
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
@@ -1068,6 +1061,17 @@ export const GroupCreatedEventSchema = {
 					dateModified: {
 						type: 'string',
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -1083,10 +1087,6 @@ export const GroupCreatedEventSchema = {
 								},
 							],
 						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',

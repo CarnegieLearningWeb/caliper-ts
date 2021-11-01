@@ -45,7 +45,7 @@ export interface DateTimeQuestionParams {
 
 export function createDateTimeQuestion(params: DateTimeQuestionParams): DateTimeQuestion {
 	return {
-		type: EntityType.DigitalResource,
+		type: EntityType.DateTimeQuestion,
 		...params,
 	};
 }

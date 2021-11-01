@@ -46,7 +46,7 @@ export interface SurveyInvitationParams {
 
 export function createSurveyInvitation(params: SurveyInvitationParams): SurveyInvitation {
 	return {
-		type: EntityType.DigitalResource,
+		type: EntityType.SurveyInvitation,
 		...params,
 	};
 }

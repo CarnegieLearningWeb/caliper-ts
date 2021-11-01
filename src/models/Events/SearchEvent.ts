@@ -46,7 +46,7 @@ export function createSearchEvent(
 	edApp?: SoftwareApplication
 ): SearchEvent {
 	return {
-		type: EventType.Event,
+		type: EventType.SearchEvent,
 		'@context': ['http://purl.imsglobal.org/ctx/caliper/v1p2'],
 		id: Caliper.uuid(),
 		action: CaliperAction.None,

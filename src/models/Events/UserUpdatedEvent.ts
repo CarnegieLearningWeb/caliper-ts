@@ -685,12 +685,16 @@ export const UserUpdatedEventSchema = {
 				title: 'Entity',
 				type: 'object',
 				properties: {
+					name: {
+						type: 'string',
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					type: {
 						title: 'EntityType',
 						$ref: '#/definitions/EntityType',
-					},
-					name: {
-						type: 'string',
 					},
 					dateCreated: {
 						type: 'string',
@@ -699,10 +703,6 @@ export const UserUpdatedEventSchema = {
 					dateModified: {
 						type: 'string',
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
 					},
 					id: {
 						title: 'Uri',

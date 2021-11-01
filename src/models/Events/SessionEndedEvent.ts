@@ -1004,14 +1004,14 @@ export const SessionEndedEventSchema = {
 				title: 'Entity',
 				type: 'object',
 				properties: {
-					name: {
+					description: {
 						type: 'string',
 					},
 					type: {
 						title: 'EntityType',
 						$ref: '#/definitions/EntityType',
 					},
-					description: {
+					name: {
 						type: 'string',
 					},
 					id: {
@@ -1757,11 +1757,6 @@ export const SessionEndedEventSchema = {
 				title: 'Session',
 				type: 'object',
 				properties: {
-					type: {
-						type: 'string',
-						default: 'Session',
-						enum: ['Session'],
-					},
 					user: {
 						required: ['id', 'type'],
 						oneOf: [
@@ -1782,6 +1777,11 @@ export const SessionEndedEventSchema = {
 								$ref: '#/definitions/Student',
 							},
 						],
+					},
+					type: {
+						type: 'string',
+						default: 'Session',
+						enum: ['Session'],
 					},
 					client: {
 						title: 'SoftwareApplication',

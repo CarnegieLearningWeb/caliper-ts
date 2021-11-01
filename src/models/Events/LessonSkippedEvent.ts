@@ -1042,6 +1042,9 @@ export const LessonSkippedEventSchema = {
 				title: 'Entity',
 				type: 'object',
 				properties: {
+					name: {
+						type: 'string',
+					},
 					type: {
 						title: 'EntityType',
 						$ref: '#/definitions/EntityType',
@@ -1049,9 +1052,6 @@ export const LessonSkippedEventSchema = {
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
 					},
 					description: {
 						type: 'string',

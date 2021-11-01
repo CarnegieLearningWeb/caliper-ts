@@ -32,7 +32,7 @@ export interface MultiselectResponseParams {
 
 export function createMultiselectResponse(params: MultiselectResponseParams): MultiselectResponse {
 	return {
-		type: EntityType.Response,
+		type: EntityType.MultiselectResponse,
 		...params,
 	};
 }

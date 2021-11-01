@@ -45,7 +45,7 @@ export function createQuestionnaireEvent(
 	edApp?: SoftwareApplication
 ): QuestionnaireEvent {
 	return {
-		type: EventType.Event,
+		type: EventType.QuestionnaireEvent,
 		'@context': ['http://purl.imsglobal.org/ctx/caliper/v1p2'],
 		id: Caliper.uuid(),
 		action: CaliperAction.None,

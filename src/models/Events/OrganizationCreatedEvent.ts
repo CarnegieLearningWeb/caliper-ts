@@ -781,16 +781,16 @@ export const OrganizationCreatedEventSchema = {
 				title: 'Entity',
 				type: 'object',
 				properties: {
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
 					type: {
 						title: 'EntityType',
 						$ref: '#/definitions/EntityType',
 					},
 					name: {
 						type: 'string',
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					id: {
 						title: 'Uri',

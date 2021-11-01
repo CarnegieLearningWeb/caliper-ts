@@ -45,7 +45,7 @@ export function createSurveyEvent(
 	edApp?: SoftwareApplication
 ): SurveyEvent {
 	return {
-		type: EventType.Event,
+		type: EventType.SurveyEvent,
 		action: CaliperAction.None,
 		'@context': ['http://purl.imsglobal.org/ctx/caliper/v1p2'],
 		id: Caliper.uuid(),

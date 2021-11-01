@@ -37,7 +37,7 @@ export interface OpenEndedQuestionParams {
 
 export function createOpenEndedQuestion(params: OpenEndedQuestionParams): OpenEndedQuestion {
 	return {
-		type: EntityType.DigitalResource,
+		type: EntityType.OpenEndedQuestion,
 		...params,
 	};
 }
