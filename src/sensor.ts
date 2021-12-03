@@ -131,9 +131,17 @@ export class Sensor {
 			try {
 				validate(event);
 				validationErrors.push('Other events in the batch were invalid');
-			} catch (errors) {
+			} catch (error) {
 				isValid = false;
-				validationErrors.push(`${event.id}: ${errors.join('\n\t')}`);
+				if (Array.isArray(error)) {
+					const e = error as string[];
+
+					validationErrors.push(`${event.id}: ${e.join('\n\t')}`);
+				} else {
+					const e = error as Error;
+
+					validationErrors.push(`${event.id}: ${e.message}\n${e.stack}`);
+				}
 			}
 		});
 

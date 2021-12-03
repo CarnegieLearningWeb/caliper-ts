@@ -1,6 +1,6 @@
 {
 	"name": "@imaginelearning/caliper-ts",
-	"version": "2.1.0",
+	"version": "2.1.1",
 	"description": "Reference implementation of the Caliper Sensor API written in TypeScript",
 	"author": "Imagine Learning",
 	"license": "MIT",
@@ -17,7 +17,7 @@
 	},
 	"scripts": {
 		"start": "tsdx watch",
-		"build": "tsdx build",
+		"build": "tsdx build --format cjs,esm,umd",
 		"test": "tsdx test --watch",
 		"test:ci": "cross-env CI=true tsdx test --coverage",
 		"test:coverage": "tsdx test --coverage",
