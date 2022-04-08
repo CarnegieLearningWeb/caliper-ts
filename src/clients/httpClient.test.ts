@@ -107,6 +107,31 @@ describe('HttpClient', () => {
 				}
 				expect(error).toEqual(new Error('Oops!'));
 			});
+			it('Dead letter queue', async () => {
+				fetchMock.mockRestore();
+				fetchMock.once(JSON.stringify({ success: false }), { status: 406 });
+				const spy = jest.spyOn(client, 'queueDeadletterMessage');
+				const envelope = createEnvelope({ data: [{ hello: 'world' }], sensor: 'id' });
+				try {
+					await client.send(envelope);
+				} catch (error) {
+					console.log(error);
+				}
+				expect(spy).toHaveBeenCalled();
+			});
+
+			it('Should not call Dead letter queue', async () => {
+				fetchMock.mockRestore();
+				fetchMock.once(JSON.stringify({ success: true }), { status: 200 });
+				const spy = jest.spyOn(client, 'queueDeadletterMessage');
+				const envelope = createEnvelope({ data: [{ hello: 'world' }], sensor: 'id' });
+				try {
+					await client.send(envelope);
+				} catch (error) {
+					console.log(error);
+				}
+				expect(spy).not.toHaveBeenCalled();
+			});
 		});
 	});
 
