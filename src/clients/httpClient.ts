@@ -53,10 +53,19 @@ export class HttpClient implements Client {
 			headers: this.options.headers,
 		});
 
-		const response = await task;
-		if (!response.ok) {
+		try {
+			const response = await task;
+			if (!response.ok) {
+				const message = {
+					error: await response.text(),
+					source: Caliper.settings.applicationUri as string,
+					payload: envelope,
+				};
+				await this.queueDeadletterMessage(message);
+			}
+		} catch (error) {
 			const message = {
-				error: await response.text(),
+				error: error as string,
 				source: Caliper.settings.applicationUri as string,
 				payload: envelope,
 			};
