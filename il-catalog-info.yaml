@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1beta1
+kind: Component
+metadata:
+  name: caliper-ts
+  description: Caliper sensor library for sending RAD events with Typescript projects
+  title: caliper-ts
+  tags:
+    - typescript
+  annotations:
+    github.com/project-slug: ImagineLearning/caliper-ts
+spec:
+  type: library
+  lifecycle: production
+  owner: reporting-and-dashboards
