@@ -51,6 +51,9 @@ Below is a basic example of configuring a sensor and sending an event, as well a
 ### Basic example
 
 ```ts
+// Set application URI if using DLQ
+Caliper.settings.applicationUri = 'https://example.org';
+
 // Initialize Caliper sensor
 const sensor = new Sensor('http://example.org/sensors/1');
 
@@ -119,6 +122,9 @@ a flag to enable/disable event validation, and a `Record` of objects that implem
 as an alternative to using the `Sensor.registerClient` function.
 
 ```ts
+// Set application URI if using DLQ
+Caliper.settings.applicationUri = 'https://example.org';
+
 const sensor1 = new Sensor('http://example.org/sensors/1');
 
 // With SensorConfig
