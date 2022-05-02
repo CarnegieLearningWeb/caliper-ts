@@ -18,6 +18,9 @@ export interface IndividualizedLearningPath extends Entity {
 	highestGradeLevel?: number;
 	lowestPlacementGrade?: number;
 	lessons?: Lesson[];
+	academicSessionId?: string;
+	schoolYear?: number;
+	placementId?: string;
 }
 
 export interface IndividualizedLearningPathParams {
@@ -28,6 +31,9 @@ export interface IndividualizedLearningPathParams {
 	highestGradeLevel?: number;
 	lowestPlacementGrade?: number;
 	lessons?: Lesson[];
+	academicSessionId?: string;
+	schoolYear?: number;
+	placementId?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
@@ -42,6 +48,7 @@ export function createIndividualizedLearningPath(
 ): IndividualizedLearningPath {
 	return {
 		type: EntityType.ILP,
+		schoolYear: 0,
 		...params,
 	};
 }

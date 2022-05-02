@@ -4,23 +4,21 @@
  */
 
 import { SystemIdentifier } from '../SystemIdentifier';
+import { Entity } from './Entity';
 import { EntityType } from './EntityType';
-import { Organization } from './Organization';
 import { Status } from './Status';
+import { Student } from './Student';
 
-export interface School extends Organization {
+export interface Placement extends Entity {
 	id: string;
+	assignee?: Student;
+	subject?: string;
 }
 
-export interface SchoolParams {
+export interface PlacementParams {
 	id: string;
-	subOrganizationOf?: Organization;
-	preferredName?: string;
-	accountManager?: string;
-	professionalDevSpecialist?: string;
-	externalSalesRep?: string;
-	insideSalesRep?: string;
-	territory?: string;
+	assignee?: Student;
+	subject?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
@@ -30,9 +28,9 @@ export interface SchoolParams {
 	extensions?: Record<string, any>;
 }
 
-export function createSchool(params: SchoolParams): School {
+export function createPlacement(params: PlacementParams): Placement {
 	return {
-		type: EntityType.School,
+		type: EntityType.Placement,
 		...params,
 	};
 }

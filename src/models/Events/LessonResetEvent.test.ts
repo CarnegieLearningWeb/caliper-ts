@@ -49,6 +49,7 @@ describe('LessonResetEvent', () => {
 			},
 			isPartOf: {
 				id: 'https://app.edgenuity.com/ilp/12345',
+				schoolYear: 0,
 				type: 'ILP',
 				student: {
 					id: 'https://foo.bar/user/10000',

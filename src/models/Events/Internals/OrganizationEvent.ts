@@ -3,6 +3,7 @@
  * This file was automatically generated.
  */
 
+import { AcademicSession } from '../../Entities/AcademicSession';
 import { Agent } from '../../Entities/Agent';
 import { District } from '../../Entities/District';
 import { EntityType } from '../../Entities/EntityType';
@@ -35,8 +36,15 @@ export interface OrganizationEventOrganization extends Organization {
 	state: string;
 	timezone: string;
 	institutionType: InstitutionType;
+	academicSessions?: AcademicSession[];
 	subOrganizationOf?: Organization | District | School;
 	otherIdentifiers?: SystemIdentifier[];
+	preferredName?: string;
+	accountManager?: string;
+	professionalDevSpecialist?: string;
+	externalSalesRep?: string;
+	insideSalesRep?: string;
+	territory?: string;
 }
 
 export interface OrganizationEventOrganizationParams {
@@ -48,8 +56,15 @@ export interface OrganizationEventOrganizationParams {
 	state: string;
 	timezone: string;
 	institutionType: InstitutionType;
+	academicSessions?: AcademicSession[];
 	subOrganizationOf?: Organization | District | School;
 	otherIdentifiers?: SystemIdentifier[];
+	preferredName?: string;
+	accountManager?: string;
+	professionalDevSpecialist?: string;
+	externalSalesRep?: string;
+	insideSalesRep?: string;
+	territory?: string;
 	description?: string;
 	extensions?: Record<string, any>;
 }
@@ -72,8 +87,15 @@ export interface OrganizationEventDistrict extends OrganizationEventOrganization
 	state: string;
 	timezone: string;
 	institutionType: InstitutionType;
+	academicSessions?: AcademicSession[];
 	subOrganizationOf?: Organization | District | School;
 	otherIdentifiers?: SystemIdentifier[];
+	preferredName?: string;
+	accountManager?: string;
+	professionalDevSpecialist?: string;
+	externalSalesRep?: string;
+	insideSalesRep?: string;
+	territory?: string;
 }
 
 export interface OrganizationEventDistrictParams {
@@ -85,8 +107,15 @@ export interface OrganizationEventDistrictParams {
 	state: string;
 	timezone: string;
 	institutionType: InstitutionType;
+	academicSessions?: AcademicSession[];
 	subOrganizationOf?: Organization | District | School;
 	otherIdentifiers?: SystemIdentifier[];
+	preferredName?: string;
+	accountManager?: string;
+	professionalDevSpecialist?: string;
+	externalSalesRep?: string;
+	insideSalesRep?: string;
+	territory?: string;
 	description?: string;
 	extensions?: Record<string, any>;
 }
@@ -109,8 +138,15 @@ export interface OrganizationEventSchool extends OrganizationEventOrganization {
 	state: string;
 	timezone: string;
 	institutionType: InstitutionType;
+	academicSessions?: AcademicSession[];
 	subOrganizationOf?: Organization | District | School;
 	otherIdentifiers?: SystemIdentifier[];
+	preferredName?: string;
+	accountManager?: string;
+	professionalDevSpecialist?: string;
+	externalSalesRep?: string;
+	insideSalesRep?: string;
+	territory?: string;
 }
 
 export interface OrganizationEventSchoolParams {
@@ -122,8 +158,15 @@ export interface OrganizationEventSchoolParams {
 	state: string;
 	timezone: string;
 	institutionType: InstitutionType;
+	academicSessions?: AcademicSession[];
 	subOrganizationOf?: Organization | District | School;
 	otherIdentifiers?: SystemIdentifier[];
+	preferredName?: string;
+	accountManager?: string;
+	professionalDevSpecialist?: string;
+	externalSalesRep?: string;
+	insideSalesRep?: string;
+	territory?: string;
 	description?: string;
 	extensions?: Record<string, any>;
 }

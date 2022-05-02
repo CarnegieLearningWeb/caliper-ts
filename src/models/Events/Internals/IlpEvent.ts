@@ -6,6 +6,7 @@
 import Caliper from '../../../caliper';
 import { Agent } from '../../Entities/Agent';
 import { CourseOffering } from '../../Entities/CourseOffering';
+import { DigitalResourceCollection } from '../../Entities/DigitalResourceCollection';
 import { Domain } from '../../Entities/Domain';
 import { Entity } from '../../Entities/Entity';
 import { EntityType } from '../../Entities/EntityType';
@@ -70,6 +71,9 @@ export interface IlpEventIndividualizedLearningPath extends IndividualizedLearni
 	highestGradeLevel: number;
 	lowestPlacementGrade: number;
 	lessons: IlpEventLesson[];
+	academicSessionId: string;
+	schoolYear: number;
+	placementId: string;
 }
 
 export interface IlpEventIndividualizedLearningPathParams {
@@ -80,6 +84,9 @@ export interface IlpEventIndividualizedLearningPathParams {
 	highestGradeLevel: number;
 	lowestPlacementGrade: number;
 	lessons: IlpEventLesson[];
+	academicSessionId: string;
+	schoolYear?: number;
+	placementId: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
@@ -94,6 +101,7 @@ export function createIlpEventIndividualizedLearningPath(
 ): IlpEventIndividualizedLearningPath {
 	return {
 		type: EntityType.ILP,
+		schoolYear: 0,
 		...params,
 	};
 }
@@ -105,7 +113,7 @@ export interface IlpEventLesson extends Lesson {
 	lessonOrder: number;
 	isAssigned: boolean;
 	domain: Domain;
-	isPartOf?: CourseOffering;
+	isPartOf?: CourseOffering | DigitalResourceCollection;
 }
 
 export interface IlpEventLessonParams {
@@ -115,7 +123,7 @@ export interface IlpEventLessonParams {
 	lessonOrder: number;
 	isAssigned: boolean;
 	domain: Domain;
-	isPartOf?: CourseOffering;
+	isPartOf?: CourseOffering | DigitalResourceCollection;
 	language?: string;
 	dateToActivate?: string;
 	dateToShow?: string;

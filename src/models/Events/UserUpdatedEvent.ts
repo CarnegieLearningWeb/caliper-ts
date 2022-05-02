@@ -628,6 +628,9 @@ export const UserUpdatedEventSchema = {
 							},
 						},
 					},
+					state: {
+						type: 'string',
+					},
 					email: {
 						type: 'string',
 						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
@@ -685,16 +688,19 @@ export const UserUpdatedEventSchema = {
 				title: 'Entity',
 				type: 'object',
 				properties: {
-					name: {
-						type: 'string',
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
 					type: {
 						title: 'EntityType',
 						$ref: '#/definitions/EntityType',
+					},
+					name: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
 					},
 					dateCreated: {
 						type: 'string',
@@ -703,13 +709,6 @@ export const UserUpdatedEventSchema = {
 					dateModified: {
 						type: 'string',
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -725,6 +724,10 @@ export const UserUpdatedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -822,6 +825,7 @@ export const UserUpdatedEventSchema = {
 					'EducationStandard',
 					'Domain',
 					'Configuration',
+					'Placement',
 				],
 			},
 			Organization: {
@@ -844,6 +848,24 @@ export const UserUpdatedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -1062,6 +1084,24 @@ export const UserUpdatedEventSchema = {
 							},
 						],
 					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1131,6 +1171,24 @@ export const UserUpdatedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -1204,6 +1262,24 @@ export const UserUpdatedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',

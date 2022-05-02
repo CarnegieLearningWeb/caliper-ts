@@ -7,6 +7,7 @@ import { SystemIdentifier } from '../SystemIdentifier';
 import { Agent } from './Agent';
 import { CourseOffering } from './CourseOffering';
 import { DigitalResource } from './DigitalResource';
+import { DigitalResourceCollection } from './DigitalResourceCollection';
 import { EntityType } from './EntityType';
 import { LearningObjective } from './LearningObjective';
 import { Status } from './Status';
@@ -20,7 +21,7 @@ export interface AssignableDigitalResource extends DigitalResource {
 	maxAttempts?: number;
 	maxSubmits?: number;
 	maxScore?: number;
-	isPartOf?: CourseOffering;
+	isPartOf?: CourseOffering | DigitalResourceCollection;
 }
 
 export interface AssignableDigitalResourceParams {
@@ -32,7 +33,7 @@ export interface AssignableDigitalResourceParams {
 	maxAttempts?: number;
 	maxSubmits?: number;
 	maxScore?: number;
-	isPartOf?: CourseOffering;
+	isPartOf?: CourseOffering | DigitalResourceCollection;
 	learningObjectives?: LearningObjective[];
 	keywords?: string[];
 	creators?: Agent[];

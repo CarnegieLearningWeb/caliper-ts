@@ -4,6 +4,7 @@
  */
 
 import Caliper from '../../caliper';
+import { AcademicSession } from '../Entities/AcademicSession';
 import { Agent } from '../Entities/Agent';
 import { Attempt } from '../Entities/Attempt';
 import { Entity } from '../Entities/Entity';
@@ -18,6 +19,8 @@ import { Session } from '../Entities/Session';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { Status } from '../Entities/Status';
 import { Student } from '../Entities/Student';
+import { StudentProfileSettings } from '../Entities/StudentProfileSettings';
+import { User } from '../Entities/User';
 import { UserSession } from '../Entities/UserSession';
 import { SystemIdentifier } from '../SystemIdentifier';
 import { CaliperAction } from './CaliperAction';
@@ -26,15 +29,15 @@ import { PlacementEvent } from './Internals/PlacementEvent';
 import { ProfileType } from './ProfileType';
 
 export interface PlacementModifiedEvent extends PlacementEvent {
-	actor: Instructor;
-	object: Student;
+	actor: Instructor | SoftwareApplication | User;
+	object: PlacementModifiedEventStudent;
 	generated: PlacementModifiedEventPlacementScore | PlacementScore;
 	session?: Session | UserSession;
 }
 
 export interface PlacementModifiedEventParams {
-	actor: Instructor;
-	object: Student;
+	actor: Instructor | SoftwareApplication | User;
+	object: PlacementModifiedEventStudent;
 	generated: PlacementModifiedEventPlacementScore | PlacementScore;
 	session?: Session | UserSession;
 	profile?: ProfileType;
@@ -52,7 +55,7 @@ export function createPlacementModifiedEvent(
 ): PlacementModifiedEvent {
 	return {
 		'@context': [
-			'http://edgenuity.com/events/placement-modified/0-0-1',
+			'http://edgenuity.com/events/placement-modified/0-0-2',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
 		action: CaliperAction.Modified,
@@ -64,11 +67,47 @@ export function createPlacementModifiedEvent(
 	};
 }
 
+export interface PlacementModifiedEventStudent extends Student {
+	id: string;
+	state?: string;
+	gradeLevel?: number;
+}
+
+export interface PlacementModifiedEventStudentParams {
+	id: string;
+	state?: string;
+	gradeLevel?: number;
+	individualEducationPlan?: boolean;
+	englishLanguageLearner?: boolean;
+	settings?: StudentProfileSettings;
+	name?: string;
+	firstName?: string;
+	lastName?: string;
+	email?: string;
+	description?: string;
+	dateCreated?: string;
+	dateModified?: string;
+	otherIdentifiers?: SystemIdentifier[];
+	status?: Status;
+	extensions?: Record<string, any>;
+}
+
+export function createPlacementModifiedEventStudent(
+	params: PlacementModifiedEventStudentParams
+): PlacementModifiedEventStudent {
+	return {
+		type: EntityType.Student,
+		...params,
+	};
+}
+
 export interface PlacementModifiedEventPlacementScore extends Score {
 	id: string;
 	subject: string;
 	placementGrade: number;
 	academicTerm: string;
+	ignored?: boolean;
+	academicSession?: AcademicSession;
 }
 
 export interface PlacementModifiedEventPlacementScoreParams {
@@ -76,6 +115,8 @@ export interface PlacementModifiedEventPlacementScoreParams {
 	subject: string;
 	placementGrade: number;
 	academicTerm: string;
+	ignored?: boolean;
+	academicSession?: AcademicSession;
 	attempt?: Attempt;
 	maxScore?: number;
 	scoreGiven?: number;
@@ -100,7 +141,7 @@ export function createPlacementModifiedEventPlacementScore(
 }
 
 export const PlacementModifiedEventSchema = {
-	context: 'http://edgenuity.com/events/placement-modified/0-0-1',
+	context: 'http://edgenuity.com/events/placement-modified/0-0-2',
 	schema: {
 		title: 'PlacementModifiedEvent',
 		type: 'object',
@@ -121,8 +162,8 @@ export const PlacementModifiedEventSchema = {
 				items: [
 					{
 						type: 'string',
-						default: 'http://edgenuity.com/events/placement-modified/0-0-1',
-						enum: ['http://edgenuity.com/events/placement-modified/0-0-1'],
+						default: 'http://edgenuity.com/events/placement-modified/0-0-2',
+						enum: ['http://edgenuity.com/events/placement-modified/0-0-2'],
 					},
 					{
 						type: 'string',
@@ -136,14 +177,19 @@ export const PlacementModifiedEventSchema = {
 				enum: ['Modified'],
 			},
 			actor: {
-				title: 'Instructor',
-				allOf: [
-					{
-						required: ['type', 'id'],
-					},
+				required: ['id', 'type'],
+				oneOf: [
 					{
 						title: 'Instructor',
 						$ref: '#/definitions/Instructor',
+					},
+					{
+						title: 'SoftwareApplication',
+						$ref: '#/definitions/SoftwareApplication',
+					},
+					{
+						title: 'User',
+						$ref: '#/definitions/User',
 					},
 				],
 			},
@@ -489,6 +535,68 @@ export const PlacementModifiedEventSchema = {
 				title: 'Status',
 				enum: ['Inactive', 'Active'],
 			},
+			User: {
+				title: 'User',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'User',
+						enum: ['User'],
+					},
+					name: {
+						type: 'string',
+					},
+					firstName: {
+						type: 'string',
+					},
+					lastName: {
+						type: 'string',
+					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
 			Student: {
 				title: 'Student',
 				type: 'object',
@@ -530,6 +638,9 @@ export const PlacementModifiedEventSchema = {
 								},
 							},
 						},
+					},
+					state: {
+						type: 'string',
 					},
 					name: {
 						type: 'string',
@@ -806,18 +917,6 @@ export const PlacementModifiedEventSchema = {
 						default: 'DigitalResource',
 						enum: ['DigitalResource'],
 					},
-					isPartOf: {
-						title: 'Entity',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Entity',
-								$ref: '#/definitions/Entity',
-							},
-						],
-					},
 					learningObjectives: {
 						type: 'array',
 						items: {
@@ -857,6 +956,18 @@ export const PlacementModifiedEventSchema = {
 					mediaType: {
 						type: 'string',
 					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
 					datePublished: {
 						type: 'string',
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
@@ -866,6 +977,110 @@ export const PlacementModifiedEventSchema = {
 					},
 					storageName: {
 						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			LearningObjective: {
+				title: 'LearningObjective',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'LearningObjective',
+						enum: ['LearningObjective'],
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Agent: {
+				title: 'Agent',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Agent',
+						enum: ['Agent'],
 					},
 					id: {
 						title: 'Uri',
@@ -1051,111 +1266,8 @@ export const PlacementModifiedEventSchema = {
 					'EducationStandard',
 					'Domain',
 					'Configuration',
+					'Placement',
 				],
-			},
-			LearningObjective: {
-				title: 'LearningObjective',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'LearningObjective',
-						enum: ['LearningObjective'],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Agent: {
-				title: 'Agent',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Agent',
-						enum: ['Agent'],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
 			},
 			AssignableDigitalResource: {
 				title: 'AssignableDigitalResource',
@@ -1192,14 +1304,15 @@ export const PlacementModifiedEventSchema = {
 						type: 'integer',
 					},
 					isPartOf: {
-						title: 'CourseOffering',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
+						required: ['id', 'type'],
+						oneOf: [
 							{
 								title: 'CourseOffering',
 								$ref: '#/definitions/CourseOffering',
+							},
+							{
+								title: 'DigitalResourceCollection',
+								$ref: '#/definitions/DigitalResourceCollection',
 							},
 						],
 					},
@@ -1322,6 +1435,24 @@ export const PlacementModifiedEventSchema = {
 							},
 						],
 					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1385,6 +1516,152 @@ export const PlacementModifiedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			DigitalResourceCollection: {
+				title: 'DigitalResourceCollection',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'DigitalResourceCollection',
+						enum: ['DigitalResourceCollection'],
+					},
+					items: {
+						type: 'array',
+						items: {
+							title: 'DigitalResource',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'DigitalResource',
+									$ref: '#/definitions/DigitalResource',
+								},
+							],
+						},
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
+					datePublished: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					version: {
+						type: 'string',
+					},
+					storageName: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -1479,14 +1756,15 @@ export const PlacementModifiedEventSchema = {
 						type: 'integer',
 					},
 					isPartOf: {
-						title: 'CourseOffering',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
+						required: ['id', 'type'],
+						oneOf: [
 							{
 								title: 'CourseOffering',
 								$ref: '#/definitions/CourseOffering',
+							},
+							{
+								title: 'DigitalResourceCollection',
+								$ref: '#/definitions/DigitalResourceCollection',
 							},
 						],
 					},
@@ -1620,14 +1898,15 @@ export const PlacementModifiedEventSchema = {
 						type: 'integer',
 					},
 					isPartOf: {
-						title: 'CourseOffering',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
+						required: ['id', 'type'],
+						oneOf: [
 							{
 								title: 'CourseOffering',
 								$ref: '#/definitions/CourseOffering',
+							},
+							{
+								title: 'DigitalResourceCollection',
+								$ref: '#/definitions/DigitalResourceCollection',
 							},
 						],
 					},
@@ -1785,14 +2064,15 @@ export const PlacementModifiedEventSchema = {
 						type: 'integer',
 					},
 					isPartOf: {
-						title: 'CourseOffering',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
+						required: ['id', 'type'],
+						oneOf: [
 							{
 								title: 'CourseOffering',
 								$ref: '#/definitions/CourseOffering',
+							},
+							{
+								title: 'DigitalResourceCollection',
+								$ref: '#/definitions/DigitalResourceCollection',
 							},
 						],
 					},
@@ -1998,68 +2278,6 @@ export const PlacementModifiedEventSchema = {
 					},
 				},
 			},
-			User: {
-				title: 'User',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'User',
-						enum: ['User'],
-					},
-					name: {
-						type: 'string',
-					},
-					firstName: {
-						type: 'string',
-					},
-					lastName: {
-						type: 'string',
-					},
-					email: {
-						type: 'string',
-						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
 			ProfileType: {
 				type: 'string',
 				title: 'ProfileType',
@@ -2203,6 +2421,24 @@ export const PlacementModifiedEventSchema = {
 							},
 						],
 					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -2272,6 +2508,24 @@ export const PlacementModifiedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -2345,6 +2599,24 @@ export const PlacementModifiedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',

@@ -4,48 +4,39 @@
  */
 
 import Caliper from '../../caliper';
-import { Agent } from '../Entities/Agent';
-import { Assessment } from '../Entities/Assessment';
-import { Attempt } from '../Entities/Attempt';
-import { CourseOffering } from '../Entities/CourseOffering';
-import { DigitalResource } from '../Entities/DigitalResource';
-import { DigitalResourceCollection } from '../Entities/DigitalResourceCollection';
 import { Entity } from '../Entities/Entity';
 import { EntityType } from '../Entities/EntityType';
-import { LearningObjective } from '../Entities/LearningObjective';
+import { Instructor } from '../Entities/Instructor';
 import { LtiSession } from '../Entities/LtiSession';
 import { Membership } from '../Entities/Membership';
 import { Organization } from '../Entities/Organization';
+import { Placement } from '../Entities/Placement';
 import { Session } from '../Entities/Session';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
 import { Status } from '../Entities/Status';
+import { Student } from '../Entities/Student';
 import { StudentProfileSettings } from '../Entities/StudentProfileSettings';
+import { User } from '../Entities/User';
 import { UserSession } from '../Entities/UserSession';
 import { SystemIdentifier } from '../SystemIdentifier';
-import {
-	BenchmarkEvent,
-	BenchmarkEventAttempt,
-	BenchmarkEventScore,
-	BenchmarkEventStudent,
-} from './BenchmarkEvent';
 import { CaliperAction } from './CaliperAction';
+import { Event } from './Event';
 import { EventType } from './EventType';
 import { ProfileType } from './ProfileType';
 
-export interface NWEABenchmarkEvent extends BenchmarkEvent {
-	actor: SoftwareApplication;
-	object: NWEABenchmarkEventAttempt | BenchmarkEventAttempt;
-	generated: NWEABenchmarkEventScore | BenchmarkEventScore;
+export interface PlacementDeactivatedEvent extends Event {
+	actor: Instructor | User;
+	object: PlacementDeactivatedEventPlacement;
 	session?: Session | UserSession;
 }
 
-export interface NWEABenchmarkEventParams {
-	actor: SoftwareApplication;
-	object: NWEABenchmarkEventAttempt | BenchmarkEventAttempt;
-	generated: NWEABenchmarkEventScore | BenchmarkEventScore;
+export interface PlacementDeactivatedEventParams {
+	actor: Instructor | User;
+	object: PlacementDeactivatedEventPlacement;
 	session?: Session | UserSession;
 	profile?: ProfileType;
 	target?: Entity;
+	generated?: Entity;
 	group?: Organization;
 	membership?: Membership;
 	federatedSession?: LtiSession;
@@ -53,17 +44,17 @@ export interface NWEABenchmarkEventParams {
 	extensions?: Record<string, any>;
 }
 
-export function createNWEABenchmarkEvent(
-	params: NWEABenchmarkEventParams,
+export function createPlacementDeactivatedEvent(
+	params: PlacementDeactivatedEventParams,
 	edApp?: SoftwareApplication
-): NWEABenchmarkEvent {
+): PlacementDeactivatedEvent {
 	return {
 		'@context': [
-			'http://edgenuity.com/events/benchmark/0-0-2',
+			'http://edgenuity.com/events/placement-deactivated/0-0-1',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
-		type: EventType.BenchmarkEvent,
-		action: CaliperAction.Graded,
+		action: CaliperAction.Deactivated,
+		type: EventType.PlacementEvent,
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
 		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
@@ -71,68 +62,17 @@ export function createNWEABenchmarkEvent(
 	};
 }
 
-export interface NWEABenchmarkEventAttempt extends BenchmarkEventAttempt {
+export interface PlacementDeactivatedEventPlacement extends Placement {
 	id: string;
-	assignable: NWEABenchmarkEventAssessment | Assessment;
-	assignee: NWEABenchmarkEventStudent | BenchmarkEventStudent;
-	dateCreated: string;
-	duration: string;
+	assignee: PlacementDeactivatedEventStudent;
+	subject: string;
 }
 
-export interface NWEABenchmarkEventAttemptParams {
+export interface PlacementDeactivatedEventPlacementParams {
 	id: string;
-	assignable: NWEABenchmarkEventAssessment | Assessment;
-	assignee: NWEABenchmarkEventStudent | BenchmarkEventStudent;
-	dateCreated: string;
-	duration: string;
-	count?: number;
-	startedAtTime?: string;
-	endedAtTime?: string;
-	isPartOf?: Attempt;
+	assignee: PlacementDeactivatedEventStudent;
+	subject: string;
 	name?: string;
-	description?: string;
-	dateModified?: string;
-	otherIdentifiers?: SystemIdentifier[];
-	status?: Status;
-	extensions?: Record<string, any>;
-}
-
-export function createNWEABenchmarkEventAttempt(
-	params: NWEABenchmarkEventAttemptParams
-): NWEABenchmarkEventAttempt {
-	return {
-		type: EntityType.Attempt,
-		...params,
-	};
-}
-
-export interface NWEABenchmarkEventAssessment extends Assessment {
-	id: string;
-	name: string;
-	subject: string;
-	isPartOf?: CourseOffering | DigitalResourceCollection;
-}
-
-export interface NWEABenchmarkEventAssessmentParams {
-	id: string;
-	name: string;
-	subject: string;
-	isPartOf?: CourseOffering | DigitalResourceCollection;
-	items?: DigitalResource[];
-	dateToActivate?: string;
-	dateToShow?: string;
-	dateToStartOn?: string;
-	dateToSubmit?: string;
-	maxAttempts?: number;
-	maxSubmits?: number;
-	maxScore?: number;
-	learningObjectives?: LearningObjective[];
-	keywords?: string[];
-	creators?: Agent[];
-	mediaType?: string;
-	datePublished?: string;
-	version?: string;
-	storageName?: string;
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
@@ -141,29 +81,28 @@ export interface NWEABenchmarkEventAssessmentParams {
 	extensions?: Record<string, any>;
 }
 
-export function createNWEABenchmarkEventAssessment(
-	params: NWEABenchmarkEventAssessmentParams
-): NWEABenchmarkEventAssessment {
+export function createPlacementDeactivatedEventPlacement(
+	params: PlacementDeactivatedEventPlacementParams
+): PlacementDeactivatedEventPlacement {
 	return {
-		type: EntityType.Assessment,
+		type: EntityType.Placement,
 		...params,
 	};
 }
 
-export interface NWEABenchmarkEventStudent extends BenchmarkEventStudent {
+export interface PlacementDeactivatedEventStudent extends Student {
 	id: string;
 	gradeLevel: number;
-	otherIdentifiers: SystemIdentifier[];
+	state?: string;
 }
 
-export interface NWEABenchmarkEventStudentParams {
+export interface PlacementDeactivatedEventStudentParams {
 	id: string;
 	gradeLevel: number;
-	otherIdentifiers: SystemIdentifier[];
+	state?: string;
 	individualEducationPlan?: boolean;
 	englishLanguageLearner?: boolean;
 	settings?: StudentProfileSettings;
-	state?: string;
 	name?: string;
 	firstName?: string;
 	lastName?: string;
@@ -171,77 +110,34 @@ export interface NWEABenchmarkEventStudentParams {
 	description?: string;
 	dateCreated?: string;
 	dateModified?: string;
+	otherIdentifiers?: SystemIdentifier[];
 	status?: Status;
 	extensions?: Record<string, any>;
 }
 
-export function createNWEABenchmarkEventStudent(
-	params: NWEABenchmarkEventStudentParams
-): NWEABenchmarkEventStudent {
+export function createPlacementDeactivatedEventStudent(
+	params: PlacementDeactivatedEventStudentParams
+): PlacementDeactivatedEventStudent {
 	return {
 		type: EntityType.Student,
 		...params,
 	};
 }
 
-export interface NWEABenchmarkEventScore extends BenchmarkEventScore {
-	id: string;
-	dateCreated: string;
-	scoreGiven: number;
-	academicTerm: string;
-	extensions: Record<string, any>;
-}
-
-export interface NWEABenchmarkEventScoreParams {
-	id: string;
-	dateCreated: string;
-	scoreGiven: number;
-	academicTerm: string;
-	extensions: Record<string, any>;
-	attempt?: Attempt;
-	maxScore?: number;
-	comment?: string;
-	scoredBy?: Agent;
-	name?: string;
-	description?: string;
-	dateModified?: string;
-	otherIdentifiers?: SystemIdentifier[];
-	status?: Status;
-}
-
-export function createNWEABenchmarkEventScore(
-	params: NWEABenchmarkEventScoreParams
-): NWEABenchmarkEventScore {
-	return {
-		type: EntityType.Score,
-		...params,
-	};
-}
-
-export const NWEABenchmarkEventSchema = {
-	context: 'http://edgenuity.com/events/benchmark/0-0-2',
+export const PlacementDeactivatedEventSchema = {
+	context: 'http://edgenuity.com/events/placement-deactivated/0-0-1',
 	schema: {
-		title: 'NWEABenchmarkEvent',
+		title: 'PlacementDeactivatedEvent',
 		type: 'object',
-		required: [
-			'@context',
-			'type',
-			'action',
-			'actor',
-			'object',
-			'generated',
-			'id',
-			'eventTime',
-			'edApp',
-		],
+		required: ['@context', 'action', 'type', 'actor', 'object', 'id', 'eventTime', 'edApp'],
 		properties: {
 			'@context': {
 				type: 'array',
 				items: [
 					{
 						type: 'string',
-						default: 'http://edgenuity.com/events/benchmark/0-0-2',
-						enum: ['http://edgenuity.com/events/benchmark/0-0-2'],
+						default: 'http://edgenuity.com/events/placement-deactivated/0-0-1',
+						enum: ['http://edgenuity.com/events/placement-deactivated/0-0-1'],
 					},
 					{
 						type: 'string',
@@ -250,49 +146,37 @@ export const NWEABenchmarkEventSchema = {
 					},
 				],
 			},
-			type: {
-				type: 'string',
-				default: 'BenchmarkEvent',
-				enum: ['BenchmarkEvent'],
-			},
 			action: {
 				type: 'string',
-				default: 'Graded',
-				enum: ['Graded'],
+				enum: ['Deactivated'],
+			},
+			type: {
+				type: 'string',
+				default: 'PlacementEvent',
+				enum: ['PlacementEvent'],
 			},
 			actor: {
-				title: 'SoftwareApplication',
+				required: ['id', 'type'],
+				oneOf: [
+					{
+						title: 'User',
+						$ref: '#/definitions/User',
+					},
+					{
+						title: 'Instructor',
+						$ref: '#/definitions/Instructor',
+					},
+				],
+			},
+			object: {
+				title: 'Placement',
 				allOf: [
 					{
 						required: ['type', 'id'],
 					},
 					{
-						title: 'SoftwareApplication',
-						$ref: '#/definitions/SoftwareApplication',
-					},
-				],
-			},
-			object: {
-				title: 'Attempt',
-				allOf: [
-					{
-						required: ['assignable', 'assignee', 'type', 'id'],
-					},
-					{
-						title: 'Attempt',
-						$ref: '#/definitions/Attempt',
-					},
-				],
-			},
-			generated: {
-				title: 'Score',
-				allOf: [
-					{
-						required: ['scoreGiven', 'extensions', 'type', 'id'],
-					},
-					{
-						title: 'Score',
-						$ref: '#/definitions/Score',
+						title: 'Placement',
+						$ref: '#/definitions/Placement',
 					},
 				],
 			},
@@ -321,6 +205,18 @@ export const NWEABenchmarkEventSchema = {
 				$ref: '#/definitions/ProfileType',
 			},
 			target: {
+				title: 'Entity',
+				allOf: [
+					{
+						required: ['type', 'id'],
+					},
+					{
+						title: 'Entity',
+						$ref: '#/definitions/Entity',
+					},
+				],
+			},
+			generated: {
 				title: 'Entity',
 				allOf: [
 					{
@@ -399,6 +295,131 @@ export const NWEABenchmarkEventSchema = {
 			},
 		},
 		definitions: {
+			User: {
+				title: 'User',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'User',
+						enum: ['User'],
+					},
+					name: {
+						type: 'string',
+					},
+					firstName: {
+						type: 'string',
+					},
+					lastName: {
+						type: 'string',
+					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Uri: {
+				type: 'string',
+				oneOf: [
+					{
+						pattern: '^https?:\\/\\/\\w.+\\.\\w+[/\\w+]*',
+					},
+					{
+						pattern: 'urn\\:.*',
+					},
+				],
+			},
+			SystemIdentifier: {
+				title: 'SystemIdentifier',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'SystemIdentifier',
+						enum: ['SystemIdentifier'],
+					},
+					identifierType: {
+						title: 'SystemIdentifierType',
+						$ref: '#/definitions/SystemIdentifierType',
+					},
+					identifier: {
+						type: 'string',
+					},
+					source: {
+						title: 'SoftwareApplication',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'SoftwareApplication',
+								$ref: '#/definitions/SoftwareApplication',
+							},
+						],
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			SystemIdentifierType: {
+				type: 'string',
+				title: 'SystemIdentifierType',
+				enum: [
+					'AccountUserName',
+					'EmailAddress',
+					'LisSourcedId',
+					'LtiContextId',
+					'LtiDeploymentId',
+					'LtiPlatformId',
+					'LtiToolId',
+					'LtiUserId',
+					'OneRosterSourcedId',
+					'Other',
+					'SisSourcedId',
+					'SystemId',
+				],
+			},
 			SoftwareApplication: {
 				title: 'SoftwareApplication',
 				type: 'object',
@@ -475,44 +496,70 @@ export const NWEABenchmarkEventSchema = {
 					},
 				],
 			},
-			Uri: {
+			Status: {
 				type: 'string',
-				oneOf: [
-					{
-						pattern: '^https?:\\/\\/\\w.+\\.\\w+[/\\w+]*',
-					},
-					{
-						pattern: 'urn\\:.*',
-					},
-				],
+				title: 'Status',
+				enum: ['Inactive', 'Active'],
 			},
-			SystemIdentifier: {
-				title: 'SystemIdentifier',
+			Instructor: {
+				title: 'Instructor',
 				type: 'object',
 				properties: {
 					type: {
 						type: 'string',
-						default: 'SystemIdentifier',
-						enum: ['SystemIdentifier'],
+						default: 'Instructor',
+						enum: ['Instructor'],
 					},
-					identifierType: {
-						title: 'SystemIdentifierType',
-						$ref: '#/definitions/SystemIdentifierType',
+					permissions: {
+						type: 'object',
+						additionalProperties: true,
 					},
-					identifier: {
+					name: {
 						type: 'string',
 					},
-					source: {
-						title: 'SoftwareApplication',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'SoftwareApplication',
-								$ref: '#/definitions/SoftwareApplication',
-							},
-						],
+					firstName: {
+						type: 'string',
+					},
+					lastName: {
+						type: 'string',
+					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -520,50 +567,20 @@ export const NWEABenchmarkEventSchema = {
 					},
 				},
 			},
-			SystemIdentifierType: {
-				type: 'string',
-				title: 'SystemIdentifierType',
-				enum: [
-					'AccountUserName',
-					'EmailAddress',
-					'LisSourcedId',
-					'LtiContextId',
-					'LtiDeploymentId',
-					'LtiPlatformId',
-					'LtiToolId',
-					'LtiUserId',
-					'OneRosterSourcedId',
-					'Other',
-					'SisSourcedId',
-					'SystemId',
-				],
-			},
-			Status: {
-				type: 'string',
-				title: 'Status',
-				enum: ['Inactive', 'Active'],
-			},
-			Attempt: {
-				title: 'Attempt',
+			Placement: {
+				title: 'Placement',
 				type: 'object',
 				properties: {
-					assignable: {
-						title: 'Assessment',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Assessment',
-								$ref: '#/definitions/Assessment',
-							},
-						],
+					type: {
+						type: 'string',
+						default: 'Placement',
+						enum: ['Placement'],
 					},
 					assignee: {
 						title: 'Student',
 						allOf: [
 							{
-								required: ['otherIdentifiers', 'type', 'id'],
+								required: ['type', 'id'],
 							},
 							{
 								title: 'Student',
@@ -571,190 +588,7 @@ export const NWEABenchmarkEventSchema = {
 							},
 						],
 					},
-					type: {
-						type: 'string',
-						default: 'Attempt',
-						enum: ['Attempt'],
-					},
-					count: {
-						type: 'number',
-					},
-					startedAtTime: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					endedAtTime: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					duration: {
-						type: 'string',
-						pattern: '^P(?:\\d+Y)?(?:\\d+M)?(?:\\d+D)?T?(?:\\d+H)?(?:\\d+M)?(?:\\d+S)?',
-					},
-					isPartOf: {
-						title: 'Attempt',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Attempt',
-								$ref: '#/definitions/Attempt',
-							},
-						],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Assessment: {
-				title: 'Assessment',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Assessment',
-						enum: ['Assessment'],
-					},
-					items: {
-						type: 'array',
-						items: {
-							title: 'DigitalResource',
-							allOf: [
-								{
-									required: ['type', 'id'],
-								},
-								{
-									title: 'DigitalResource',
-									$ref: '#/definitions/DigitalResource',
-								},
-							],
-						},
-					},
-					dateToActivate: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateToShow: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateToStartOn: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateToSubmit: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					maxAttempts: {
-						type: 'number',
-					},
-					maxSubmits: {
-						type: 'number',
-					},
-					maxScore: {
-						type: 'integer',
-					},
-					isPartOf: {
-						required: ['id', 'type'],
-						oneOf: [
-							{
-								title: 'CourseOffering',
-								$ref: '#/definitions/CourseOffering',
-							},
-							{
-								title: 'DigitalResourceCollection',
-								$ref: '#/definitions/DigitalResourceCollection',
-							},
-						],
-					},
-					learningObjectives: {
-						type: 'array',
-						items: {
-							title: 'LearningObjective',
-							allOf: [
-								{
-									required: ['type', 'id'],
-								},
-								{
-									title: 'LearningObjective',
-									$ref: '#/definitions/LearningObjective',
-								},
-							],
-						},
-					},
-					keywords: {
-						type: 'array',
-						items: {
-							type: 'string',
-						},
-					},
-					creators: {
-						type: 'array',
-						items: {
-							title: 'Agent',
-							allOf: [
-								{
-									required: ['type', 'id'],
-								},
-								{
-									title: 'Agent',
-									$ref: '#/definitions/Agent',
-								},
-							],
-						},
-					},
-					mediaType: {
-						type: 'string',
-					},
-					datePublished: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					version: {
-						type: 'string',
-					},
-					storageName: {
+					subject: {
 						type: 'string',
 					},
 					id: {
@@ -800,82 +634,67 @@ export const NWEABenchmarkEventSchema = {
 					},
 				},
 			},
-			DigitalResource: {
-				title: 'DigitalResource',
+			Student: {
+				title: 'Student',
 				type: 'object',
 				properties: {
 					type: {
 						type: 'string',
-						default: 'DigitalResource',
-						enum: ['DigitalResource'],
+						default: 'Student',
+						enum: ['Student'],
 					},
-					isPartOf: {
-						title: 'Entity',
-						allOf: [
-							{
-								required: ['type', 'id'],
+					gradeLevel: {
+						type: 'number',
+					},
+					individualEducationPlan: {
+						type: 'boolean',
+					},
+					englishLanguageLearner: {
+						type: 'boolean',
+					},
+					settings: {
+						type: 'object',
+						additionalProperties: true,
+						properties: {
+							spanishLanguage: {
+								type: 'array',
+								items: {
+									type: 'string',
+								},
 							},
-							{
-								title: 'Entity',
-								$ref: '#/definitions/Entity',
+							textToSpeech: {
+								type: 'array',
+								items: {
+									type: 'string',
+								},
 							},
-						],
-					},
-					learningObjectives: {
-						type: 'array',
-						items: {
-							title: 'LearningObjective',
-							allOf: [
-								{
-									required: ['type', 'id'],
+							languageTranslationTools: {
+								type: 'array',
+								items: {
+									type: 'string',
 								},
-								{
-									title: 'LearningObjective',
-									$ref: '#/definitions/LearningObjective',
-								},
-							],
+							},
 						},
 					},
-					keywords: {
-						type: 'array',
-						items: {
-							type: 'string',
-						},
-					},
-					creators: {
-						type: 'array',
-						items: {
-							title: 'Agent',
-							allOf: [
-								{
-									required: ['type', 'id'],
-								},
-								{
-									title: 'Agent',
-									$ref: '#/definitions/Agent',
-								},
-							],
-						},
-					},
-					mediaType: {
+					state: {
 						type: 'string',
 					},
-					datePublished: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					version: {
+					name: {
 						type: 'string',
 					},
-					storageName: {
+					firstName: {
 						type: 'string',
+					},
+					lastName: {
+						type: 'string',
+					},
+					email: {
+						type: 'string',
+						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
 					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
 					},
 					description: {
 						type: 'string',
@@ -912,6 +731,27 @@ export const NWEABenchmarkEventSchema = {
 						additionalProperties: true,
 					},
 				},
+			},
+			ProfileType: {
+				type: 'string',
+				title: 'ProfileType',
+				enum: [
+					'AnnotationProfile',
+					'AssessmentProfile',
+					'AssignableProfile',
+					'FeedbackProfile',
+					'ForumProfile',
+					'GradingProfile',
+					'MediaProfile',
+					'ReadingProfile',
+					'ResourceManagementProfile',
+					'SearchProfile',
+					'SessionProfile',
+					'SurveyProfile',
+					'ToolLaunchProfile',
+					'ToolUseProfile',
+					'GeneralProfile',
+				],
 			},
 			Entity: {
 				title: 'Entity',
@@ -924,6 +764,21 @@ export const NWEABenchmarkEventSchema = {
 					name: {
 						type: 'string',
 					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
 					otherIdentifiers: {
 						type: 'array',
 						items: {
@@ -939,28 +794,13 @@ export const NWEABenchmarkEventSchema = {
 							],
 						},
 					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
 					},
 				},
 			},
@@ -1057,198 +897,6 @@ export const NWEABenchmarkEventSchema = {
 					'Placement',
 				],
 			},
-			LearningObjective: {
-				title: 'LearningObjective',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'LearningObjective',
-						enum: ['LearningObjective'],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Agent: {
-				title: 'Agent',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Agent',
-						enum: ['Agent'],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			CourseOffering: {
-				title: 'CourseOffering',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'CourseOffering',
-						enum: ['CourseOffering'],
-					},
-					courseNumber: {
-						type: 'string',
-					},
-					academicSession: {
-						type: 'string',
-					},
-					subOrganizationOf: {
-						title: 'Organization',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Organization',
-								$ref: '#/definitions/Organization',
-							},
-						],
-					},
-					preferredName: {
-						type: 'string',
-					},
-					accountManager: {
-						type: 'string',
-					},
-					professionalDevSpecialist: {
-						type: 'string',
-					},
-					externalSalesRep: {
-						type: 'string',
-					},
-					insideSalesRep: {
-						type: 'string',
-					},
-					territory: {
-						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
 			Organization: {
 				title: 'Organization',
 				type: 'object',
@@ -1330,338 +978,6 @@ export const NWEABenchmarkEventSchema = {
 						additionalProperties: true,
 					},
 				},
-			},
-			DigitalResourceCollection: {
-				title: 'DigitalResourceCollection',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'DigitalResourceCollection',
-						enum: ['DigitalResourceCollection'],
-					},
-					items: {
-						type: 'array',
-						items: {
-							title: 'DigitalResource',
-							allOf: [
-								{
-									required: ['type', 'id'],
-								},
-								{
-									title: 'DigitalResource',
-									$ref: '#/definitions/DigitalResource',
-								},
-							],
-						},
-					},
-					learningObjectives: {
-						type: 'array',
-						items: {
-							title: 'LearningObjective',
-							allOf: [
-								{
-									required: ['type', 'id'],
-								},
-								{
-									title: 'LearningObjective',
-									$ref: '#/definitions/LearningObjective',
-								},
-							],
-						},
-					},
-					keywords: {
-						type: 'array',
-						items: {
-							type: 'string',
-						},
-					},
-					creators: {
-						type: 'array',
-						items: {
-							title: 'Agent',
-							allOf: [
-								{
-									required: ['type', 'id'],
-								},
-								{
-									title: 'Agent',
-									$ref: '#/definitions/Agent',
-								},
-							],
-						},
-					},
-					mediaType: {
-						type: 'string',
-					},
-					isPartOf: {
-						title: 'Entity',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Entity',
-								$ref: '#/definitions/Entity',
-							},
-						],
-					},
-					datePublished: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					version: {
-						type: 'string',
-					},
-					storageName: {
-						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Student: {
-				title: 'Student',
-				type: 'object',
-				properties: {
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					type: {
-						type: 'string',
-						default: 'Student',
-						enum: ['Student'],
-					},
-					gradeLevel: {
-						type: 'number',
-					},
-					individualEducationPlan: {
-						type: 'boolean',
-					},
-					englishLanguageLearner: {
-						type: 'boolean',
-					},
-					settings: {
-						type: 'object',
-						additionalProperties: true,
-						properties: {
-							spanishLanguage: {
-								type: 'array',
-								items: {
-									type: 'string',
-								},
-							},
-							textToSpeech: {
-								type: 'array',
-								items: {
-									type: 'string',
-								},
-							},
-							languageTranslationTools: {
-								type: 'array',
-								items: {
-									type: 'string',
-								},
-							},
-						},
-					},
-					state: {
-						type: 'string',
-					},
-					name: {
-						type: 'string',
-					},
-					firstName: {
-						type: 'string',
-					},
-					lastName: {
-						type: 'string',
-					},
-					email: {
-						type: 'string',
-						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Score: {
-				title: 'Score',
-				type: 'object',
-				properties: {
-					scoreGiven: {
-						type: 'integer',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-					type: {
-						type: 'string',
-						default: 'Score',
-						enum: ['Score'],
-					},
-					attempt: {
-						title: 'Attempt',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Attempt',
-								$ref: '#/definitions/Attempt',
-							},
-						],
-					},
-					maxScore: {
-						type: 'integer',
-					},
-					comment: {
-						type: 'string',
-					},
-					scoredBy: {
-						title: 'Agent',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
-							{
-								title: 'Agent',
-								$ref: '#/definitions/Agent',
-							},
-						],
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					name: {
-						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-				},
-			},
-			ProfileType: {
-				type: 'string',
-				title: 'ProfileType',
-				enum: [
-					'AnnotationProfile',
-					'AssessmentProfile',
-					'AssignableProfile',
-					'FeedbackProfile',
-					'ForumProfile',
-					'GradingProfile',
-					'MediaProfile',
-					'ReadingProfile',
-					'ResourceManagementProfile',
-					'SearchProfile',
-					'SessionProfile',
-					'SurveyProfile',
-					'ToolLaunchProfile',
-					'ToolUseProfile',
-					'GeneralProfile',
-				],
 			},
 			Membership: {
 				title: 'Membership',
@@ -1779,134 +1095,6 @@ export const NWEABenchmarkEventSchema = {
 					},
 					name: {
 						type: 'string',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			User: {
-				title: 'User',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'User',
-						enum: ['User'],
-					},
-					name: {
-						type: 'string',
-					},
-					firstName: {
-						type: 'string',
-					},
-					lastName: {
-						type: 'string',
-					},
-					email: {
-						type: 'string',
-						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			Instructor: {
-				title: 'Instructor',
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						default: 'Instructor',
-						enum: ['Instructor'],
-					},
-					permissions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-					name: {
-						type: 'string',
-					},
-					firstName: {
-						type: 'string',
-					},
-					lastName: {
-						type: 'string',
-					},
-					email: {
-						type: 'string',
-						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
 					},
 					description: {
 						type: 'string',

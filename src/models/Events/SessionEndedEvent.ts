@@ -588,6 +588,9 @@ export const SessionEndedEventSchema = {
 							},
 						},
 					},
+					state: {
+						type: 'string',
+					},
 					name: {
 						type: 'string',
 					},
@@ -1004,14 +1007,14 @@ export const SessionEndedEventSchema = {
 				title: 'Entity',
 				type: 'object',
 				properties: {
-					description: {
-						type: 'string',
-					},
 					type: {
 						title: 'EntityType',
 						$ref: '#/definitions/EntityType',
 					},
 					name: {
+						type: 'string',
+					},
+					description: {
 						type: 'string',
 					},
 					id: {
@@ -1141,6 +1144,7 @@ export const SessionEndedEventSchema = {
 					'EducationStandard',
 					'Domain',
 					'Configuration',
+					'Placement',
 				],
 			},
 			ProfileType: {
@@ -1184,6 +1188,24 @@ export const SessionEndedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -1402,6 +1424,24 @@ export const SessionEndedEventSchema = {
 							},
 						],
 					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1471,6 +1511,24 @@ export const SessionEndedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -1544,6 +1602,24 @@ export const SessionEndedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -1757,6 +1833,11 @@ export const SessionEndedEventSchema = {
 				title: 'Session',
 				type: 'object',
 				properties: {
+					type: {
+						type: 'string',
+						default: 'Session',
+						enum: ['Session'],
+					},
 					user: {
 						required: ['id', 'type'],
 						oneOf: [
@@ -1777,11 +1858,6 @@ export const SessionEndedEventSchema = {
 								$ref: '#/definitions/Student',
 							},
 						],
-					},
-					type: {
-						type: 'string',
-						default: 'Session',
-						enum: ['Session'],
 					},
 					client: {
 						title: 'SoftwareApplication',

@@ -45,7 +45,7 @@ export function createGroupCreatedEvent(
 ): GroupCreatedEvent {
 	return {
 		'@context': [
-			'http://edgenuity.com/events/group-created/0-0-2',
+			'http://edgenuity.com/events/group-created/0-0-3',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
 		action: CaliperAction.Created,
@@ -58,7 +58,7 @@ export function createGroupCreatedEvent(
 }
 
 export const GroupCreatedEventSchema = {
-	context: 'http://edgenuity.com/events/group-created/0-0-2',
+	context: 'http://edgenuity.com/events/group-created/0-0-3',
 	schema: {
 		title: 'GroupCreatedEvent',
 		type: 'object',
@@ -69,8 +69,8 @@ export const GroupCreatedEventSchema = {
 				items: [
 					{
 						type: 'string',
-						default: 'http://edgenuity.com/events/group-created/0-0-2',
-						enum: ['http://edgenuity.com/events/group-created/0-0-2'],
+						default: 'http://edgenuity.com/events/group-created/0-0-3',
+						enum: ['http://edgenuity.com/events/group-created/0-0-3'],
 					},
 					{
 						type: 'string',
@@ -584,6 +584,9 @@ export const GroupCreatedEventSchema = {
 							},
 						},
 					},
+					state: {
+						type: 'string',
+					},
 					name: {
 						type: 'string',
 					},
@@ -731,10 +734,50 @@ export const GroupCreatedEventSchema = {
 						title: 'Status',
 						$ref: '#/definitions/Status',
 					},
+					academicSession: {
+						title: 'AcademicSession',
+						allOf: [
+							{
+								required: [
+									'status',
+									'dateLastModified',
+									'startDate',
+									'endDate',
+									'schoolYear',
+									'type',
+									'title',
+									'id',
+									'type',
+								],
+							},
+							{
+								title: 'AcademicSession',
+								$ref: '#/definitions/AcademicSession',
+							},
+						],
+					},
 					type: {
 						type: 'string',
 						default: 'Group',
 						enum: ['Group'],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -768,6 +811,11 @@ export const GroupCreatedEventSchema = {
 				title: 'Organization',
 				type: 'object',
 				properties: {
+					type: {
+						type: 'string',
+						default: 'Organization',
+						enum: ['Organization'],
+					},
 					subOrganizationOf: {
 						title: 'Organization',
 						allOf: [
@@ -780,10 +828,23 @@ export const GroupCreatedEventSchema = {
 							},
 						],
 					},
-					type: {
+					preferredName: {
 						type: 'string',
-						default: 'Organization',
-						enum: ['Organization'],
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -848,6 +909,24 @@ export const GroupCreatedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -994,6 +1073,24 @@ export const GroupCreatedEventSchema = {
 						default: 'Class',
 						enum: ['Class'],
 					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1021,6 +1118,152 @@ export const GroupCreatedEventSchema = {
 						additionalProperties: true,
 					},
 				},
+			},
+			AcademicSession: {
+				title: 'AcademicSession',
+				type: 'object',
+				properties: {
+					status: {
+						title: 'AcademicSessionStatus',
+						$ref: '#/definitions/AcademicSessionStatus',
+					},
+					dateLastModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					startDate: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					endDate: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					isPartOf: {
+						title: 'AcademicSessionReference',
+						allOf: [
+							{
+								required: ['type', 'title', 'id', 'type'],
+							},
+							{
+								title: 'AcademicSessionReference',
+								$ref: '#/definitions/AcademicSessionReference',
+							},
+						],
+					},
+					schoolYear: {
+						type: 'string',
+						pattern: '^\\d{4}$',
+					},
+					type: {
+						title: 'AcademicSessionType',
+						$ref: '#/definitions/AcademicSessionType',
+					},
+					title: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			AcademicSessionStatus: {
+				type: 'string',
+				title: 'AcademicSessionStatus',
+				enum: ['Active', 'ToBeDeleted'],
+			},
+			AcademicSessionReference: {
+				title: 'AcademicSessionReference',
+				type: 'object',
+				properties: {
+					type: {
+						title: 'AcademicSessionType',
+						$ref: '#/definitions/AcademicSessionType',
+					},
+					title: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			AcademicSessionType: {
+				type: 'string',
+				title: 'AcademicSessionType',
+				enum: ['GradingPeriod', 'Semester', 'SchoolYear', 'Term'],
 			},
 			ProfileType: {
 				type: 'string',
@@ -1184,6 +1427,7 @@ export const GroupCreatedEventSchema = {
 					'EducationStandard',
 					'Domain',
 					'Configuration',
+					'Placement',
 				],
 			},
 			Membership: {

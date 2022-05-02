@@ -613,6 +613,9 @@ export const SessionContinuedEventSchema = {
 							},
 						},
 					},
+					state: {
+						type: 'string',
+					},
 					name: {
 						type: 'string',
 					},
@@ -1135,6 +1138,7 @@ export const SessionContinuedEventSchema = {
 					'EducationStandard',
 					'Domain',
 					'Configuration',
+					'Placement',
 				],
 			},
 			ProfileType: {
@@ -1178,6 +1182,24 @@ export const SessionContinuedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -1396,6 +1418,24 @@ export const SessionContinuedEventSchema = {
 							},
 						],
 					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1465,6 +1505,24 @@ export const SessionContinuedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -1538,6 +1596,24 @@ export const SessionContinuedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',

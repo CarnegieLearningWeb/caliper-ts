@@ -6,7 +6,6 @@
 import Caliper from '../../../caliper';
 import { Agent } from '../../Entities/Agent';
 import { Attempt } from '../../Entities/Attempt';
-import { CourseOffering } from '../../Entities/CourseOffering';
 import { Domain } from '../../Entities/Domain';
 import { Entity } from '../../Entities/Entity';
 import { EntityType } from '../../Entities/EntityType';
@@ -69,12 +68,12 @@ export function createLessonEvent(
 
 export interface LessonEventLesson extends Lesson {
 	id: string;
-	isPartOf: LessonEventIndividualizedLearningPath | CourseOffering;
+	isPartOf: LessonEventIndividualizedLearningPath;
 }
 
 export interface LessonEventLessonParams {
 	id: string;
-	isPartOf: LessonEventIndividualizedLearningPath | CourseOffering;
+	isPartOf: LessonEventIndividualizedLearningPath;
 	domain?: Domain;
 	gradeLevel?: number;
 	domainOrder?: number;
@@ -126,6 +125,8 @@ export interface LessonEventIndividualizedLearningPathParams {
 	state?: string;
 	subject?: string;
 	lessons?: Lesson[];
+	academicSessionId?: string;
+	placementId?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;
@@ -140,6 +141,7 @@ export function createLessonEventIndividualizedLearningPath(
 ): LessonEventIndividualizedLearningPath {
 	return {
 		type: EntityType.ILP,
+		schoolYear: 0,
 		...params,
 	};
 }

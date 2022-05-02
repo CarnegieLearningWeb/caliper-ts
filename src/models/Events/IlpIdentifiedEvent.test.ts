@@ -48,6 +48,9 @@ describe('IlpIdentifiedEvent', () => {
 				id: 'urn:uuid:6df6e776-b749-4a48-a421-eb2785d6a68a',
 				type: 'Student',
 			},
+			academicSessionId: 'https://whatever.edu/mpng/academic-session-id',
+			placementId: 'https://whatever.edu/mpng/placement-id',
+			schoolYear: 0,
 			lessons: [
 				{
 					id: 'urn:pathid:12345#234',
@@ -191,6 +194,8 @@ describe('IlpIdentifiedEvent', () => {
 				],
 				dateCreated: Caliper.timestamp('2020-09-22T12:00:00Z'),
 				dateModified: Caliper.timestamp('2020-09-22T12:00:00Z'),
+				academicSessionId: 'https://whatever.edu/mpng/academic-session-id',
+				placementId: 'https://whatever.edu/mpng/placement-id',
 			}),
 		});
 		validate(model);

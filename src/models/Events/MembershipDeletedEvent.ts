@@ -651,6 +651,9 @@ export const MembershipDeletedEventSchema = {
 							},
 						},
 					},
+					state: {
+						type: 'string',
+					},
 					name: {
 						type: 'string',
 					},
@@ -734,6 +737,24 @@ export const MembershipDeletedEventSchema = {
 						default: 'Organization',
 						enum: ['Organization'],
 					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -806,6 +827,24 @@ export const MembershipDeletedEventSchema = {
 						type: 'string',
 						default: 'School',
 						enum: ['School'],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -885,6 +924,24 @@ export const MembershipDeletedEventSchema = {
 						items: {
 							type: 'string',
 						},
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -967,6 +1024,24 @@ export const MembershipDeletedEventSchema = {
 						items: {
 							type: 'string',
 						},
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -1237,6 +1312,7 @@ export const MembershipDeletedEventSchema = {
 					'EducationStandard',
 					'Domain',
 					'Configuration',
+					'Placement',
 				],
 			},
 			LtiSession: {

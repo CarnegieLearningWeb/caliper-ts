@@ -24,7 +24,7 @@ describe('OrganizationCreatedEvent', () => {
 
 	const organizationEvent = {
 		'@context': [
-			'http://edgenuity.com/events/organization-created/0-0-3',
+			'http://edgenuity.com/events/organization-created/0-0-6',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
 		id: 'urn:uuid:e251d4a0-b93c-4a0e-86cc-8b14c8db6787',
@@ -142,7 +142,7 @@ describe('OrganizationCreatedEvent', () => {
 
 	const schoolEvent = {
 		'@context': [
-			'http://edgenuity.com/events/organization-created/0-0-3',
+			'http://edgenuity.com/events/organization-created/0-0-6',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
 		id: 'urn:uuid:e251d4a0-b93c-4a0e-86cc-8b14c8db6787',
@@ -260,7 +260,7 @@ describe('OrganizationCreatedEvent', () => {
 
 	const districtEvent = {
 		'@context': [
-			'http://edgenuity.com/events/organization-created/0-0-3',
+			'http://edgenuity.com/events/organization-created/0-0-6',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
 		id: 'urn:uuid:e251d4a0-b93c-4a0e-86cc-8b14c8db6787',

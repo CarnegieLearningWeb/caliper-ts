@@ -6,7 +6,6 @@
 import Caliper from '../../caliper';
 import { Agent } from '../Entities/Agent';
 import { Attempt } from '../Entities/Attempt';
-import { CourseOffering } from '../Entities/CourseOffering';
 import { Domain } from '../Entities/Domain';
 import { Entity } from '../Entities/Entity';
 import { EntityType } from '../Entities/EntityType';
@@ -71,13 +70,13 @@ export function createLessonStartedEvent(
 export interface LessonStartedEventLesson extends LessonEventLesson {
 	id: string;
 	language: string;
-	isPartOf: LessonEventIndividualizedLearningPath | CourseOffering;
+	isPartOf: LessonEventIndividualizedLearningPath;
 }
 
 export interface LessonStartedEventLessonParams {
 	id: string;
 	language: string;
-	isPartOf: LessonEventIndividualizedLearningPath | CourseOffering;
+	isPartOf: LessonEventIndividualizedLearningPath;
 	domain?: Domain;
 	gradeLevel?: number;
 	domainOrder?: number;
@@ -327,6 +326,9 @@ export const LessonStartedEventSchema = {
 								},
 							},
 						},
+					},
+					state: {
+						type: 'string',
 					},
 					name: {
 						type: 'string',
@@ -904,6 +906,7 @@ export const LessonStartedEventSchema = {
 					'EducationStandard',
 					'Domain',
 					'Configuration',
+					'Placement',
 				],
 			},
 			LearningObjective: {
@@ -1045,14 +1048,15 @@ export const LessonStartedEventSchema = {
 						type: 'integer',
 					},
 					isPartOf: {
-						title: 'CourseOffering',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
+						required: ['id', 'type'],
+						oneOf: [
 							{
 								title: 'CourseOffering',
 								$ref: '#/definitions/CourseOffering',
+							},
+							{
+								title: 'DigitalResourceCollection',
+								$ref: '#/definitions/DigitalResourceCollection',
 							},
 						],
 					},
@@ -1175,6 +1179,24 @@ export const LessonStartedEventSchema = {
 							},
 						],
 					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1238,6 +1260,152 @@ export const LessonStartedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			DigitalResourceCollection: {
+				title: 'DigitalResourceCollection',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'DigitalResourceCollection',
+						enum: ['DigitalResourceCollection'],
+					},
+					items: {
+						type: 'array',
+						items: {
+							title: 'DigitalResource',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'DigitalResource',
+									$ref: '#/definitions/DigitalResource',
+								},
+							],
+						},
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
+					datePublished: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					version: {
+						type: 'string',
+					},
+					storageName: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -1332,14 +1500,15 @@ export const LessonStartedEventSchema = {
 						type: 'integer',
 					},
 					isPartOf: {
-						title: 'CourseOffering',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
+						required: ['id', 'type'],
+						oneOf: [
 							{
 								title: 'CourseOffering',
 								$ref: '#/definitions/CourseOffering',
+							},
+							{
+								title: 'DigitalResourceCollection',
+								$ref: '#/definitions/DigitalResourceCollection',
 							},
 						],
 					},
@@ -1473,14 +1642,15 @@ export const LessonStartedEventSchema = {
 						type: 'integer',
 					},
 					isPartOf: {
-						title: 'CourseOffering',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
+						required: ['id', 'type'],
+						oneOf: [
 							{
 								title: 'CourseOffering',
 								$ref: '#/definitions/CourseOffering',
+							},
+							{
+								title: 'DigitalResourceCollection',
+								$ref: '#/definitions/DigitalResourceCollection',
 							},
 						],
 					},
@@ -2027,6 +2197,17 @@ export const LessonStartedEventSchema = {
 							],
 						},
 					},
+					academicSessionId: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					schoolYear: {
+						type: 'number',
+					},
+					placementId: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -2213,6 +2394,24 @@ export const LessonStartedEventSchema = {
 							},
 						],
 					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -2282,6 +2481,24 @@ export const LessonStartedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -2355,6 +2572,24 @@ export const LessonStartedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',

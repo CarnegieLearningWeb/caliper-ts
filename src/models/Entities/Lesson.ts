@@ -7,6 +7,7 @@ import { SystemIdentifier } from '../SystemIdentifier';
 import { Agent } from './Agent';
 import { AssignableDigitalResource } from './AssignableDigitalResource';
 import { CourseOffering } from './CourseOffering';
+import { DigitalResourceCollection } from './DigitalResourceCollection';
 import { Domain } from './Domain';
 import { EntityType } from './EntityType';
 import { LearningObjective } from './LearningObjective';
@@ -20,7 +21,7 @@ export interface Lesson extends AssignableDigitalResource {
 	lessonOrder?: number;
 	isAssigned?: boolean;
 	language?: string;
-	isPartOf?: CourseOffering;
+	isPartOf?: CourseOffering | DigitalResourceCollection;
 }
 
 export interface LessonParams {
@@ -31,7 +32,7 @@ export interface LessonParams {
 	lessonOrder?: number;
 	isAssigned?: boolean;
 	language?: string;
-	isPartOf?: CourseOffering;
+	isPartOf?: CourseOffering | DigitalResourceCollection;
 	dateToActivate?: string;
 	dateToShow?: string;
 	dateToStartOn?: string;

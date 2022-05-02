@@ -15,6 +15,12 @@ export interface District extends Organization {
 export interface DistrictParams {
 	id: string;
 	subOrganizationOf?: Organization;
+	preferredName?: string;
+	accountManager?: string;
+	professionalDevSpecialist?: string;
+	externalSalesRep?: string;
+	insideSalesRep?: string;
+	territory?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;

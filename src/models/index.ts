@@ -5,6 +5,10 @@
 
 export * from './AuthorizationClaims';
 export * from './CredentialType';
+export * from './Entities/AcademicSession';
+export * from './Entities/AcademicSessionReference';
+export * from './Entities/AcademicSessionStatus';
+export * from './Entities/AcademicSessionType';
 export * from './Entities/Agent';
 export * from './Entities/AggregateMeasure';
 export * from './Entities/AggregateMeasureCollection';
@@ -68,6 +72,7 @@ export * from './Entities/OpenEndedResponse';
 export * from './Entities/Organization';
 export * from './Entities/Page';
 export * from './Entities/Person';
+export * from './Entities/Placement';
 export * from './Entities/PlacementScore';
 export * from './Entities/PlacementTest';
 export * from './Entities/Query';
@@ -162,6 +167,8 @@ export * from './Events/OrganizationCreatedEvent';
 export * from './Events/OrganizationDeactivatedEvent';
 export * from './Events/OrganizationDeletedEvent';
 export * from './Events/OrganizationUpdatedEvent';
+export * from './Events/PlacementActivatedEvent';
+export * from './Events/PlacementDeactivatedEvent';
 export * from './Events/PlacementGradedEvent';
 export * from './Events/PlacementModifiedEvent';
 export * from './Events/ProfileType';

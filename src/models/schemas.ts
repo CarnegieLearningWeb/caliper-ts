@@ -39,9 +39,12 @@ import { OrganizationCreatedEventSchema } from './Events/OrganizationCreatedEven
 import { OrganizationDeactivatedEventSchema } from './Events/OrganizationDeactivatedEvent';
 import { OrganizationDeletedEventSchema } from './Events/OrganizationDeletedEvent';
 import { OrganizationUpdatedEventSchema } from './Events/OrganizationUpdatedEvent';
+import { PlacementActivatedEventSchema } from './Events/PlacementActivatedEvent';
+import { PlacementDeactivatedEventSchema } from './Events/PlacementDeactivatedEvent';
 import { PlacementGradedEventSchema } from './Events/PlacementGradedEvent';
 import { PlacementModifiedEventSchema } from './Events/PlacementModifiedEvent';
 import { RenaissanceBenchmarkEventSchema } from './Events/RenaissanceBenchmarkEvent';
+import { SearchEventSchema } from './Events/SearchEvent';
 import { SessionContinuedEventSchema } from './Events/SessionContinuedEvent';
 import { SessionEndedEventSchema } from './Events/SessionEndedEvent';
 import { SessionTimedOutEventSchema } from './Events/SessionTimedOutEvent';
@@ -91,6 +94,9 @@ export const schemas = {
 	[OrganizationDeactivatedEventSchema.context]: OrganizationDeactivatedEventSchema.schema,
 	[PlacementGradedEventSchema.context]: PlacementGradedEventSchema.schema,
 	[PlacementModifiedEventSchema.context]: PlacementModifiedEventSchema.schema,
+	[PlacementDeactivatedEventSchema.context]: PlacementDeactivatedEventSchema.schema,
+	[PlacementActivatedEventSchema.context]: PlacementActivatedEventSchema.schema,
+	[SearchEventSchema.context]: SearchEventSchema.schema,
 	[SessionTimedOutEventSchema.context]: SessionTimedOutEventSchema.schema,
 	[SessionEndedEventSchema.context]: SessionEndedEventSchema.schema,
 	[SessionContinuedEventSchema.context]: SessionContinuedEventSchema.schema,

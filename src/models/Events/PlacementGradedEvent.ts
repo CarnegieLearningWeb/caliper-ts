@@ -4,11 +4,13 @@
  */
 
 import Caliper from '../../caliper';
+import { AcademicSession } from '../Entities/AcademicSession';
 import { Agent } from '../Entities/Agent';
 import { Assessment } from '../Entities/Assessment';
 import { Attempt } from '../Entities/Attempt';
 import { CourseOffering } from '../Entities/CourseOffering';
 import { DigitalResource } from '../Entities/DigitalResource';
+import { DigitalResourceCollection } from '../Entities/DigitalResourceCollection';
 import { Entity } from '../Entities/Entity';
 import { EntityType } from '../Entities/EntityType';
 import { LearningObjective } from '../Entities/LearningObjective';
@@ -60,7 +62,7 @@ export function createPlacementGradedEvent(
 ): PlacementGradedEvent {
 	return {
 		'@context': [
-			'http://edgenuity.com/events/placement-graded/0-0-1',
+			'http://edgenuity.com/events/placement-graded/0-0-2',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
 		action: CaliperAction.Graded,
@@ -79,6 +81,8 @@ export interface PlacementGradedEventPlacementScore extends BenchmarkEventScore 
 	placementGrade: number;
 	academicTerm: string;
 	extensions: Record<string, any>;
+	ignored?: boolean;
+	academicSession?: AcademicSession;
 }
 
 export interface PlacementGradedEventPlacementScoreParams {
@@ -88,6 +92,8 @@ export interface PlacementGradedEventPlacementScoreParams {
 	placementGrade: number;
 	academicTerm: string;
 	extensions: Record<string, any>;
+	ignored?: boolean;
+	academicSession?: AcademicSession;
 	attempt?: Attempt;
 	maxScore?: number;
 	comment?: string;
@@ -113,14 +119,14 @@ export interface PlacementGradedEventAssessment extends Assessment {
 	id: string;
 	name: string;
 	subject: string;
-	isPartOf?: CourseOffering;
+	isPartOf?: CourseOffering | DigitalResourceCollection;
 }
 
 export interface PlacementGradedEventAssessmentParams {
 	id: string;
 	name: string;
 	subject: string;
-	isPartOf?: CourseOffering;
+	isPartOf?: CourseOffering | DigitalResourceCollection;
 	items?: DigitalResource[];
 	dateToActivate?: string;
 	dateToShow?: string;
@@ -157,12 +163,14 @@ export interface PlacementGradedEventStudent extends BenchmarkEventStudent {
 	id: string;
 	gradeLevel: number;
 	otherIdentifiers: SystemIdentifier[];
+	state?: string;
 }
 
 export interface PlacementGradedEventStudentParams {
 	id: string;
 	gradeLevel: number;
 	otherIdentifiers: SystemIdentifier[];
+	state?: string;
 	individualEducationPlan?: boolean;
 	englishLanguageLearner?: boolean;
 	settings?: StudentProfileSettings;
@@ -187,7 +195,7 @@ export function createPlacementGradedEventStudent(
 }
 
 export const PlacementGradedEventSchema = {
-	context: 'http://edgenuity.com/events/placement-graded/0-0-1',
+	context: 'http://edgenuity.com/events/placement-graded/0-0-2',
 	schema: {
 		title: 'PlacementGradedEvent',
 		type: 'object',
@@ -209,8 +217,8 @@ export const PlacementGradedEventSchema = {
 				items: [
 					{
 						type: 'string',
-						default: 'http://edgenuity.com/events/placement-graded/0-0-1',
-						enum: ['http://edgenuity.com/events/placement-graded/0-0-1'],
+						default: 'http://edgenuity.com/events/placement-graded/0-0-2',
+						enum: ['http://edgenuity.com/events/placement-graded/0-0-2'],
 					},
 					{
 						type: 'string',
@@ -664,14 +672,15 @@ export const PlacementGradedEventSchema = {
 						type: 'integer',
 					},
 					isPartOf: {
-						title: 'CourseOffering',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
+						required: ['id', 'type'],
+						oneOf: [
 							{
 								title: 'CourseOffering',
 								$ref: '#/definitions/CourseOffering',
+							},
+							{
+								title: 'DigitalResourceCollection',
+								$ref: '#/definitions/DigitalResourceCollection',
 							},
 						],
 					},
@@ -992,12 +1001,16 @@ export const PlacementGradedEventSchema = {
 						title: 'EntityType',
 						$ref: '#/definitions/EntityType',
 					},
-					name: {
-						type: 'string',
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
 					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
 					},
 					description: {
 						type: 'string',
@@ -1028,10 +1041,6 @@ export const PlacementGradedEventSchema = {
 					status: {
 						title: 'Status',
 						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
 					},
 				},
 			},
@@ -1125,6 +1134,7 @@ export const PlacementGradedEventSchema = {
 					'EducationStandard',
 					'Domain',
 					'Configuration',
+					'Placement',
 				],
 			},
 			CourseOffering: {
@@ -1153,6 +1163,24 @@ export const PlacementGradedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -1217,6 +1245,152 @@ export const PlacementGradedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			DigitalResourceCollection: {
+				title: 'DigitalResourceCollection',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'DigitalResourceCollection',
+						enum: ['DigitalResourceCollection'],
+					},
+					items: {
+						type: 'array',
+						items: {
+							title: 'DigitalResource',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'DigitalResource',
+									$ref: '#/definitions/DigitalResource',
+								},
+							],
+						},
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
+					datePublished: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					version: {
+						type: 'string',
+					},
+					storageName: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -1317,6 +1491,9 @@ export const PlacementGradedEventSchema = {
 								},
 							},
 						},
+					},
+					state: {
+						type: 'string',
 					},
 					name: {
 						type: 'string',
@@ -1767,6 +1944,24 @@ export const PlacementGradedEventSchema = {
 							},
 						],
 					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1836,6 +2031,24 @@ export const PlacementGradedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -1909,6 +2122,24 @@ export const PlacementGradedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',

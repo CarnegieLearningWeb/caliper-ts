@@ -15,6 +15,7 @@ export interface Student extends User {
 	individualEducationPlan?: boolean;
 	englishLanguageLearner?: boolean;
 	settings?: StudentProfileSettings;
+	state?: string;
 }
 
 export interface StudentParams {
@@ -23,6 +24,7 @@ export interface StudentParams {
 	individualEducationPlan?: boolean;
 	englishLanguageLearner?: boolean;
 	settings?: StudentProfileSettings;
+	state?: string;
 	name?: string;
 	firstName?: string;
 	lastName?: string;

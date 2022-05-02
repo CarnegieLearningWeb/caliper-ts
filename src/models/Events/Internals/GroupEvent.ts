@@ -3,6 +3,7 @@
  * This file was automatically generated.
  */
 
+import { AcademicSession } from '../../Entities/AcademicSession';
 import { Agent } from '../../Entities/Agent';
 import { Class } from '../../Entities/Class';
 import { EntityType } from '../../Entities/EntityType';
@@ -34,6 +35,7 @@ export interface GroupEventGroup extends Group {
 	status: Status;
 	name: string;
 	subjects: string[];
+	academicSession?: AcademicSession;
 	subOrganizationOf?: Organization | School | GroupEventGroup | GroupEventClass;
 	otherIdentifiers?: SystemIdentifier[];
 }
@@ -45,8 +47,15 @@ export interface GroupEventGroupParams {
 	status: Status;
 	name: string;
 	subjects: string[];
+	academicSession?: AcademicSession;
 	subOrganizationOf?: Organization | School | GroupEventGroup | GroupEventClass;
 	otherIdentifiers?: SystemIdentifier[];
+	preferredName?: string;
+	accountManager?: string;
+	professionalDevSpecialist?: string;
+	externalSalesRep?: string;
+	insideSalesRep?: string;
+	territory?: string;
 	description?: string;
 	extensions?: Record<string, any>;
 }
@@ -80,6 +89,12 @@ export interface GroupEventClassParams {
 	academicTerm: string;
 	subOrganizationOf?: Organization | School | GroupEventGroup | GroupEventClass;
 	otherIdentifiers?: SystemIdentifier[];
+	preferredName?: string;
+	accountManager?: string;
+	professionalDevSpecialist?: string;
+	externalSalesRep?: string;
+	insideSalesRep?: string;
+	territory?: string;
 	description?: string;
 	extensions?: Record<string, any>;
 }

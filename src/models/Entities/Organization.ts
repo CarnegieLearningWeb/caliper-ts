@@ -11,11 +11,23 @@ import { Status } from './Status';
 export interface Organization extends Agent {
 	id: string;
 	subOrganizationOf?: Organization;
+	preferredName?: string;
+	accountManager?: string;
+	professionalDevSpecialist?: string;
+	externalSalesRep?: string;
+	insideSalesRep?: string;
+	territory?: string;
 }
 
 export interface OrganizationParams {
 	id: string;
 	subOrganizationOf?: Organization;
+	preferredName?: string;
+	accountManager?: string;
+	professionalDevSpecialist?: string;
+	externalSalesRep?: string;
+	insideSalesRep?: string;
+	territory?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;

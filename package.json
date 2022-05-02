@@ -1,6 +1,6 @@
 {
 	"name": "@imaginelearning/caliper-ts",
-	"version": "2.1.3",
+	"version": "2.2.0",
 	"description": "Reference implementation of the Caliper Sensor API written in TypeScript",
 	"author": "Imagine Learning",
 	"license": "MIT",

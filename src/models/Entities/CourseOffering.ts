@@ -19,6 +19,12 @@ export interface CourseOfferingParams {
 	courseNumber?: string;
 	academicSession?: string;
 	subOrganizationOf?: Organization;
+	preferredName?: string;
+	accountManager?: string;
+	professionalDevSpecialist?: string;
+	externalSalesRep?: string;
+	insideSalesRep?: string;
+	territory?: string;
 	name?: string;
 	description?: string;
 	dateCreated?: string;

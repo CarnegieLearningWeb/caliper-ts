@@ -11,27 +11,23 @@ import { Membership } from '../Entities/Membership';
 import { Organization } from '../Entities/Organization';
 import { Session } from '../Entities/Session';
 import { SoftwareApplication } from '../Entities/SoftwareApplication';
+import { Student } from '../Entities/Student';
 import { User } from '../Entities/User';
 import { UserSession } from '../Entities/UserSession';
 import { CaliperAction } from './CaliperAction';
+import { Event } from './Event';
 import { EventType } from './EventType';
-import {
-	UserEvent,
-	UserEventInstructor,
-	UserEventStudent,
-	UserEventUser,
-} from './Internals/UserEvent';
 import { ProfileType } from './ProfileType';
 
-export interface UserDeletedEvent extends UserEvent {
+export interface UserDeletedEvent extends Event {
 	actor: SoftwareApplication | User | Instructor;
-	object: UserEventUser | UserEventInstructor | UserEventStudent;
+	object: User | Instructor | Student;
 	session?: Session | UserSession;
 }
 
 export interface UserDeletedEventParams {
 	actor: SoftwareApplication | User | Instructor;
-	object: UserEventUser | UserEventInstructor | UserEventStudent;
+	object: User | Instructor | Student;
 	session?: Session | UserSession;
 	profile?: ProfileType;
 	target?: Entity;
@@ -49,11 +45,11 @@ export function createUserDeletedEvent(
 ): UserDeletedEvent {
 	return {
 		'@context': [
-			'http://edgenuity.com/events/user-deleted/0-0-2',
+			'http://edgenuity.com/events/user-deleted/0-1-0',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
-		action: CaliperAction.Deleted,
 		type: EventType.UserEvent,
+		action: CaliperAction.Deleted,
 		id: Caliper.uuid(),
 		eventTime: Caliper.timestamp(),
 		edApp: edApp ?? (Caliper.edApp() as SoftwareApplication),
@@ -62,19 +58,19 @@ export function createUserDeletedEvent(
 }
 
 export const UserDeletedEventSchema = {
-	context: 'http://edgenuity.com/events/user-deleted/0-0-2',
+	context: 'http://edgenuity.com/events/user-deleted/0-1-0',
 	schema: {
 		title: 'UserDeletedEvent',
 		type: 'object',
-		required: ['@context', 'action', 'type', 'actor', 'object', 'id', 'eventTime', 'edApp'],
+		required: ['@context', 'type', 'action', 'actor', 'object', 'id', 'eventTime', 'edApp'],
 		properties: {
 			'@context': {
 				type: 'array',
 				items: [
 					{
 						type: 'string',
-						default: 'http://edgenuity.com/events/user-deleted/0-0-2',
-						enum: ['http://edgenuity.com/events/user-deleted/0-0-2'],
+						default: 'http://edgenuity.com/events/user-deleted/0-1-0',
+						enum: ['http://edgenuity.com/events/user-deleted/0-1-0'],
 					},
 					{
 						type: 'string',
@@ -83,15 +79,15 @@ export const UserDeletedEventSchema = {
 					},
 				],
 			},
-			action: {
-				type: 'string',
-				default: 'Deleted',
-				enum: ['Deleted'],
-			},
 			type: {
 				type: 'string',
 				default: 'UserEvent',
 				enum: ['UserEvent'],
+			},
+			action: {
+				type: 'string',
+				default: 'Deleted',
+				enum: ['Deleted'],
 			},
 			actor: {
 				required: ['id', 'type'],
@@ -111,70 +107,19 @@ export const UserDeletedEventSchema = {
 				],
 			},
 			object: {
+				required: ['id', 'type'],
 				oneOf: [
 					{
 						title: 'User',
-						allOf: [
-							{
-								required: [
-									'dateCreated',
-									'dateModified',
-									'name',
-									'firstName',
-									'lastName',
-									'status',
-									'type',
-									'id',
-								],
-							},
-							{
-								title: 'User',
-								$ref: '#/definitions/User',
-							},
-						],
+						$ref: '#/definitions/User',
 					},
 					{
 						title: 'Instructor',
-						allOf: [
-							{
-								required: [
-									'dateCreated',
-									'dateModified',
-									'name',
-									'firstName',
-									'lastName',
-									'status',
-									'type',
-									'id',
-								],
-							},
-							{
-								title: 'Instructor',
-								$ref: '#/definitions/Instructor',
-							},
-						],
+						$ref: '#/definitions/Instructor',
 					},
 					{
 						title: 'Student',
-						allOf: [
-							{
-								required: [
-									'dateCreated',
-									'dateModified',
-									'name',
-									'firstName',
-									'lastName',
-									'status',
-									'gradeLevel',
-									'type',
-									'id',
-								],
-							},
-							{
-								title: 'Student',
-								$ref: '#/definitions/Student',
-							},
-						],
+						$ref: '#/definitions/Student',
 					},
 				],
 			},
@@ -441,13 +386,10 @@ export const UserDeletedEventSchema = {
 				title: 'User',
 				type: 'object',
 				properties: {
-					dateCreated: {
+					type: {
 						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+						default: 'User',
+						enum: ['User'],
 					},
 					name: {
 						type: 'string',
@@ -457,15 +399,6 @@ export const UserDeletedEventSchema = {
 					},
 					lastName: {
 						type: 'string',
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					type: {
-						type: 'string',
-						default: 'User',
-						enum: ['User'],
 					},
 					email: {
 						type: 'string',
@@ -477,6 +410,14 @@ export const UserDeletedEventSchema = {
 					},
 					description: {
 						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -492,6 +433,10 @@ export const UserDeletedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -503,13 +448,14 @@ export const UserDeletedEventSchema = {
 				title: 'Instructor',
 				type: 'object',
 				properties: {
-					dateCreated: {
+					type: {
 						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+						default: 'Instructor',
+						enum: ['Instructor'],
 					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					permissions: {
+						type: 'object',
+						additionalProperties: true,
 					},
 					name: {
 						type: 'string',
@@ -519,19 +465,6 @@ export const UserDeletedEventSchema = {
 					},
 					lastName: {
 						type: 'string',
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					type: {
-						type: 'string',
-						default: 'Instructor',
-						enum: ['Instructor'],
-					},
-					permissions: {
-						type: 'object',
-						additionalProperties: true,
 					},
 					email: {
 						type: 'string',
@@ -543,6 +476,14 @@ export const UserDeletedEventSchema = {
 					},
 					description: {
 						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -559,6 +500,10 @@ export const UserDeletedEventSchema = {
 							],
 						},
 					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
 					extensions: {
 						type: 'object',
 						additionalProperties: true,
@@ -569,34 +514,13 @@ export const UserDeletedEventSchema = {
 				title: 'Student',
 				type: 'object',
 				properties: {
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					name: {
-						type: 'string',
-					},
-					firstName: {
-						type: 'string',
-					},
-					lastName: {
-						type: 'string',
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					gradeLevel: {
-						type: 'number',
-					},
 					type: {
 						type: 'string',
 						default: 'Student',
 						enum: ['Student'],
+					},
+					gradeLevel: {
+						type: 'number',
 					},
 					individualEducationPlan: {
 						type: 'boolean',
@@ -628,6 +552,18 @@ export const UserDeletedEventSchema = {
 							},
 						},
 					},
+					state: {
+						type: 'string',
+					},
+					name: {
+						type: 'string',
+					},
+					firstName: {
+						type: 'string',
+					},
+					lastName: {
+						type: 'string',
+					},
 					email: {
 						type: 'string',
 						pattern: '^[\\w._%+-]+@[\\w.-]+\\.\\w+',
@@ -638,6 +574,14 @@ export const UserDeletedEventSchema = {
 					},
 					description: {
 						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -653,6 +597,10 @@ export const UserDeletedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -692,6 +640,13 @@ export const UserDeletedEventSchema = {
 					name: {
 						type: 'string',
 					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
 					dateCreated: {
 						type: 'string',
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
@@ -699,17 +654,6 @@ export const UserDeletedEventSchema = {
 					dateModified: {
 						type: 'string',
 						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
 					},
 					otherIdentifiers: {
 						type: 'array',
@@ -725,6 +669,10 @@ export const UserDeletedEventSchema = {
 								},
 							],
 						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
 					},
 					extensions: {
 						type: 'object',
@@ -822,6 +770,7 @@ export const UserDeletedEventSchema = {
 					'EducationStandard',
 					'Domain',
 					'Configuration',
+					'Placement',
 				],
 			},
 			Organization: {
@@ -844,6 +793,24 @@ export const UserDeletedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -1062,6 +1029,24 @@ export const UserDeletedEventSchema = {
 							},
 						],
 					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1131,6 +1116,24 @@ export const UserDeletedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -1204,6 +1207,24 @@ export const UserDeletedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',

@@ -287,6 +287,17 @@ export const IlpActivatedEventSchema = {
 							],
 						},
 					},
+					academicSessionId: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					schoolYear: {
+						type: 'number',
+					},
+					placementId: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -371,6 +382,9 @@ export const IlpActivatedEventSchema = {
 								},
 							},
 						},
+					},
+					state: {
+						type: 'string',
 					},
 					name: {
 						type: 'string',
@@ -631,14 +645,15 @@ export const IlpActivatedEventSchema = {
 						type: 'integer',
 					},
 					isPartOf: {
-						title: 'CourseOffering',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
+						required: ['id', 'type'],
+						oneOf: [
 							{
 								title: 'CourseOffering',
 								$ref: '#/definitions/CourseOffering',
+							},
+							{
+								title: 'DigitalResourceCollection',
+								$ref: '#/definitions/DigitalResourceCollection',
 							},
 						],
 					},
@@ -819,6 +834,24 @@ export const IlpActivatedEventSchema = {
 							},
 						],
 					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -883,6 +916,24 @@ export const IlpActivatedEventSchema = {
 							},
 						],
 					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -925,6 +976,391 @@ export const IlpActivatedEventSchema = {
 						additionalProperties: true,
 					},
 				},
+			},
+			DigitalResourceCollection: {
+				title: 'DigitalResourceCollection',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'DigitalResourceCollection',
+						enum: ['DigitalResourceCollection'],
+					},
+					items: {
+						type: 'array',
+						items: {
+							title: 'DigitalResource',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'DigitalResource',
+									$ref: '#/definitions/DigitalResource',
+								},
+							],
+						},
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
+					datePublished: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					version: {
+						type: 'string',
+					},
+					storageName: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			DigitalResource: {
+				title: 'DigitalResource',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'DigitalResource',
+						enum: ['DigitalResource'],
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					datePublished: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					version: {
+						type: 'string',
+					},
+					storageName: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Entity: {
+				title: 'Entity',
+				type: 'object',
+				properties: {
+					type: {
+						title: 'EntityType',
+						$ref: '#/definitions/EntityType',
+					},
+					name: {
+						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			EntityType: {
+				type: 'string',
+				title: 'EntityType',
+				enum: [
+					'Entity',
+					'Agent',
+					'AggregateMeasure',
+					'AggregateMeasureCollection',
+					'Annotation',
+					'Assessment',
+					'AssessmentItem',
+					'AssignableDigitalResource',
+					'Attempt',
+					'AudioObject',
+					'BookmarkAnnotation',
+					'Chapter',
+					'Collection',
+					'Comment',
+					'CourseOffering',
+					'CourseSection',
+					'DateTimeQuestion',
+					'DateTimeResponse',
+					'DigitalResource',
+					'DigitalResourceCollection',
+					'Document',
+					'FillinBlankResponse',
+					'Forum',
+					'Frame',
+					'Group',
+					'HighlightAnnotation',
+					'ImageObject',
+					'LearningObjective',
+					'LikertScale',
+					'Link',
+					'LtiLink',
+					'LtiSession',
+					'MediaLocation',
+					'MediaObject',
+					'Membership',
+					'Message',
+					'MultipleChoiceResponse',
+					'MultipleResponseResponse',
+					'MultiselectQuestion',
+					'MultiselectResponse',
+					'MultiselectScale',
+					'NumericScale',
+					'OpenEndedQuestion',
+					'OpenEndedResponse',
+					'Organization',
+					'Page',
+					'Person',
+					'Query',
+					'Question',
+					'Questionnaire',
+					'QuestionnaireItem',
+					'Rating',
+					'RatingScaleQuestion',
+					'RatingScaleResponse',
+					'Response',
+					'Result',
+					'Scale',
+					'Score',
+					'SearchResponse',
+					'SelectTextResponse',
+					'Session',
+					'SharedAnnotation',
+					'SoftwareApplication',
+					'Survey',
+					'SurveyInvitation',
+					'TagAnnotation',
+					'Thread',
+					'TrueFalseResponse',
+					'VideoObject',
+					'WebPage',
+					'User',
+					'Student',
+					'Instructor',
+					'School',
+					'District',
+					'Class',
+					'ILP',
+					'Lesson',
+					'Award',
+					'MasteryScore',
+					'PlacementTest',
+					'PlacementScore',
+					'UserSession',
+					'EducationStandard',
+					'Domain',
+					'Configuration',
+					'Placement',
+				],
 			},
 			LearningObjective: {
 				title: 'LearningObjective',
@@ -1179,149 +1615,6 @@ export const IlpActivatedEventSchema = {
 					'GeneralProfile',
 				],
 			},
-			Entity: {
-				title: 'Entity',
-				type: 'object',
-				properties: {
-					type: {
-						title: 'EntityType',
-						$ref: '#/definitions/EntityType',
-					},
-					name: {
-						type: 'string',
-					},
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
-					description: {
-						type: 'string',
-					},
-					dateCreated: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					dateModified: {
-						type: 'string',
-						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
-					},
-					otherIdentifiers: {
-						type: 'array',
-						items: {
-							title: 'SystemIdentifier',
-							allOf: [
-								{
-									required: ['type', 'identifierType', 'identifier', 'source'],
-								},
-								{
-									title: 'SystemIdentifier',
-									$ref: '#/definitions/SystemIdentifier',
-								},
-							],
-						},
-					},
-					status: {
-						title: 'Status',
-						$ref: '#/definitions/Status',
-					},
-					extensions: {
-						type: 'object',
-						additionalProperties: true,
-					},
-				},
-			},
-			EntityType: {
-				type: 'string',
-				title: 'EntityType',
-				enum: [
-					'Entity',
-					'Agent',
-					'AggregateMeasure',
-					'AggregateMeasureCollection',
-					'Annotation',
-					'Assessment',
-					'AssessmentItem',
-					'AssignableDigitalResource',
-					'Attempt',
-					'AudioObject',
-					'BookmarkAnnotation',
-					'Chapter',
-					'Collection',
-					'Comment',
-					'CourseOffering',
-					'CourseSection',
-					'DateTimeQuestion',
-					'DateTimeResponse',
-					'DigitalResource',
-					'DigitalResourceCollection',
-					'Document',
-					'FillinBlankResponse',
-					'Forum',
-					'Frame',
-					'Group',
-					'HighlightAnnotation',
-					'ImageObject',
-					'LearningObjective',
-					'LikertScale',
-					'Link',
-					'LtiLink',
-					'LtiSession',
-					'MediaLocation',
-					'MediaObject',
-					'Membership',
-					'Message',
-					'MultipleChoiceResponse',
-					'MultipleResponseResponse',
-					'MultiselectQuestion',
-					'MultiselectResponse',
-					'MultiselectScale',
-					'NumericScale',
-					'OpenEndedQuestion',
-					'OpenEndedResponse',
-					'Organization',
-					'Page',
-					'Person',
-					'Query',
-					'Question',
-					'Questionnaire',
-					'QuestionnaireItem',
-					'Rating',
-					'RatingScaleQuestion',
-					'RatingScaleResponse',
-					'Response',
-					'Result',
-					'Scale',
-					'Score',
-					'SearchResponse',
-					'SelectTextResponse',
-					'Session',
-					'SharedAnnotation',
-					'SoftwareApplication',
-					'Survey',
-					'SurveyInvitation',
-					'TagAnnotation',
-					'Thread',
-					'TrueFalseResponse',
-					'VideoObject',
-					'WebPage',
-					'User',
-					'Student',
-					'Instructor',
-					'School',
-					'District',
-					'Class',
-					'ILP',
-					'Lesson',
-					'Award',
-					'MasteryScore',
-					'PlacementTest',
-					'PlacementScore',
-					'UserSession',
-					'EducationStandard',
-					'Domain',
-					'Configuration',
-				],
-			},
 			Membership: {
 				title: 'Membership',
 				type: 'object',
@@ -1496,6 +1789,24 @@ export const IlpActivatedEventSchema = {
 							},
 						],
 					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1565,6 +1876,24 @@ export const IlpActivatedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -1638,6 +1967,24 @@ export const IlpActivatedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',

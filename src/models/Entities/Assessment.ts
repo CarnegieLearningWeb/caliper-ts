@@ -8,6 +8,7 @@ import { Agent } from './Agent';
 import { AssignableDigitalResource } from './AssignableDigitalResource';
 import { CourseOffering } from './CourseOffering';
 import { DigitalResource } from './DigitalResource';
+import { DigitalResourceCollection } from './DigitalResourceCollection';
 import { EntityType } from './EntityType';
 import { LearningObjective } from './LearningObjective';
 import { Status } from './Status';
@@ -15,13 +16,13 @@ import { Status } from './Status';
 export interface Assessment extends AssignableDigitalResource {
 	id: string;
 	items?: DigitalResource[];
-	isPartOf?: CourseOffering;
+	isPartOf?: CourseOffering | DigitalResourceCollection;
 }
 
 export interface AssessmentParams {
 	id: string;
 	items?: DigitalResource[];
-	isPartOf?: CourseOffering;
+	isPartOf?: CourseOffering | DigitalResourceCollection;
 	dateToActivate?: string;
 	dateToShow?: string;
 	dateToStartOn?: string;

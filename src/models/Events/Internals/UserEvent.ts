@@ -120,6 +120,7 @@ export interface UserEventStudentParams {
 	otherIdentifiers?: SystemIdentifier[];
 	settings?: StudentProfileSettings;
 	name: string;
+	state?: string;
 	description?: string;
 	extensions?: Record<string, any>;
 }

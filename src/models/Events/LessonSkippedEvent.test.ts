@@ -41,6 +41,7 @@ describe('LessonSkippedEvent', () => {
 			dateModified: '2020-09-22T15:00:00.000Z',
 			isPartOf: {
 				id: 'https://app.edgenuity.com/ilp/12345',
+				schoolYear: 0,
 				type: 'ILP',
 				student: {
 					id: 'https://foo.bar/user/10000',

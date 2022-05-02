@@ -90,4 +90,5 @@ export enum EntityType {
 	EducationStandard = 'EducationStandard',
 	Domain = 'Domain',
 	Configuration = 'Configuration',
+	Placement = 'Placement',
 }

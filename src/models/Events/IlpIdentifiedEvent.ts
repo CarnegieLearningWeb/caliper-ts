@@ -123,6 +123,9 @@ export const IlpIdentifiedEventSchema = {
 							'highestGradeLevel',
 							'lowestPlacementGrade',
 							'lessons',
+							'academicSessionId',
+							'schoolYear',
+							'placementId',
 							'id',
 						],
 					},
@@ -160,7 +163,7 @@ export const IlpIdentifiedEventSchema = {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['id', 'type'],
+						required: ['type', 'id'],
 					},
 					{
 						title: 'Entity',
@@ -172,7 +175,7 @@ export const IlpIdentifiedEventSchema = {
 				title: 'Entity',
 				allOf: [
 					{
-						required: ['id', 'type'],
+						required: ['type', 'id'],
 					},
 					{
 						title: 'Entity',
@@ -561,6 +564,9 @@ export const IlpIdentifiedEventSchema = {
 							},
 						},
 					},
+					state: {
+						type: 'string',
+					},
 					name: {
 						type: 'string',
 					},
@@ -661,6 +667,17 @@ export const IlpIdentifiedEventSchema = {
 								},
 							],
 						},
+					},
+					academicSessionId: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					schoolYear: {
+						type: 'number',
+					},
+					placementId: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
 					},
 					id: {
 						title: 'Uri',
@@ -767,14 +784,15 @@ export const IlpIdentifiedEventSchema = {
 						type: 'integer',
 					},
 					isPartOf: {
-						title: 'CourseOffering',
-						allOf: [
-							{
-								required: ['type', 'id'],
-							},
+						required: ['id', 'type'],
+						oneOf: [
 							{
 								title: 'CourseOffering',
 								$ref: '#/definitions/CourseOffering',
+							},
+							{
+								title: 'DigitalResourceCollection',
+								$ref: '#/definitions/DigitalResourceCollection',
 							},
 						],
 					},
@@ -955,6 +973,24 @@ export const IlpIdentifiedEventSchema = {
 							},
 						],
 					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1019,6 +1055,24 @@ export const IlpIdentifiedEventSchema = {
 							},
 						],
 					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1062,14 +1116,90 @@ export const IlpIdentifiedEventSchema = {
 					},
 				},
 			},
-			LearningObjective: {
-				title: 'LearningObjective',
+			DigitalResourceCollection: {
+				title: 'DigitalResourceCollection',
 				type: 'object',
 				properties: {
 					type: {
 						type: 'string',
-						default: 'LearningObjective',
-						enum: ['LearningObjective'],
+						default: 'DigitalResourceCollection',
+						enum: ['DigitalResourceCollection'],
+					},
+					items: {
+						type: 'array',
+						items: {
+							title: 'DigitalResource',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'DigitalResource',
+									$ref: '#/definitions/DigitalResource',
+								},
+							],
+						},
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
+					datePublished: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					version: {
+						type: 'string',
+					},
+					storageName: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -1114,14 +1244,75 @@ export const IlpIdentifiedEventSchema = {
 					},
 				},
 			},
-			Agent: {
-				title: 'Agent',
+			DigitalResource: {
+				title: 'DigitalResource',
 				type: 'object',
 				properties: {
 					type: {
 						type: 'string',
-						default: 'Agent',
-						enum: ['Agent'],
+						default: 'DigitalResource',
+						enum: ['DigitalResource'],
+					},
+					isPartOf: {
+						title: 'Entity',
+						allOf: [
+							{
+								required: ['type', 'id'],
+							},
+							{
+								title: 'Entity',
+								$ref: '#/definitions/Entity',
+							},
+						],
+					},
+					learningObjectives: {
+						type: 'array',
+						items: {
+							title: 'LearningObjective',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'LearningObjective',
+									$ref: '#/definitions/LearningObjective',
+								},
+							],
+						},
+					},
+					keywords: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					creators: {
+						type: 'array',
+						items: {
+							title: 'Agent',
+							allOf: [
+								{
+									required: ['type', 'id'],
+								},
+								{
+									title: 'Agent',
+									$ref: '#/definitions/Agent',
+								},
+							],
+						},
+					},
+					mediaType: {
+						type: 'string',
+					},
+					datePublished: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					version: {
+						type: 'string',
+					},
+					storageName: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -1165,42 +1356,21 @@ export const IlpIdentifiedEventSchema = {
 						additionalProperties: true,
 					},
 				},
-			},
-			ProfileType: {
-				type: 'string',
-				title: 'ProfileType',
-				enum: [
-					'AnnotationProfile',
-					'AssessmentProfile',
-					'AssignableProfile',
-					'FeedbackProfile',
-					'ForumProfile',
-					'GradingProfile',
-					'MediaProfile',
-					'ReadingProfile',
-					'ResourceManagementProfile',
-					'SearchProfile',
-					'SessionProfile',
-					'SurveyProfile',
-					'ToolLaunchProfile',
-					'ToolUseProfile',
-					'GeneralProfile',
-				],
 			},
 			Entity: {
 				title: 'Entity',
 				type: 'object',
 				properties: {
-					id: {
-						title: 'Uri',
-						$ref: '#/definitions/Uri',
-					},
 					type: {
 						title: 'EntityType',
 						$ref: '#/definitions/EntityType',
 					},
 					name: {
 						type: 'string',
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
 					},
 					description: {
 						type: 'string',
@@ -1328,6 +1498,132 @@ export const IlpIdentifiedEventSchema = {
 					'EducationStandard',
 					'Domain',
 					'Configuration',
+					'Placement',
+				],
+			},
+			LearningObjective: {
+				title: 'LearningObjective',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'LearningObjective',
+						enum: ['LearningObjective'],
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			Agent: {
+				title: 'Agent',
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						default: 'Agent',
+						enum: ['Agent'],
+					},
+					id: {
+						title: 'Uri',
+						$ref: '#/definitions/Uri',
+					},
+					name: {
+						type: 'string',
+					},
+					description: {
+						type: 'string',
+					},
+					dateCreated: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					dateModified: {
+						type: 'string',
+						pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$',
+					},
+					otherIdentifiers: {
+						type: 'array',
+						items: {
+							title: 'SystemIdentifier',
+							allOf: [
+								{
+									required: ['type', 'identifierType', 'identifier', 'source'],
+								},
+								{
+									title: 'SystemIdentifier',
+									$ref: '#/definitions/SystemIdentifier',
+								},
+							],
+						},
+					},
+					status: {
+						title: 'Status',
+						$ref: '#/definitions/Status',
+					},
+					extensions: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
+			},
+			ProfileType: {
+				type: 'string',
+				title: 'ProfileType',
+				enum: [
+					'AnnotationProfile',
+					'AssessmentProfile',
+					'AssignableProfile',
+					'FeedbackProfile',
+					'ForumProfile',
+					'GradingProfile',
+					'MediaProfile',
+					'ReadingProfile',
+					'ResourceManagementProfile',
+					'SearchProfile',
+					'SessionProfile',
+					'SurveyProfile',
+					'ToolLaunchProfile',
+					'ToolUseProfile',
+					'GeneralProfile',
 				],
 			},
 			Membership: {
@@ -1504,6 +1800,24 @@ export const IlpIdentifiedEventSchema = {
 							},
 						],
 					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
+					},
 					id: {
 						title: 'Uri',
 						$ref: '#/definitions/Uri',
@@ -1573,6 +1887,24 @@ export const IlpIdentifiedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',
@@ -1646,6 +1978,24 @@ export const IlpIdentifiedEventSchema = {
 								$ref: '#/definitions/Organization',
 							},
 						],
+					},
+					preferredName: {
+						type: 'string',
+					},
+					accountManager: {
+						type: 'string',
+					},
+					professionalDevSpecialist: {
+						type: 'string',
+					},
+					externalSalesRep: {
+						type: 'string',
+					},
+					insideSalesRep: {
+						type: 'string',
+					},
+					territory: {
+						type: 'string',
 					},
 					id: {
 						title: 'Uri',

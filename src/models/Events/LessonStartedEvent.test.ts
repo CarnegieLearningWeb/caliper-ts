@@ -50,6 +50,7 @@ describe('LessonStartedEvent', () => {
 			},
 			isPartOf: {
 				id: 'urn:uuid:6ff6e776-b749-4a48-a421-eb2785d22a3a',
+				schoolYear: 0,
 				type: 'ILP',
 				student: {
 					id: 'urn:uuid:6df6e776-b749-4a48-a421-eb2785d6a68a',

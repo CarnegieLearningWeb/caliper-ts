@@ -20,7 +20,7 @@ describe('UserDeletedEvent', () => {
 
 	const expected = {
 		'@context': [
-			'http://edgenuity.com/events/user-deleted/0-0-2',
+			'http://edgenuity.com/events/user-deleted/0-1-0',
 			'http://purl.imsglobal.org/ctx/caliper/v1p2',
 		],
 		id: 'urn:uuid:e251d4a0-b93c-4a0e-86cc-8b14c8db6787',
@@ -141,7 +141,7 @@ describe('UserDeletedEvent', () => {
 		validate(model);
 
 		model.id = Caliper.uuid('e251d4a0-b93c-4a0e-86cc-8b14c8db6787');
-		model.eventTime = model.object.dateModified;
+		model.eventTime = expected.object.dateModified;
 		expect(model).toEqual(expected);
 	});
 });
