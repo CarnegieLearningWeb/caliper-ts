@@ -1,7 +1,7 @@
 export enum JsonLdContextVersion {
 	None = 'none',
 	V1P1 = 'v1p1',
-	V2P2 = 'v1p2',
+	V1P2 = 'v1p2',
 }
 
 interface JsonLdContexts {
@@ -24,7 +24,7 @@ export interface Config {
 
 export const DEFAULT_CONFIG: Config = {
 	dataFormat: 'JSON-LD',
-	dataVersion: JsonLdContextVersion.V1P1,
+	dataVersion: JsonLdContextVersion.V1P2,
 	dateTimeFormat: 'YYYY-MM-DDTHH:mm:ss.SSSZ',
 	jsonldContext: {
 		[JsonLdContextVersion.None]: undefined,
@@ -38,7 +38,7 @@ export const DEFAULT_CONFIG: Config = {
 			toolLaunch: 'http://purl.imsglobal.org/ctx/caliper/v1p1/ToolLaunchProfile-extension',
 			toolUse: 'http://purl.imsglobal.org/ctx/caliper/v1p1/ToolUseProfile-extension',
 		},
-		[JsonLdContextVersion.V2P2]: 'http://purl.imsglobal.org/ctx/caliper/v1p2',
+		[JsonLdContextVersion.V1P2]: 'http://purl.imsglobal.org/ctx/caliper/v1p2',
 	},
 	uuidVersion: 4,
 };
@@ -62,7 +62,7 @@ export function compareJsonLdContextVersions(
 	if (
 		!context1 ||
 		context1 === JsonLdContextVersion.None ||
-		(context1 === JsonLdContextVersion.V1P1 && context2 === JsonLdContextVersion.V2P2)
+		(context1 === JsonLdContextVersion.V1P1 && context2 === JsonLdContextVersion.V1P2)
 	) {
 		return -1;
 	}

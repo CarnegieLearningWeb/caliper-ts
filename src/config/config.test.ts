@@ -18,13 +18,13 @@ describe('compareJsonLdContextVersions(..)', () => {
 	});
 
 	it('return -1 if first version is less than second version', () => {
-		expect(compareJsonLdContextVersions(JsonLdContextVersion.V1P1, JsonLdContextVersion.V2P2)).toBe(
+		expect(compareJsonLdContextVersions(JsonLdContextVersion.V1P1, JsonLdContextVersion.V1P2)).toBe(
 			-1
 		);
 	});
 
 	it('returns 1 if first version is greater than second version', () => {
-		expect(compareJsonLdContextVersions(JsonLdContextVersion.V2P2, JsonLdContextVersion.V1P1)).toBe(
+		expect(compareJsonLdContextVersions(JsonLdContextVersion.V1P2, JsonLdContextVersion.V1P1)).toBe(
 			1
 		);
 	});
