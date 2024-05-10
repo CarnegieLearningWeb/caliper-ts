@@ -1,10 +1,10 @@
 {
-	"name": "@imaginelearning/caliper-ts",
-	"version": "2.2.0",
+	"name": "@carnegie-learning/caliper-ts",
+	"version": "2.2.1",
 	"description": "Reference implementation of the Caliper Sensor API written in TypeScript",
 	"author": "Imagine Learning",
 	"license": "MIT",
-	"repository": "git@github.com:ImagineLearning/caliper-ts.git",
+	"repository": "git@github.com:CarnegieLearningWeb/caliper-ts.git",
 	"main": "dist/index.js",
 	"module": "dist/caliper-ts.esm.js",
 	"typings": "dist/index.d.ts",
