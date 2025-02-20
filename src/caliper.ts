@@ -1,7 +1,8 @@
-import * as durationFns from 'duration-fns';
-import { v4 } from 'uuid';
-import { EntityType } from './models/Entities/EntityType';
-import { SoftwareApplication } from './models/Entities/SoftwareApplication';
+import * as durationFns from "duration-fns";
+import { v4 } from "uuid";
+import { EntityType } from "./models/Entities/EntityType";
+import { SoftwareApplication } from "./models/Entities/SoftwareApplication";
+import { AdjustedTime } from "./adjustedTime";
 
 export interface CaliperSettings {
 	/**
@@ -42,8 +43,8 @@ function uuid(guid?: string) {
  * and namespace-specific string(s)
  */
 function urn({ nid, nss }: URN) {
-	return `urn:${Array.isArray(nid) ? nid.join(':') : nid}:${
-		Array.isArray(nss) ? nss.join(':') : nss
+	return `urn:${Array.isArray(nid) ? nid.join(":") : nid}:${
+		Array.isArray(nss) ? nss.join(":") : nss
 	}`.toLowerCase();
 }
 
@@ -68,10 +69,10 @@ function edApp({ applicationUri: id } = settings ?? {}) {
 function timestamp(date?: Date | number | string): CaliperTimestamp {
 	let dateObj: Date;
 	if (!date) {
-		dateObj = new Date(Date.now());
+		dateObj = new Date(AdjustedTime.now());
 	} else if (date instanceof Date) {
 		dateObj = date;
-	} else if (typeof date === 'string') {
+	} else if (typeof date === "string") {
 		dateObj = new Date(Date.parse(date));
 	} else {
 		dateObj = new Date(date);
@@ -91,12 +92,19 @@ const formatDuration = ({
 }: durationFns.Duration) => {
 	// The complexity of this method is because the library was converting (2041801ms => PT34M1.8010000002S)
 	// probably because of inappropriate use of floating point vs integerial operations internally?
-	const t = (value: number, suffix: string) => (value ? `${value}${suffix}` : '');
+	const t = (value: number, suffix: string) =>
+		value ? `${value}${suffix}` : "";
 	const formattedSeconds = (seconds * 1000 + milliseconds) / 1000;
-	let text = `P${t(years, 'Y')}${t(months, 'M')}${t(weeks, 'W')}${t(days, 'D')}`;
+	let text = `P${t(years, "Y")}${t(months, "M")}${t(weeks, "W")}${t(
+		days,
+		"D"
+	)}`;
 
 	if (hours || minutes || formattedSeconds) {
-		text += `T${t(hours, 'H')}${t(minutes, 'M')}${t(formattedSeconds, 'S')}`;
+		text += `T${t(hours, "H")}${t(minutes, "M")}${t(
+			formattedSeconds,
+			"S"
+		)}`;
 	}
 
 	return text;
@@ -107,11 +115,22 @@ const formatDuration = ({
  * @param startedAtTime The start of the Date range
  * @param endedAtTime The end of the Date range
  */
-function duration(startedAtTime: Date | string, endedAtTime: Date | string): CaliperDuration {
-	const start = startedAtTime instanceof Date ? startedAtTime : new Date(Date.parse(startedAtTime));
-	const end = endedAtTime instanceof Date ? endedAtTime : new Date(Date.parse(endedAtTime));
+function duration(
+	startedAtTime: Date | string,
+	endedAtTime: Date | string
+): CaliperDuration {
+	const start =
+		startedAtTime instanceof Date
+			? startedAtTime
+			: new Date(Date.parse(startedAtTime));
+	const end =
+		endedAtTime instanceof Date
+			? endedAtTime
+			: new Date(Date.parse(endedAtTime));
 
-	return formatDuration(durationFns.normalize(durationFns.between(start, end)));
+	return formatDuration(
+		durationFns.normalize(durationFns.between(start, end))
+	);
 }
 
 /**
@@ -122,4 +141,12 @@ function durationMilliseconds(milliseconds: number) {
 	return formatDuration(durationFns.normalize({ milliseconds }));
 }
 
-export default { settings, uuid, urn, edApp, timestamp, duration, durationMilliseconds };
+export default {
+	settings,
+	uuid,
+	urn,
+	edApp,
+	timestamp,
+	duration,
+	durationMilliseconds,
+};
