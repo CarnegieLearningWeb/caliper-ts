@@ -1,6 +1,6 @@
 {
 	"name": "@carnegie-learning/caliper-ts",
-	"version": "2.2.1",
+	"version": "2.2.2",
 	"description": "Reference implementation of the Caliper Sensor API written in TypeScript",
 	"author": "Imagine Learning",
 	"license": "MIT",
@@ -29,8 +29,6 @@
 		"uuid": ">=8"
 	},
 	"devDependencies": {
-		"@imaginelearning/eslint-config": "^0.1.1",
-		"@imaginelearning/prettier-config": "^0.1.1",
 		"@types/jsonschema": "^1.1.1",
 		"@types/lodash": "^4.14.161",
 		"@types/text-encoding": "^0.0.35",
