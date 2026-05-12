@@ -1,9 +1,15 @@
-import { Envelope } from '../envelope';
+import { CaliperSendOptions } from "../caliper-delivery-options";
+import { Envelope } from "../envelope";
 
 export interface Client {
 	getId(): string;
-	send<TEnvelope, TResponse>(envelope: Envelope<TEnvelope>): Promise<TResponse>;
-	queueDeadletterMessage<TEnvelope>(message: DeadletterMessage<TEnvelope>): Promise<void>;
+	send<TEnvelope, TResponse>(
+		envelope: Envelope<TEnvelope>,
+		options: CaliperSendOptions
+	): Promise<TResponse>;
+	queueDeadletterMessage<TEnvelope>(
+		message: DeadletterMessage<TEnvelope>
+	): Promise<void>;
 }
 
 export interface DeadletterMessage<TEnvelope> {
