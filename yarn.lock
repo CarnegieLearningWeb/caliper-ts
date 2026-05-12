@@ -895,16 +895,6 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@imaginelearning/eslint-config@^0.1.1":
-  version "0.1.1"
-  resolved "https://npm.pkg.github.com/download/@imaginelearning/eslint-config/0.1.1/a55da3360b8438166c97b099c522dbc73fc73f619140444e65272e3592ec06b6#2ab2967c1899f464582d9b4a72a187f28fb89a85"
-  integrity sha512-r0knYVlp76VctuZLg9T+diz9UodiF6HWGJ3Iiu+zzgZn574pa5KtYHiOCrhk4W8aKnS/uTFhIr82QBM4O66DzA==
-
-"@imaginelearning/prettier-config@^0.1.1":
-  version "0.1.1"
-  resolved "https://npm.pkg.github.com/download/@imaginelearning/prettier-config/0.1.1/f330266a40c562fc0d518566c2dd6fde23ea9789efd579f4630c52a9067cc633#d11ed1011773cd004d2c0a028ca565b1d7a215e9"
-  integrity sha512-jyJlgcRLNBbZz+yeUjAPZJnlySvUPz8A8nSrZ77HeE0M2L5xW7AhZyFftIcvga/K0q6h9usjdNjUYWyCbKNejQ==
-
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"
@@ -4826,9 +4816,9 @@ mimic-fn@^2.1.0:
   integrity sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==
 
 minimatch@^3.0.4:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.4.tgz#5166e286457f03306064be5497e8dbb0c3d32083"
-  integrity sha512-yJHVQEhyqPLUTgt9B83PXu6W3rx4MvvHvSUvToogpwoGDOUQ+yDrR0HRot+yOCdCO7u4hX3pWft6kWBBcqh0UA==
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.1.5.tgz#580c88f8d5445f2bd6aa8f3cadefa0de79fbd69e"
+  integrity sha512-VgjWUsnnT6n+NUk6eZq77zeFdpW2LWDzP6zFGrCbHXiYNul5Dzqk2HHQ5uFH2DNW5Xbp8+jVzaeNt94ssEEl4w==
   dependencies:
     brace-expansion "^1.1.7"
 
