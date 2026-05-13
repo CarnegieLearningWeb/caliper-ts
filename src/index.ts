@@ -11,3 +11,4 @@ export { Envelope, EnvelopeOptions } from "./envelope";
 export * from "./models";
 export * from "./sensor";
 export * from "./adjustedTime";
+export * from "./caliper-delivery-options";
