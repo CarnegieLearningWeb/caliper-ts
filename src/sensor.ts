@@ -1,10 +1,11 @@
-import Caliper from './caliper';
-import { Client } from './clients/client';
-import { DEFAULT_CONFIG, getJsonLdContext } from './config/config';
-import { createEnvelope, Envelope, EnvelopeOptions } from './envelope';
-import { SoftwareApplication } from './models/Entities/SoftwareApplication';
-import { Event } from './models/Events/Event';
-import { validate } from './validate';
+import Caliper from "./caliper";
+import { CaliperSendOptions } from "./caliper-delivery-options";
+import { Client } from "./clients/client";
+import { DEFAULT_CONFIG, getJsonLdContext } from "./config/config";
+import { createEnvelope, Envelope, EnvelopeOptions } from "./envelope";
+import { SoftwareApplication } from "./models/Entities/SoftwareApplication";
+import { Event } from "./models/Events/Event";
+import { validate } from "./validate";
 
 export interface SensorConfig {
 	edApp?: SoftwareApplication;
@@ -24,7 +25,9 @@ export class Sensor {
 		{ edApp, validationEnabled = true, clients = {} }: SensorConfig = {}
 	) {
 		if (!id) {
-			throw new Error('Caliper Sensor identifier (id) has not been provided.');
+			throw new Error(
+				"Caliper Sensor identifier (id) has not been provided."
+			);
 		}
 
 		this.edApp = edApp;
@@ -34,14 +37,22 @@ export class Sensor {
 
 	createEnvelope<T extends Event>(options: Partial<EnvelopeOptions<T>>) {
 		if (options.data === null || options.data === undefined) {
-			throw new Error('Caliper Sensor Envelope data has not been provided.');
+			throw new Error(
+				"Caliper Sensor Envelope data has not been provided."
+			);
 		}
 
 		const sensor = options.sensor ?? this.id;
 		const sendTime = options.sendTime ?? Caliper.timestamp();
 		const dataVersion =
-			options.dataVersion ?? getJsonLdContext(DEFAULT_CONFIG, DEFAULT_CONFIG.dataVersion);
-		return createEnvelope<T>({ sensor, sendTime, dataVersion, data: options.data });
+			options.dataVersion ??
+			getJsonLdContext(DEFAULT_CONFIG, DEFAULT_CONFIG.dataVersion);
+		return createEnvelope<T>({
+			sensor,
+			sendTime,
+			dataVersion,
+			data: options.data,
+		});
 	}
 
 	createEvent<TEvent extends Event, TParams>(
@@ -73,30 +84,38 @@ export class Sensor {
 
 	sendToClient<TEnvelope extends Event, TResponse>(
 		client: Client | string,
-		envelope: Envelope<TEnvelope>
+		envelope: Envelope<TEnvelope>,
+		options: CaliperSendOptions = {}
 	) {
-		const httpClient = this.clients[typeof client === 'string' ? client : client.getId()];
+		const httpClient = this.clients[
+			typeof client === "string" ? client : client.getId()
+		];
 		if (!httpClient) {
-			throw new Error('Chosen Client has not been registered.');
+			throw new Error("Chosen Client has not been registered.");
 		}
 
 		const validationError = this.validateEvents(envelope.data);
 		if (validationError !== null) {
 			const message = {
 				error: validationError.message,
-				source: this.edApp ? this.edApp.id : (Caliper.settings.applicationUri as string),
+				source: this.edApp
+					? this.edApp.id
+					: (Caliper.settings.applicationUri as string),
 				payload: envelope,
 			};
 			httpClient.queueDeadletterMessage(message);
 		}
 
-		return httpClient.send<TEnvelope, TResponse>(envelope);
+		return httpClient.send<TEnvelope, TResponse>(envelope, options);
 	}
 
-	sendToClients<TEnvelope extends Event, TResponse>(envelope: Envelope<TEnvelope>) {
+	sendToClients<TEnvelope extends Event, TResponse>(
+		envelope: Envelope<TEnvelope>,
+		options: CaliperSendOptions = {}
+	) {
 		const clients = this.getClients();
 		if (!clients.length) {
-			throw new Error('No Clients have been registered.');
+			throw new Error("No Clients have been registered.");
 		}
 
 		const validationError = this.validateEvents(envelope.data);
@@ -105,7 +124,9 @@ export class Sensor {
 				clients.map((client) => {
 					const message = {
 						error: validationError.message,
-						source: this.edApp ? this.edApp.id : (Caliper.settings.applicationUri as string),
+						source: this.edApp
+							? this.edApp.id
+							: (Caliper.settings.applicationUri as string),
 						payload: envelope,
 					};
 					return client.queueDeadletterMessage(message);
@@ -113,7 +134,11 @@ export class Sensor {
 			);
 		}
 
-		return Promise.all(clients.map((client) => client.send<TEnvelope, TResponse>(envelope)));
+		return Promise.all(
+			clients.map((client) =>
+				client.send<TEnvelope, TResponse>(envelope, options)
+			)
+		);
 	}
 
 	unregisterClient(id: string) {
@@ -130,21 +155,23 @@ export class Sensor {
 		events.forEach((event) => {
 			try {
 				validate(event);
-				validationErrors.push('Other events in the batch were invalid');
+				validationErrors.push("Other events in the batch were invalid");
 			} catch (error) {
 				isValid = false;
 				if (Array.isArray(error)) {
 					const e = error as string[];
 
-					validationErrors.push(`${event.id}: ${e.join('\n\t')}`);
+					validationErrors.push(`${event.id}: ${e.join("\n\t")}`);
 				} else {
 					const e = error as Error;
 
-					validationErrors.push(`${event.id}: ${e.message}\n${e.stack}`);
+					validationErrors.push(
+						`${event.id}: ${e.message}\n${e.stack}`
+					);
 				}
 			}
 		});
 
-		return isValid ? null : new Error(validationErrors.join('\n'));
+		return isValid ? null : new Error(validationErrors.join("\n"));
 	}
 }
