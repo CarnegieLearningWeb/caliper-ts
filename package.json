@@ -1,6 +1,6 @@
 {
 	"name": "@carnegie-learning/caliper-ts",
-	"version": "2.3.0",
+	"version": "2.3.1",
 	"description": "Reference implementation of the Caliper Sensor API written in TypeScript",
 	"author": "Imagine Learning",
 	"license": "MIT",

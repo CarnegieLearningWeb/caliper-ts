@@ -3,15 +3,21 @@ import { Envelope } from "../envelope";
 
 export interface Client {
 	getId(): string;
+
+	send<TEnvelope>(
+		envelope: Envelope<TEnvelope>,
+		options: CaliperSendOptions & { keepalive: true }
+	): Promise<void>;
+
 	send<TEnvelope, TResponse>(
 		envelope: Envelope<TEnvelope>,
-		options: CaliperSendOptions
+		options?: CaliperSendOptions
 	): Promise<TResponse>;
+
 	queueDeadletterMessage<TEnvelope>(
 		message: DeadletterMessage<TEnvelope>
 	): Promise<void>;
 }
-
 export interface DeadletterMessage<TEnvelope> {
 	error: string;
 	source: string;
